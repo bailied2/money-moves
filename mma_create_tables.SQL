@@ -1,5 +1,3 @@
--- everything needs ON UPDATE
-
 -- USERS
 -- Stores user account information
 CREATE TABLE user (
