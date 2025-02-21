@@ -1,0 +1,7 @@
+.main_wrapper {
+  display: flex;
+}
+
+textarea {
+  resize: none;
+}
