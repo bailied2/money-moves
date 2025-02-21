@@ -23,13 +23,13 @@ export default function CreateClassroom() {
             type="date"
             id="classroom_end_date"
             name="classroom_end_date" /></label
-        ><br />
-        <input
+        ><br /><br />
+        {/* <input
           type="checkbox"
           id="classroom_savings"
           name="classroom_savings"
           checked
-        /><label for="classroom_savings">Savings Enabled</label><br />
+        /><label for="classroom_savings">Savings Enabled</label><br /> */}
         <input type="submit" value="Create Classroom" />
       </fieldset>
     </form>
