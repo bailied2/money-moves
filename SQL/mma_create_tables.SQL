@@ -1,14 +1,15 @@
--- USERS
+-- USER
 -- Stores user account information
 CREATE TABLE user (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) UNIQUE KEY NOT NULL,
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
-  hash CHAR(60) NOT NULL
+  hash CHAR(60) NOT NULL,
+  needs_new_password TINYINT(1) NOT NULL DEFAULT 0,
 );
 
--- CLASSROOMS
+-- CLASSROOM
 -- Stores classroom information and assigns a class teacher by their user id.
 CREATE TABLE classroom (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -21,7 +22,7 @@ CREATE TABLE classroom (
   FOREIGN KEY (fk_teacher_id) REFERENCES user(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- STUDENTS
+-- CLASSROOM_STUDENTS
 -- Assigns users to classrooms by their id.
 CREATE TABLE classroom_students (
   fk_classroom_id INT UNSIGNED NOT NULL,
@@ -32,17 +33,19 @@ CREATE TABLE classroom_students (
 );
 
 -- ACCOUNT
--- 
+-- Represents a student's checking, savings, or investment account.
 CREATE TABLE account (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  fk_classroom_id INT UNSIGNED NOT NULL,
+  -- fk_classroom_id INT UNSIGNED NOT NULL,
   fk_student_id INT UNSIGNED NOT NULL,
   fk_investment_account_id INT UNSIGNED,
   account_type TINYINT UNSIGNED NOT NULL,
-  FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  -- FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (fk_student_id) REFERENCES student(id) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (fk_investment_account_id) REFERENCES investment_account(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+-- Set account id auto-increment to start at 10000000 to emulate account numbers
+ALTER TABLE account AUTO_INCREMENT=10000000;
 
 
 -- TRANSACTIONS

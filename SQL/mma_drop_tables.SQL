@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS
   property,
   job,
   transaction,
+  account,
   student,
   classroom,
   users;
