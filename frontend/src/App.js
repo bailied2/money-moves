@@ -5,6 +5,7 @@ import AddStudent from "./components/AddStudent";
 import AddProperty from "./components/AddProperty";
 import AddJob from "./components/AddJob";
 import AddFeeBonus from "./components/AddFeeBonus";
+import ClassCard from "./components/ClassCard";
 // import logo from "./logo.svg";
 import "./App.css";
 
@@ -13,6 +14,7 @@ const App = () => {
     <div>
       <Navbar />
       <h1 className="text-center mt-4">Welcome to Money Moves Academy</h1>
+      <ClassCard title="Class 1" description="A classroom" />
       <CreateClassroom /><br />
       <AddStudent /><br />
       <AddProperty /><br />
