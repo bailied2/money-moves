@@ -1,3 +1,5 @@
+import "./styles/CreateClassroom.css";
+
 export default function CreateClassroom() {
   return (
     <form className="create_classroom_form" action="">
