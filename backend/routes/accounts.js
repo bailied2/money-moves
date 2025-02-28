@@ -1,5 +1,22 @@
 const express = require('express');
 const router = express.Router();
+const PORT = 5000;
+
+router.get('/', (req,res) => {
+  res.send({data: "here's your data"})
+});
+
+router.post('/', (req,res) => {
+  res.send({data: "account created"})
+});
+
+router.put('/', (req,res) => {
+  res.send({data: "account updated"})
+});
+router.delete('/', (req,res) => {
+  res.send({data: "account deleted"})
+});
+
 
 // Controller functions 
 const {
