@@ -4,16 +4,7 @@ export default function AddJob() {
       <fieldset>
         <legend>Add Property</legend>
         <label>
-          Classroom ID:
-          <input
-            type="text"
-            id="add_property_classroom"
-            name="add_property_classroom"
-          />
-        </label>
-        <br />
-        <label>
-          Property Title:
+          Property Title: {" "}
           <input
             type="text"
             id="add_property_title"
@@ -25,19 +16,19 @@ export default function AddJob() {
           Property Description:
           <br />
           <textarea
-            id="add_property_title"
-            name="add_property_title"
+            id="add_property_description"
+            name="add_property_description"
             rows="4"
             cols="33"
           ></textarea>
         </label>
         <br />
         <label>
-          Value:
+          Value: {" "}
           <input
             type="number"
-            id="property_value"
-            name="property_value"
+            id="add_property_value"
+            name="add_property_value"
             step="0.01"
             min="0"
             max="99999999.99"
@@ -45,11 +36,11 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Rent:
+          Rent: {" "}
           <input
             type="number"
-            id="property_rent"
-            name="property_rent"
+            id="add_property_rent"
+            name="add_property_rent"
             step="0.01"
             min="0"
             max="99999999.99"
@@ -57,11 +48,11 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Maintenance:
+          Maintenance: {" "}
           <input
             type="number"
-            id="property_maintenance"
-            name="property_maintenance"
+            id="add_property_maintenance"
+            name="add_property_maintenance"
             step="0.01"
             min="0"
             max="99999999.99"
@@ -69,8 +60,8 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Pay Frequency:
-          <select id="property_pay_frequency" name="property_pay_frequency">
+          Pay Frequency: {" "}
+          <select id="add_property_pay_frequency" name="add_property_pay_frequency">
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
@@ -78,8 +69,8 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Pay Day:
-          <select id="property_pay_day" name="property_pay_day">
+          Pay Day: {" "}
+          <select id="add_property_pay_day" name="add_property_pay_day">
             <option value="monday">Monday</option>
             <option value="tuesday">Tuesday</option>
             <option value="wednesday">Wednesday</option>
@@ -91,15 +82,16 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Icon ID:
+          Icon ID: {" "}
           <input
             type="number"
-            id="property_wage"
-            name="property_wage"
+            id="add_property_icon_id"
+            name="add_property_icon_id"
             min="0"
             max="12"
           />{" "}
         </label>
+        <br />
         <br />
         <input type="submit" value="Add Property" />
       </fieldset>

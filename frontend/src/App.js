@@ -1,5 +1,10 @@
-// import React from "react";
+import React from "react";
 import Navbar from "./components/Navbar";
+import CreateClassroom from "./components/CreateClassroom";
+import AddStudent from "./components/AddStudent";
+import AddProperty from "./components/AddProperty";
+import AddJob from "./components/AddJob";
+import AddFeeBonus from "./components/AddFeeBonus";
 // import logo from "./logo.svg";
 import "./App.css";
 
@@ -8,6 +13,11 @@ const App = () => {
     <div>
       <Navbar />
       <h1 className="text-center mt-4">Welcome to Money Moves Academy</h1>
+      <CreateClassroom /><br />
+      <AddStudent /><br />
+      <AddProperty /><br />
+      <AddJob /><br />
+      <AddFeeBonus /><br />
     </div>
   );
 };

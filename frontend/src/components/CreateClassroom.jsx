@@ -6,7 +6,7 @@ export default function CreateClassroom() {
       <fieldset>
         <legend>Create Classroom</legend>
         <label>
-          Classroom Name:
+          Classroom Name: {" "}
           <input
             type="text"
             id="create_classroom_name"
@@ -15,20 +15,20 @@ export default function CreateClassroom() {
         </label>
         <br />
         <label>
-          Start Date:
+          Start Date: {" "}
           <input
             type="date"
-            id="classroom_start_date"
-            name="classroom_start_date"
+            id="create_classroom_start_date"
+            name="create_classroom_start_date"
           />
         </label>
         <br />
         <label>
-          End Date:
+          End Date: {" "}
           <input
             type="date"
-            id="classroom_end_date"
-            name="classroom_end_date"
+            id="create_classroom_end_date"
+            name="create_classroom_end_date"
           />
         </label>
         <br />

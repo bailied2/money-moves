@@ -1,0 +1,46 @@
+Sign In
+Register
+Forgot Password
+Update Password
+Confirmation Message
+
+Classroom Dashboard
+Classroom Settings
+Card List
+"Add New" Card
+Info Panel
+
+Classroom Card
+Create Classroom Popup
+Join Classroom Popup
+
+Student Card
+Add Student Popup
+Import Students
+
+Fee/Bonus Card
+Add/Update Fee/Bonus Popup
+Apply Fee/Bonus Popup
+
+Make Deposit/Withdrawal Popup
+
+Job Card
+Add/Update Property Popup
+
+Property Card
+Add/Update Property Popup
+
+Basic Account Card
+Basic Transaction
+
+Investment Account Card
+Add/Update Investment Account Popup
+Investment Transaction
+
+Transaction List
+
+Manage Year Ends
+Year End Accordion
+Account Yearly Value
+
+Transfer Money Popup

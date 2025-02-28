@@ -4,12 +4,7 @@ export default function AddJob() {
       <fieldset>
         <legend>Add Job</legend>
         <label>
-          Classroom ID:
-          <input type="text" id="add_job_classroom" name="add_job_classroom" />
-        </label>
-        <br />
-        <label>
-          Job Title:
+          Job Title: {" "}
           <input type="text" id="add_job_title" name="add_job_title" />
         </label>
         <br />
@@ -17,19 +12,19 @@ export default function AddJob() {
           Job Description:
           <br />
           <textarea
-            id="add_job_title"
-            name="add_job_title"
+            id="add_job_description"
+            name="add_job_description"
             rows="4"
             cols="33"
           ></textarea>
         </label>
         <br />
         <label>
-          Wage:
+          Wage: {" "}
           <input
             type="number"
-            id="job_wage"
-            name="job_wage"
+            id="add_job_wage"
+            name="add_job_wage"
             step="0.01"
             min="0"
             max="99999999.99"
@@ -37,8 +32,8 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Pay Frequency:
-          <select id="job_pay_frequency" name="job_pay_frequency">
+          Pay Frequency: {" "}
+          <select id="add_job_pay_frequency" name="add_job_pay_frequency">
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
@@ -46,8 +41,8 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Pay Day:
-          <select id="job_pay_day" name="job_pay_day">
+          Pay Day: {" "}
+          <select id="add_job_pay_day" name="add_job_pay_day">
             <option value="monday">Monday</option>
             <option value="tuesday">Tuesday</option>
             <option value="wednesday">Wednesday</option>
@@ -59,18 +54,19 @@ export default function AddJob() {
         </label>
         <br />
         <label>
-          Icon ID:
+          Icon ID: {" "}
           <input
             type="number"
-            id="job_wage"
-            name="job_wage"
+            id="add_job_icon_id"
+            name="add_job_icon_id"
             min="0"
             max="12"
           />{" "}
         </label>
         <br />
-        <input type="checkbox" id="job_trustee" name="job_trustee" />
-        <label for="job_trustee">Trustee</label>
+        <input type="checkbox" id="add_job_is_trustee" name="add_job_is_trustee" />
+        <label for="add_job_is_trustee">Trustee</label>
+        <br />
         <br />
         <input type="submit" value="Add Job" />
       </fieldset>
