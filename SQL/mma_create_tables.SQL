@@ -7,6 +7,7 @@ CREATE TABLE user (
   last_name VARCHAR(100) NOT NULL,
   hash CHAR(60) NOT NULL,
   needs_new_password TINYINT(1) NOT NULL DEFAULT 0,
+  password_reset_code CHAR(5) UNIQUE DEFAULT NULL
 );
 
 -- CLASSROOM
