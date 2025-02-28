@@ -23,41 +23,15 @@ CREATE TABLE classroom (
   FOREIGN KEY (fk_teacher_id) REFERENCES user(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- CLASSROOM_STUDENTS
+-- STUDENT
 -- Assigns users to classrooms by their id.
-CREATE TABLE classroom_students (
+CREATE TABLE student (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   fk_classroom_id INT UNSIGNED NOT NULL,
   fk_user_id INT UNSIGNED NOT NULL,
-  PRIMARY KEY (fk_classroom_id, fk_user_id),
+  UNIQUE (fk_classroom_id, fk_user_id),
   FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (fk_user_email) REFERENCES user(email) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
--- ACCOUNT
--- Represents a student's checking, savings, or investment account.
-CREATE TABLE account (
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  -- fk_classroom_id INT UNSIGNED NOT NULL,
-  fk_student_id INT UNSIGNED NOT NULL,
-  fk_investment_account_id INT UNSIGNED,
-  account_type TINYINT UNSIGNED NOT NULL,
-  -- FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (fk_student_id) REFERENCES student(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (fk_investment_account_id) REFERENCES investment_account(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
--- Set account id auto-increment to start at 10000000 to emulate account numbers
-ALTER TABLE account AUTO_INCREMENT=10000000;
-
-
--- TRANSACTIONS
--- Represents money movements for students (e.g., deposits, deductions, investments).
-CREATE TABLE transaction (
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  fk_account_id INT UNSIGNED NOT NULL,
-  date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  description VARCHAR(255) NOT NULL,
-  amount DECIMAL(10,2) NOT NULL,
-  FOREIGN KEY (fk_account_id) REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
+  FOREIGN KEY (fk_user_id) REFERENCES user(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- JOBS
@@ -122,6 +96,33 @@ CREATE TABLE year_end (
   savings_apr DECIMAL(5,2) NOT NULL,
   UNIQUE (fk_classroom_id, end_date),
   FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+-- ACCOUNT
+-- Represents a student's checking, savings, or investment account.
+CREATE TABLE account (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  -- fk_classroom_id INT UNSIGNED NOT NULL,
+  fk_student_id INT UNSIGNED NOT NULL,
+  fk_investment_account_id INT UNSIGNED,
+  account_type TINYINT UNSIGNED NOT NULL,
+  -- FOREIGN KEY (fk_classroom_id, fk_user_id) REFERENCES classroom_student(fk_classroom_id, fk_user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (fk_student_id) REFERENCES student(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (fk_investment_account_id) REFERENCES investment_account(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+-- Set account id auto-increment to start at 10000000 to emulate account numbers
+ALTER TABLE account AUTO_INCREMENT=10000000;
+
+
+-- TRANSACTIONS
+-- Represents money movements for students (e.g., deposits, deductions, investments).
+CREATE TABLE transaction (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  fk_account_id INT UNSIGNED NOT NULL,
+  date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  description VARCHAR(255) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (fk_account_id) REFERENCES account(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- INVESTMENT_VALUES
