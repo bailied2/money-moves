@@ -1,39 +1,79 @@
-// transactions.js
 const express = require('express');
 const router = express.Router();
-
+const db = require('../sample_database'); // Assuming db.js sets up the MySQL connection pool
 
 // GET /transactions - Get all transactions
 const getTransactions = (req, res) => {
-  //  logic to retrieve all transactions from the db
-  res.send({ data: "here's all the transactions data" });
+  const query = 'SELECT * FROM transactions';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching transactions:', err);
+      return res.status(500).send({ error: 'Failed to fetch transactions' });
+    }
+    res.send({ data: results });
+  });
 };
 
 // GET /transactions/:id - Get a specific transaction by ID
 const getTransactionById = (req, res) => {
   const { id } = req.params;
-  //  logic to retrieve a transaction by its ID from the db
-  res.send({ data: `here's the transaction data for ID: ${id}` });
+  const query = 'SELECT * FROM transactions WHERE id = ?';
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error fetching transaction by ID:', err);
+      return res.status(500).send({ error: 'Failed to fetch transaction' });
+    }
+    if (results.length === 0) {
+      return res.status(404).send({ error: 'Transaction not found' });
+    }
+    res.send({ data: results[0] });
+  });
 };
 
 // POST /transactions - Create a new transaction
 const createTransaction = (req, res) => {
-  //  logic to create a new transaction (insert into the db)
-  res.send({ data: "new transaction created successfully" });
+  const { amount, type, account_id, description, date } = req.body;
+  const query = 'INSERT INTO transactions (amount, type, account_id, description, date) VALUES (?, ?, ?, ?, ?)';
+  db.query(query, [amount, type, account_id, description, date], (err, result) => {
+    if (err) {
+      console.error('Error creating transaction:', err);
+      return res.status(500).send({ error: 'Failed to create transaction' });
+    }
+    res.send({ data: `Transaction created successfully with ID ${result.insertId}` });
+  });
 };
 
 // PUT /transactions/:id - Update a specific transaction by ID
 const updateTransaction = (req, res) => {
   const { id } = req.params;
-  //  logic to update a specific transaction by its ID
-  res.send({ data: `transaction with ID: ${id} updated successfully` });
+  const { amount, type, description, date } = req.body;
+  const query = 'UPDATE transactions SET amount = ?, type = ?, description = ?, date = ? WHERE id = ?';
+  db.query(query, [amount, type, description, date, id], (err, result) => {
+    if (err) {
+      console.error('Error updating transaction:', err);
+      return res.status(500).send({ error: 'Failed to update transaction' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Transaction not found' });
+    }
+    res.send({ data: `Transaction with ID ${id} updated successfully` });
+  });
 };
 
 // DELETE /transactions/:id - Delete a specific transaction by ID
 const deleteTransaction = (req, res) => {
   const { id } = req.params;
-  //  logic to delete a specific transaction by its ID
-  res.send({ data: `transaction with ID: ${id} deleted successfully` });
+  const query = 'DELETE FROM transactions WHERE id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting transaction:', err);
+      return res.status(500).send({ error: 'Failed to delete transaction' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Transaction not found' });
+    }
+    res.send({ data: `Transaction with ID ${id} deleted successfully` });
+  });
 };
 
 // Routes definition using the functions above

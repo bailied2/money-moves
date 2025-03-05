@@ -1,37 +1,64 @@
-// jobs.js
 const express = require('express');
 const router = express.Router();
-
-
+const db = require('../sample_database'); // Assuming you have a db.js for MySQL connection
 
 // GET /jobs - Get all jobs in classrooms
 const getJobs = (req, res) => {
-  //  logic to retrieve all jobs from the database
-  res.send({ data: "here's all the jobs data" });
+  const query = 'SELECT * FROM jobs';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching jobs:', err);
+      return res.status(500).send({ error: 'Failed to fetch jobs' });
+    }
+    res.send({ data: results });
+  });
 };
 
 // POST /jobs - Create a new job
 const createJob = (req, res) => {
-  //  logic to create a new job (insert into the database)
-  res.send({ data: "new job created successfully" });
+  const { title, wage, description, classroom_id } = req.body; // Extracting data from request body
+  const query = 'INSERT INTO jobs (title, wage, description, classroom_id) VALUES (?, ?, ?, ?)';
+  db.query(query, [title, wage, description, classroom_id], (err, result) => {
+    if (err) {
+      console.error('Error creating job:', err);
+      return res.status(500).send({ error: 'Failed to create job' });
+    }
+    res.send({ data: `New job created successfully with ID ${result.insertId}` });
+  });
 };
 
 // PUT /jobs - Update job details
 const updateJob = (req, res) => {
-  //  logic to update a job in the database (update all or specific fields)
-  res.send({ data: "job updated successfully" });
+  const { id, title, wage, description } = req.body; // Extracting updated data from request body
+  const query = 'UPDATE jobs SET title = ?, wage = ?, description = ? WHERE id = ?';
+  db.query(query, [title, wage, description, id], (err, result) => {
+    if (err) {
+      console.error('Error updating job:', err);
+      return res.status(500).send({ error: 'Failed to update job' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Job not found' });
+    }
+    res.send({ data: `Job with ID ${id} updated successfully` });
+  });
 };
 
 // DELETE /jobs - Delete all jobs
 const deleteJob = (req, res) => {
-  //  logic to delete all jobs from the database
-  res.send({ data: "all jobs deleted" });
+  const query = 'DELETE FROM jobs';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error deleting jobs:', err);
+      return res.status(500).send({ error: 'Failed to delete jobs' });
+    }
+    res.send({ data: 'All jobs deleted successfully' });
+  });
 };
 
 // Routes definition using the functions above
 router.get('/jobs', getJobs);           // Get all jobs
 router.post('/jobs', createJob);        // Create a new job
-router.put('/jobs', updateJob);         // Update all jobs (or specify which jobs to update in the body)
+router.put('/jobs', updateJob);         // Update job details
 router.delete('/jobs', deleteJob);      // Delete all jobs
 
 module.exports = router;

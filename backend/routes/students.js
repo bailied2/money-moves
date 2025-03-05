@@ -1,39 +1,79 @@
-// students.js
 const express = require('express');
 const router = express.Router();
-
+const db = require('../sample_database'); // Assuming db.js sets up the MySQL connection pool
 
 // GET /students - Get all student records
 const getStudents = (req, res) => {
-  //  logic to retrieve all student records from the db
-  res.send({ data: "here's all the student records" });
+  const query = 'SELECT * FROM students';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching student records:', err);
+      return res.status(500).send({ error: 'Failed to fetch student records' });
+    }
+    res.send({ data: results });
+  });
 };
 
 // GET /students/:id - Get a specific student record by ID
 const getStudentById = (req, res) => {
   const { id } = req.params;
-  //  logic to retrieve a specific student record by its ID from the db
-  res.send({ data: `here's the student data for ID: ${id}` });
+  const query = 'SELECT * FROM students WHERE id = ?';
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error fetching student record by ID:', err);
+      return res.status(500).send({ error: 'Failed to fetch student record' });
+    }
+    if (results.length === 0) {
+      return res.status(404).send({ error: 'Student record not found' });
+    }
+    res.send({ data: results[0] });
+  });
 };
 
 // POST /students - Create a new student record
 const createStudent = (req, res) => {
-  //  logic to create a new student record (insert into the db)
-  res.send({ data: "new student record created successfully" });
+  const { name, email, classroom_id, balance } = req.body;
+  const query = 'INSERT INTO students (name, email, classroom_id, balance) VALUES (?, ?, ?, ?)';
+  db.query(query, [name, email, classroom_id, balance], (err, result) => {
+    if (err) {
+      console.error('Error creating student record:', err);
+      return res.status(500).send({ error: 'Failed to create student record' });
+    }
+    res.send({ data: `Student record created successfully with ID ${result.insertId}` });
+  });
 };
 
 // PUT /students/:id - Update a specific student record by ID
 const updateStudent = (req, res) => {
   const { id } = req.params;
-  //  logic to update a specific student record by its ID
-  res.send({ data: `student record with ID: ${id} updated successfully` });
+  const { name, email, classroom_id, balance } = req.body;
+  const query = 'UPDATE students SET name = ?, email = ?, classroom_id = ?, balance = ? WHERE id = ?';
+  db.query(query, [name, email, classroom_id, balance, id], (err, result) => {
+    if (err) {
+      console.error('Error updating student record:', err);
+      return res.status(500).send({ error: 'Failed to update student record' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Student record not found' });
+    }
+    res.send({ data: `Student record with ID ${id} updated successfully` });
+  });
 };
 
 // DELETE /students/:id - Delete a specific student record by ID
 const deleteStudent = (req, res) => {
   const { id } = req.params;
-  //  logic to delete a specific student record by its ID
-  res.send({ data: `student record with ID: ${id} deleted successfully` });
+  const query = 'DELETE FROM students WHERE id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting student record:', err);
+      return res.status(500).send({ error: 'Failed to delete student record' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Student record not found' });
+    }
+    res.send({ data: `Student record with ID ${id} deleted successfully` });
+  });
 };
 
 // Routes definition using the functions above

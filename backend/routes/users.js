@@ -1,93 +1,81 @@
-// users.js
 const express = require("express");
 const router = express.Router();
-
-/** - Added bcrypt and database imports
- *
- * bcrypt is a widely-popular package for handling password encryption
- * that is simple and straightforward to use, so I chose to use it for
- * this project.
- *
- * We also need to import the database connection so that we can query the database from here.
- *
- **/
 const bcrypt = require("bcrypt"); // bcrypt for hashing passwords.
 const db = require("../sample_database");
 
 // GET /users - Get all user records
 const getUsers = (req, res) => {
-  //  logic to retrieve all user records from the database
-  res.send({ data: "here's all the user records" });
+  const sql = "SELECT id, first_name, last_name, email FROM user"; // Query to retrieve all users
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ data: results }); // Return the list of users
+  });
 };
 
 // GET /users/:id - Get a specific user record by ID
 const getUserById = (req, res) => {
   const { id } = req.params;
-  //  logic to retrieve a specific user record by its ID from the database
-  res.send({ data: `here's the user data for ID: ${id}` });
+  const sql = "SELECT id, first_name, last_name, email FROM user WHERE id = ?"; // Query to retrieve user by ID
+  db.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.length === 0) return res.status(404).json({ error: "User not found" });
+    res.json({ data: results[0] }); // Return the specific user record
+  });
 };
 
-/** - Implemented createUser function
- *
- * This function accepts an HTTP request with the user's inputted
- * first name, last name, email, and password. It uses bcrypt to
- * encrypt the password, then queries the database to insert the
- * new user.
- *
- **/
 // POST /users - Create a new user record
 const createUser = async (req, res) => {
-  console.log("createUser");
   const { first_name, last_name, email, password } = req.body;
 
   try {
     const saltRounds = 10; // Number of salt rounds for hashing
     const hash = await bcrypt.hash(password, saltRounds);
 
-    const sql = // Prepared statement for inserting new user
-      "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)";
-
-    // Query Database
+    const sql = "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)"; // Insert query
     db.query(sql, [first_name, last_name, email, hash], (err, result) => {
-      // If error, return error message
       if (err) return res.status(500).json({ error: err.message });
-      // Otherwise send confirmation message.
       res.json({
         message: "User registered successfully",
         id: result.insertId,
       });
     });
   } catch (error) {
-    // If there was an error hashing the password with bcrypt, send back error.
     res.status(500).json({ error: "Error hashing password" });
   }
-  // res.send({ data: "new user record created successfully" });
 };
 
 // PUT /users/:id - Update a specific user record by ID
 const updateUser = (req, res) => {
   const { id } = req.params;
-  //  logic to update a specific user record by its ID
-  res.send({ data: `user record with ID: ${id} updated successfully` });
+  const { first_name, last_name, email, password } = req.body;
+
+  // Optional: If password is provided, hash it
+  const sqlValues = password
+    ? [first_name, last_name, email, bcrypt.hashSync(password, 10), id]
+    : [first_name, last_name, email, id];
+
+  const sql = password
+    ? "UPDATE user SET first_name = ?, last_name = ?, email = ?, hash = ? WHERE id = ?"
+    : "UPDATE user SET first_name = ?, last_name = ?, email = ? WHERE id = ?";
+
+  db.query(sql, sqlValues, (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.affectedRows === 0) return res.status(404).json({ error: "User not found" });
+    res.json({ message: `User with ID ${id} updated successfully` });
+  });
 };
 
 // DELETE /users/:id - Delete a specific user record by ID
 const deleteUser = (req, res) => {
   const { id } = req.params;
-  //  logic to delete a specific user record by its ID
-  res.send({ data: `user record with ID: ${id} deleted successfully` });
+  const sql = "DELETE FROM user WHERE id = ?"; // Delete query
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.affectedRows === 0) return res.status(404).json({ error: "User not found" });
+    res.json({ message: `User with ID ${id} deleted successfully` });
+  });
 };
 
-/** - Updated Router.method() routes
- *
- * I removed "/users" from the start of the routes below, because
- *
- *    ` app.use("/api/users", userRoute); ` in app.js
- *
- * maps the "/" in this file to "/api/users"
- * (and "/:id" to "/api/users/:id").
- *
- **/
 // Routes definition using the functions above
 router.get("/", getUsers); // Get all user records
 router.get("/:id", getUserById); // Get a user record by ID

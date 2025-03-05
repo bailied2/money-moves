@@ -1,40 +1,79 @@
-// properties.js
 const express = require('express');
 const router = express.Router();
-
-
+const db = require('../sample_database'); // Assuming you have a db.js for MySQL connection
 
 // GET /properties - Get all properties
 const getProperties = (req, res) => {
-  //  logic to retrieve all properties from the database
-  res.send({ data: "here's all the properties data" });
+  const query = 'SELECT * FROM properties';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching properties:', err);
+      return res.status(500).send({ error: 'Failed to fetch properties' });
+    }
+    res.send({ data: results });
+  });
 };
 
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = (req, res) => {
   const { id } = req.params;
-  //  logic to retrieve a property by its ID from the database
-  res.send({ data: `here's the property data for ID: ${id}` });
+  const query = 'SELECT * FROM properties WHERE id = ?';
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Error fetching property by ID:', err);
+      return res.status(500).send({ error: 'Failed to fetch property' });
+    }
+    if (results.length === 0) {
+      return res.status(404).send({ error: 'Property not found' });
+    }
+    res.send({ data: results[0] });
+  });
 };
 
 // POST /properties - Create a new property
 const createProperty = (req, res) => {
-  //  logic to create a new property (insert into the database)
-  res.send({ data: "new property created successfully" });
+  const { name, value, rent, maintenance_cost, owner_id } = req.body; // Extracting data from request body
+  const query = 'INSERT INTO properties (name, value, rent, maintenance_cost, owner_id) VALUES (?, ?, ?, ?, ?)';
+  db.query(query, [name, value, rent, maintenance_cost, owner_id], (err, result) => {
+    if (err) {
+      console.error('Error creating property:', err);
+      return res.status(500).send({ error: 'Failed to create property' });
+    }
+    res.send({ data: `New property created successfully with ID ${result.insertId}` });
+  });
 };
 
 // PUT /properties/:id - Update a specific property by ID
 const updateProperty = (req, res) => {
   const { id } = req.params;
-  //  logic to update a specific property by its ID
-  res.send({ data: `property with ID: ${id} updated successfully` });
+  const { name, value, rent, maintenance_cost } = req.body; // Extracting updated data from request body
+  const query = 'UPDATE properties SET name = ?, value = ?, rent = ?, maintenance_cost = ? WHERE id = ?';
+  db.query(query, [name, value, rent, maintenance_cost, id], (err, result) => {
+    if (err) {
+      console.error('Error updating property:', err);
+      return res.status(500).send({ error: 'Failed to update property' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Property not found' });
+    }
+    res.send({ data: `Property with ID ${id} updated successfully` });
+  });
 };
 
 // DELETE /properties/:id - Delete a specific property by ID
 const deleteProperty = (req, res) => {
   const { id } = req.params;
-  //  logic to delete a specific property by its ID
-  res.send({ data: `property with ID: ${id} deleted successfully` });
+  const query = 'DELETE FROM properties WHERE id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting property:', err);
+      return res.status(500).send({ error: 'Failed to delete property' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send({ error: 'Property not found' });
+    }
+    res.send({ data: `Property with ID ${id} deleted successfully` });
+  });
 };
 
 // Routes definition using the functions above
