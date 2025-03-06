@@ -64,6 +64,50 @@ const createUser = async (req, res) => {
   // res.send({ data: "new user record created successfully" });
 };
 
+const handleLogin = async (req, res) => {
+  console.log("handleLogin");
+  const { email, password } = req.body;
+  console.log("email:", email, "\npassword:", password);
+  const sql = "SELECT id, hash FROM user WHERE email = ?;"; // Prepared statement for finding user by email
+
+  // Query Database
+  db.query(sql, email, (err, result) => {
+    // If error, return error message
+    if (err) return res.status(500).json({ error: err.message });
+    // Otherwise, if the user exists
+    console.log(result);
+    if (result[0].hash) {
+      const user_id = result.id;
+      const hash = result.hash;
+      try {
+        // Check the provided password
+        bcrypt.compare(password, hash, (err, result) => {
+          // If error, return error message
+          if (err) return res.status(500).json({ error: err.message });
+          // Otherwise, check result
+          if (result != true) {
+            // If result is not true, password does not match. Send error message
+            res.status(500).json({ error: "Username or password incorrect." });
+          }
+          // Otherwise send confirmation message.
+          res.json({
+            message: "User logged in successfully",
+            id: user_id,
+          });
+        });
+      } catch (error) {
+        // If there was an error hashing the password with bcrypt, send back error.
+        res.status(500).json({ error: "Error hashing password" });
+      }
+    } else {
+      // Otherwise, user was not found. Send error message.
+      res.json({
+        error: "User not found",
+      });
+    }
+  });
+};
+
 // PUT /users/:id - Update a specific user record by ID
 const updateUser = (req, res) => {
   const { id } = req.params;
@@ -92,6 +136,7 @@ const deleteUser = (req, res) => {
 router.get("/", getUsers); // Get all user records
 router.get("/:id", getUserById); // Get a user record by ID
 router.post("/", createUser); // Create a new user record
+router.post("/login", handleLogin); // Handle user login attempt
 router.put("/:id", updateUser); // Update a user record by ID
 router.delete("/:id", deleteUser); // Delete a user record by ID
 
