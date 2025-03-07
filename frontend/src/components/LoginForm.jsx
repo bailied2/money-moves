@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import axios from "axios";
 
-const UserForm = () => {
+const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,15 +18,14 @@ const UserForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users",
+        "http://localhost:5000/api/users/login",
         formData
       );
       console.log(response.data);
-      alert("User added successfully!");
+      alert("User logged in successfully!");
       setFormData({
-        email: "",
         password: "",
-      }); // Reset form
+      }); // Reset password field
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -76,4 +75,4 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default LoginForm;

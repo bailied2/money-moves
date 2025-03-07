@@ -1,21 +1,19 @@
 import React from "react";
-import CreateClassroom from "./components/CreateClassroom";
-import AddStudent from "./components/AddStudent";
-import AddProperty from "./components/AddProperty";
-import AddJob from "./components/AddJob";
-import AddFeeBonus from "./components/AddFeeBonus";
-import ClassCard from "./components/ClassCard";
 import Navbar from "./components/Navbar";
 import UserRegistrationForm from "./components/UserRegistrationForm";
+import LoginForm from "./components/LoginForm";
+import CardList from "./components/CardList";
 // import logo from "./logo.svg";
 import "./App.css";
 
 const App = () => {
   return (
-    <div>
+    <>
       <Navbar />
       <h1 className="text-center mt-4">Welcome to Money Moves Academy</h1>
+      <CardList header="My Classrooms" subheader="Teacher" />
       <UserRegistrationForm />
+      <LoginForm />
       {/* <ClassCard title="Class 1" description="A classroom" />
       <CreateClassroom />
       <br />
@@ -27,7 +25,7 @@ const App = () => {
       <br />
       <AddFeeBonus />
       <br /> */}
-    </div>
+    </>
   );
 };
 
