@@ -32,9 +32,10 @@ const getClassroomById = (req, res) => {
 
 // POST / - Create a new classroom
 const createClassroom = (req, res) => {
-  const { name, teacher_id } = req.body; // Extracting name and teacher_id from the request body
-  const query = 'INSERT INTO classroom (name, teacher_id) VALUES (?, ?)';
-  db.query(query, [name, teacher_id], (err, result) => {
+  // Extracting name, teacher_id, start and end dates from the request body
+  const { name, teacher_id, start_date, end_date } = req.body;
+  const query = 'INSERT INTO classrooms (name, teacher_id, start_date, end_date) VALUES (?, ?, ?, ?)';
+  db.query(query, [name, teacher_id, start_date, end_date], (err, result) => {
     if (err) {
       console.error('Error creating classroom:', err);
       return res.status(500).send({ error: 'Failed to create classroom' });

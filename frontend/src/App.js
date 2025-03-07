@@ -4,6 +4,7 @@ import UserRegistrationForm from "./components/UserRegistrationForm";
 import LoginForm from "./components/LoginForm";
 import CardList from "./components/CardList";
 import CreateClassroomForm from "./components/CreateClassroomForm";
+import StudentCard from "./components/StudentCard";
 // import logo from "./logo.svg";
 import "./App.css";
 
@@ -12,6 +13,7 @@ const App = () => {
     <>
       <Navbar />
       <h1 className="text-center mt-4">Welcome to Money Moves Academy</h1>
+      <StudentCard first_name="John" last_name="Doe" jobs={[{title: "alien"}]}></StudentCard>
       <CreateClassroomForm></CreateClassroomForm>
       <CardList header="My Classrooms" subheader="Teacher" />
       <UserRegistrationForm />

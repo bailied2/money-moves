@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import {
   Container,
   Box,
-  Stack,
   Typography,
   TextField,
   Button,
@@ -16,33 +15,54 @@ import axios from "axios";
 
 const CreateClassroomForm = () => {
   const [startDate, setStartDate] = useState(dayjs().startOf("day"));
-  const [endDate, setEndDate] = useState(dayjs().startOf("day").add(6, "M"));
+  const [endDate, setEndDate] = useState(startDate.add(6, "M"));
   const [formData, setFormData] = useState({
-    class_name: "",
-    start_date: startDate,
-    end_date: endDate,
+    name: "",
+    teacher_id: 0, // NEEDS TO BE MADE VARIABLE
+    start_date: dayjs().startOf("day"),
+    end_date: dayjs().startOf("day").add(6, "M"),
   });
 
   const handleStartDateChange = (value) => {
     setStartDate(dayjs(value));
     if (endDate.isBefore(dayjs(value).add(1, "day"))) {
       setEndDate(dayjs(value).add(1, "day"));
+      setFormData({ ...formData, start_date: dayjs(value), end_date: dayjs(value).add(1, "day")});
+    } else {
+      setFormData({ ...formData, start_date: dayjs(value)});
     }
-    setFormData({ ...formData, start_date: startDate, end_date: endDate})
   }
 
   const handleEndDateChange = (value) => {
     setEndDate(dayjs(value));
-    setFormData({ ...formData, end_date: endDate})
+    setFormData({ ...formData, end_date: dayjs(value)})
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`
-      class_name: ${formData.class_name}
-      start_date: ${formData.start_date}
-      end_date: ${formData.end_date}
-      `);
+    // alert(`
+    //   name: ${formData.name}
+    //   start_date: ${formData.start_date}
+    //   end_date: ${formData.end_date}
+    //   `);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/classrooms",
+        formData
+      );
+      console.log(response.data);
+      alert("Classroom added successfully!");
+      setStartDate(dayjs().startOf("day")); // Reset start date
+      setEndDate(dayjs().startOf("day").add(6, "M")); // Reset end date
+      setFormData({
+        name: "",
+        teacher_id: 0, // NEEDS TO BE MADE VARIABLE
+        start_date: dayjs().startOf("day"),
+        end_date: dayjs().startOf("day").add(6, "M"),
+      }); // Reset form data
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
@@ -58,24 +78,27 @@ const CreateClassroomForm = () => {
             autoFocus
             required
             margin="normal"
-            id="class_name"
-            name="class_name"
-            value={formData.class_name}
+            id="name"
+            name="name"
+            value={formData.name}
             label="Class Name"
             variant="standard"
-            onChange={(e) => {setFormData({...formData, class_name: e.value})}}
+            onChange={(e) => {setFormData({...formData, name: e.target.value})}}
             fullWidth
           /><br /><br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Start Date"
+              id="start_date"
               name="start_date"
               value={startDate}
               onChange={handleStartDateChange}
               minDate={dayjs().startOf("day")}
+              disablePast
             ></DatePicker><br /><br />
             <DatePicker
               label="End Date"
+              id="end_date"
               name="end_date"
               value={endDate}
               minDate={startDate.add(1, "day")}
@@ -105,7 +128,7 @@ const CreateClassroomForm = () => {
       //         event.preventDefault();
       //         const formData = new FormData(event.currentTarget);
       //         const formJson = Object.fromEntries(formData.entries());
-      //         console.log("Class Name: ", formJson.class_name);
+      //         console.log("Class Name: ", formJson.name);
       //         console.log("Start Date: ", formJson.start_date);
       //         console.log("End Date: ", formJson.end_date);
       //         handleClose();
