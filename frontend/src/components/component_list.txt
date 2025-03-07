@@ -1,20 +1,20 @@
-Sign In
-Register
+Sign In - Done
+Register - Done
 Forgot Password
 Update Password
 Confirmation Message
 
 Classroom Dashboard
 Classroom Settings
-Card List
-"Add New" Card
+Card List - Work in Progress
+"Add New" Card - Work in Progress
 Info Panel
 
-Classroom Card
-Create Classroom Popup
+Classroom Card - Mostly Done
+Create Classroom Popup - Mostly Done
 Join Classroom Popup
 
-Student Card
+Student Card - Work in Progress
 Add Student Popup
 Import Students
 

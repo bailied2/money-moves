@@ -29,7 +29,7 @@ const UserRegistrationForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users",
+        "http://localhost:5001/api/users",
         formData
       );
       console.log(response.data);
