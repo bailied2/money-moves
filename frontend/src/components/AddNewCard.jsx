@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import AddIcon from "@mui/icons-material/Add";
 import {
+  Card,
+  Typography,
+  CardActions,
   Button,
+  Fab,
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
+  // DialogContentText,
   DialogTitle,
   Stack,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
-const CreateClassroom = ({ label }) => {
+const AddNewCard = ({ label }) => {
   const [open, setOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -38,6 +44,39 @@ const CreateClassroom = ({ label }) => {
 
   return (
     <>
+      <Card
+        sx={{
+          boxShadow: 0,
+          position: "relative",
+          minHeight: 185,
+          maxWidth: 300,
+          aspectRatio: "3/2",
+          padding: 1,
+          border: "3px dashed lightgrey",
+          borderRadius: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CardActions
+          disableSpacing
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignContent: "center",
+            gap: 2,
+            padding: 3,
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="button">Create New Classroom</Typography>
+          <Fab onClick={handleClickOpen}>
+            <AddIcon />
+          </Fab>
+        </CardActions>
+      </Card>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -101,4 +140,4 @@ const CreateClassroom = ({ label }) => {
   );
 };
 
-export default CreateClassroom;
+export default AddNewCard;

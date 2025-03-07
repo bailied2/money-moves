@@ -14,5 +14,9 @@ code {
 
 /* Temporary style declaration */
 form {
-  width:fit-content;
+  width: fit-content;
+}
+
+.MuiCard-root {
+  width: 250px;
 }
