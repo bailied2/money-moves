@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../sample_database'); // Assuming db.js sets up the MySQL connection pool
+const db = require('../../sample_database');
 
 // GET /transactions - Get all transactions
 const getTransactions = (req, res) => {

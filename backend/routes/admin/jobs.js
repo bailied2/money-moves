@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../sample_database'); // Assuming you have a db.js for MySQL connection
+const db = require('../../sample_database');
 
 // GET /jobs - Get all jobs in classrooms
 const getJobs = (req, res) => {

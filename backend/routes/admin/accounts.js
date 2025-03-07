@@ -1,27 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../sample_database'); 
+const db = require('../../sample_database.js');
 const bcrypt = require('bcrypt'); 
 
 // GET /accounts - Get all accounts
-const getAccounts = (req, res) => {
+const getAllAccounts = () => {
   const query = 'SELECT * FROM account';
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching accounts:', err);
-      return res.status(500).send({ error: 'Failed to fetch accounts' });
-    }
-    res.send({ data: results });
+  return new Promise((resolve, reject) => {
+    db.query(query, (err, results) => {
+      if (err) {
+        reject('Error fetching accounts: ' + err);
+      } else {
+        resolve(results);  // This returns the data you are sending back as a response
+      }
+    });
   });
 };
 
+
 // GET /accounts/:id - Get a single account by ID
-const getAccountById = (req, res) => {
-  const accountId = req.params.id;
+const getAccountByIdFromDb = (req, res) => {
   const query = 'SELECT * FROM account WHERE id = ?';
-  db.query(query, [accountId], (err, results) => {
+  db.query(query, [req.params.id], (err, results) => {
     if (err) {
-      console.error('Error fetching account:', err);
       return res.status(500).send({ error: 'Failed to fetch account' });
     }
     if (results.length === 0) {
@@ -32,40 +33,29 @@ const getAccountById = (req, res) => {
 };
 
 // POST /accounts - Create a new user account with password hashing
-const createAccount = async (req, res) => {
+const createAccountInDb = async (req, res) => {
   const { username, password, balance } = req.body;
-
-  // user left something blank
-  if (!username || !password || balance == null) {
-    return res.status(400).send({ error: 'Username, password, and balance are required' });
-  }
-
   try {
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const query = 'INSERT INTO account (username, password, balance) VALUES (?, ?, ?)';
     db.query(query, [username, hashedPassword, balance], (err, result) => {
       if (err) {
-        console.error('Error creating account:', err);
         return res.status(500).send({ error: 'Failed to create account' });
       }
       res.send({ data: `Account created successfully with ID ${result.insertId}` });
     });
   } catch (err) {
-    console.error('Error hashing password:', err);
-    res.status(500).send({ error: 'Server error' });
+    res.status(500).send({ error: 'Server error while hashing password' });
   }
 };
 
 // PUT /accounts/:id - Update an existing account by ID
-const updateAccount = (req, res) => {
-  const accountId = req.params.id;
+const updateAccountInDb = (req, res) => {
   const { username, balance } = req.body;
+  const accountId = req.params.id;
   const query = 'UPDATE account SET username = ?, balance = ? WHERE id = ?';
   db.query(query, [username, balance, accountId], (err, result) => {
     if (err) {
-      console.error('Error updating account:', err);
       return res.status(500).send({ error: 'Failed to update account' });
     }
     if (result.affectedRows === 0) {
@@ -76,12 +66,11 @@ const updateAccount = (req, res) => {
 };
 
 // DELETE /accounts/:id - Delete an account by ID
-const deleteAccount = (req, res) => {
+const deleteAccountFromDb = (req, res) => {
   const accountId = req.params.id;
   const query = 'DELETE FROM account WHERE id = ?';
   db.query(query, [accountId], (err, result) => {
     if (err) {
-      console.error('Error deleting account:', err);
       return res.status(500).send({ error: 'Failed to delete account' });
     }
     if (result.affectedRows === 0) {
@@ -92,10 +81,10 @@ const deleteAccount = (req, res) => {
 };
 
 // Routes definition using the functions above
-router.get('/accounts', getAccounts);                   // Get all accounts
-router.get('/accounts/:id', getAccountById);            // Get account by ID
-router.post('/accounts', createAccount);                // Create a new account
-router.put('/accounts/:id', updateAccount);             // Update account by ID
-router.delete('/accounts/:id', deleteAccount);          // Delete account by ID
+router.get('/', getAllAccounts);                   // Get all accounts
+router.get('/:id', getAccountByIdFromDb);            // Get account by ID
+router.post('/', createAccountInDb);                // Create a new account
+router.put('/:id', updateAccountInDb);             // Update account by ID
+router.delete('/:id', deleteAccountFromDb);          // Delete account by ID
 
 module.exports = router;

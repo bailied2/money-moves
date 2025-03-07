@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt"); // bcrypt for hashing passwords.
-const db = require("../sample_database");
+const db = require('../sample_database.js');
 
 // GET /users - Get all user records
 const getUsers = (req, res) => {

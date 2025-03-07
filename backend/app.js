@@ -32,7 +32,7 @@ const app = express();
  *  `` Line 2: DB_PASSWORD=*****
  *
  **/
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 // Import routes
 const userRoute = require("./routes/users");
