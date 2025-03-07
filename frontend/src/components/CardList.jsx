@@ -34,7 +34,7 @@ const CardList = ({ cardType, header, subheader }) => {
         sx={{
           borderRadius: 5,
           boxShadow: 1,
-          bgcolor: grey[100],
+          bgcolor: grey[300],
           alignItems: "flex-start",
           padding: 2,
         }}
@@ -62,7 +62,6 @@ const CardList = ({ cardType, header, subheader }) => {
           <AddNewCard />
         </Grid>
       </Grid>
-      {/* </Box> */}
     </Stack>
   );
 };

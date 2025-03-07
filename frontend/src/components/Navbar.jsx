@@ -2,7 +2,7 @@
 import React from "react";
 import { AppBar, Box, Toolbar, Button, Link } from "@mui/material";
 
-import { grey /*, purple */ } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 
 const Navbar = () => {
   return (

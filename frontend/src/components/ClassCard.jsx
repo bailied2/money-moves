@@ -29,7 +29,7 @@ const ClassCard = ({ title, start_date, end_date, num_students }) => {
           {title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {num_students ? num_students : "No"} Student{num_students != 1 && "s"}
+          {num_students ? num_students : "No"} Student{num_students !== 1 && "s"}
         </Typography>
         <br />
         <Typography noWrap variant="body2" color="text.secondary">
