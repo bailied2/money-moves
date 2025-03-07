@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #d1e3f5;
 }
 
 code {
@@ -14,5 +15,9 @@ code {
 
 /* Temporary style declaration */
 form {
-  width:fit-content;
+  width: fit-content;
+}
+
+.MuiCard-root {
+  width: 250px;
 }

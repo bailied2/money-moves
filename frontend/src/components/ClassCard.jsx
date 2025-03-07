@@ -9,58 +9,44 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const ClassCard = ({ title, description }) => {
+const ClassCard = ({ title, start_date, end_date, num_students }) => {
   return (
-    <Card raised="true" sx={{ maxWidth: 300, margin: "20px auto", padding: 2 }}>
-      <CardContent>
+    <Card
+      raised
+      sx={{
+        position: "relative",
+        minHeight: 185,
+        maxWidth: 300,
+        aspectRatio: "3/2",
+        padding: 1,
+        borderRadius: 2,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h5" component="div">
           {title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {description}
+          {num_students ? num_students : "No"} Student{num_students !== 1 && "s"}
+        </Typography>
+        <br />
+        <Typography noWrap variant="body2" color="text.secondary">
+          Start Date: {start_date}
+        </Typography>
+        <Typography noWrap variant="body2" color="text.secondary">
+          End Date: {end_date}
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ padding: 0 }}>
         <Button size="small">Open</Button>
         <Button size="small" color="error">
           Delete
-        </Button>
+        </Button>{" "}
       </CardActions>
     </Card>
   );
 };
-
-/*
-import React from "react";
-import { Card, CardContent, Typography, IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-
-const SimpleCard = ({ title, description, onDelete }) => {
-    return (
-        <Card sx={{ maxWidth: 300, margin: "20px auto", padding: 2, position: "relative" }}>
-            // {/* Trash button on the top-right corner */
-//             <IconButton
-//                 sx={{ position: "absolute", top: 8, right: 8 }}
-//                 color="error"
-//                 onClick={onDelete}
-//             >
-//                 <DeleteIcon />
-//             </IconButton>
-
-//             <CardContent>
-//                 <Typography variant="h5" component="div">
-//                     {title}
-//                 </Typography>
-//                 <Typography variant="body2" color="text.secondary">
-//                     {description}
-//                 </Typography>
-//             </CardContent>
-//         </Card>
-//     );
-// };
-
-// export default SimpleCard;
-
-// */
 
 export default ClassCard;

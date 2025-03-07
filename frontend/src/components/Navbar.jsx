@@ -1,31 +1,53 @@
-import "./styles/Navbar.css";
+// import "./styles/Navbar.css";
+import React from "react";
+import { AppBar, Box, Toolbar, Button, Link } from "@mui/material";
+
+import { grey } from "@mui/material/colors";
 
 const Navbar = () => {
   return (
-    <nav className="navbar">
-      <div className="navbar_container">
-        <a href="/" className="home_link">
-          Money Moves Academy
-        </a>
-        <ul className="nav_list">
-          <li>
-            <a href="/dashboard" className="nav_link">
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="/profile" className="nav_link">
-              Profile
-            </a>
-          </li>
-          <li>
-            <a href="/settings" className="nav_link">
-              Settings
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static" sx={{ bgcolor: grey[300] }}>
+        <Toolbar id="nav_toolbar">
+          <Link id="home" component={Button} underline="none" href="/">
+            Money Moves Academy
+          </Link>
+          <Box sx={{ flexGrow: 1 }}></Box>
+
+          <Link
+            id="story"
+            component={Button}
+            variant="body2"
+            underline="none"
+            href="/story"
+          >
+            The Story
+          </Link>
+          <Link
+            id="help"
+            component={Button}
+            variant="body2"
+            underline="none"
+            href="/help"
+          >
+            Help
+          </Link>
+          <Link
+            id="login"
+            component={Button}
+            variant="body2"
+            underline="none"
+            href="/login"
+            sx={{ marginRight: "10px" }}
+          >
+            Login
+          </Link>
+          <Button component={Link} variant="contained" href="/register">
+            Sign Up
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 };
 
