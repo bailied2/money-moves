@@ -37,8 +37,8 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
         <Typography variant="body2" color="text.secondary">
           {jobs.length > 0 ? (jobs.length > 1 ? "Jobs:" : `Job: ${jobs[0].title}`) : "Unemployed"}
         </Typography>
-        {jobs.map((job, index) => (
-          <Typography key={index} variant="body2" color="text.secondary" marginLeft={4}>
+        {jobs.length > 1 && jobs.map((job, index) => (
+          <Typography key={index} variant="body2" color="text.secondary" marginLeft={5}>
             {job.title}
           </Typography>
         ))}

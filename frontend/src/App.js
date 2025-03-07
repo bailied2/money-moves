@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import UserRegistrationForm from "./components/UserRegistrationForm";
 import LoginForm from "./components/LoginForm";
 import CardList from "./components/CardList";
+import ClassroomList from "./components/ClassroomList";
 import CreateClassroomForm from "./components/CreateClassroomForm";
 import StudentCard from "./components/StudentCard";
 // import logo from "./logo.svg";
@@ -13,9 +14,12 @@ const App = () => {
     <>
       <Navbar />
       <h1 className="text-center mt-4">Welcome to Money Moves Academy</h1>
-      <StudentCard first_name="John" last_name="Doe" jobs={[{title: "alien"}]}></StudentCard>
+      <StudentCard first_name="John" last_name="Doe" jobs={[{title: "Loan Officer"}]}></StudentCard>
+      <StudentCard first_name="Jane" last_name="Doe"></StudentCard>
+      <StudentCard first_name="Devin" last_name="Bailie" jobs={[{title: "Loan Officer"}, {title: "Teacher's Assistant"}]}></StudentCard>
       <CreateClassroomForm></CreateClassroomForm>
-      <CardList header="My Classrooms" subheader="Teacher" />
+      <ClassroomList header="My Classrooms" subheader="Teacher" />
+      {/* <CardList header="My Classrooms" subheader="Teacher" /> */}
       <UserRegistrationForm />
       <LoginForm />
       {/* <ClassCard title="Class 1" description="A classroom" />
