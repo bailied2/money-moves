@@ -4,7 +4,7 @@ const db = require('../../sample_database');
 
 // GET / - Get all classrooms
 const getClassrooms = (req, res) => {
-  const query = 'SELECT * FROM classrooms';
+  const query = 'SELECT * FROM classroom';
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching classrooms:', err);
@@ -17,7 +17,7 @@ const getClassrooms = (req, res) => {
 // GET /:id - Get a single classroom by id
 const getClassroomById = (req, res) => {
   const classroomId = req.params.id;
-  const query = 'SELECT * FROM classrooms WHERE id = ?';
+  const query = 'SELECT * FROM classroom WHERE id = ?';
   db.query(query, [classroomId], (err, results) => {
     if (err) {
       console.error('Error fetching classroom:', err);
@@ -33,7 +33,7 @@ const getClassroomById = (req, res) => {
 // POST / - Create a new classroom
 const createClassroom = (req, res) => {
   const { name, teacher_id } = req.body; // Extracting name and teacher_id from the request body
-  const query = 'INSERT INTO classrooms (name, teacher_id) VALUES (?, ?)';
+  const query = 'INSERT INTO classroom (name, teacher_id) VALUES (?, ?)';
   db.query(query, [name, teacher_id], (err, result) => {
     if (err) {
       console.error('Error creating classroom:', err);
@@ -47,7 +47,7 @@ const createClassroom = (req, res) => {
 const updateClassroom = (req, res) => {
   const classroomId = req.params.id;
   const { name, teacher_id } = req.body; // Extracting updated name and teacher_id from the request body
-  const query = 'UPDATE classrooms SET name = ?, teacher_id = ? WHERE id = ?';
+  const query = 'UPDATE classroom SET name = ?, teacher_id = ? WHERE id = ?';
   db.query(query, [name, teacher_id, classroomId], (err, result) => {
     if (err) {
       console.error('Error updating classroom:', err);
@@ -63,7 +63,7 @@ const updateClassroom = (req, res) => {
 // DELETE /:id - Delete a classroom by id
 const deleteClassroom = (req, res) => {
   const classroomId = req.params.id;
-  const query = 'DELETE FROM classrooms WHERE id = ?';
+  const query = 'DELETE FROM classroom WHERE id = ?';
   db.query(query, [classroomId], (err, result) => {
     if (err) {
       console.error('Error deleting classroom:', err);

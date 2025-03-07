@@ -32,6 +32,15 @@ const getAccountByIdFromDb = (req, res) => {
   });
 };
 
+router.get('/', async (req, res) => {
+  try {
+    const accounts = await getAllAccounts(); // Fetch all accounts using the function
+    res.json({ data: accounts });  // Send the fetched data as a JSON response
+  } catch (err) {
+    res.status(500).send({ error: 'Failed to fetch accounts' });
+  }
+});
+
 // POST /accounts - Create a new user account with password hashing
 const createAccountInDb = async (req, res) => {
   const { username, password, balance } = req.body;
