@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../sample_database'); // Assuming you have a db.js for MySQL connection
+const db = require('../sample_database'); 
+const bcrypt = require('bcrypt'); 
 
 // GET /accounts - Get all accounts
 const getAccounts = (req, res) => {
-  const query = 'SELECT * FROM accounts';
+  const query = 'SELECT * FROM account';
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching accounts:', err);
@@ -17,7 +18,7 @@ const getAccounts = (req, res) => {
 // GET /accounts/:id - Get a single account by ID
 const getAccountById = (req, res) => {
   const accountId = req.params.id;
-  const query = 'SELECT * FROM accounts WHERE id = ?';
+  const query = 'SELECT * FROM account WHERE id = ?';
   db.query(query, [accountId], (err, results) => {
     if (err) {
       console.error('Error fetching account:', err);
@@ -30,24 +31,38 @@ const getAccountById = (req, res) => {
   });
 };
 
-// POST /accounts - Create a new account
-const createAccount = (req, res) => {
-  const { username, balance } = req.body;
-  const query = 'INSERT INTO accounts (username, balance) VALUES (?, ?)';
-  db.query(query, [username, balance], (err, result) => {
-    if (err) {
-      console.error('Error creating account:', err);
-      return res.status(500).send({ error: 'Failed to create account' });
-    }
-    res.send({ data: `Account created successfully with ID ${result.insertId}` });
-  });
+// POST /accounts - Create a new user account with password hashing
+const createAccount = async (req, res) => {
+  const { username, password, balance } = req.body;
+
+  // user left something blank
+  if (!username || !password || balance == null) {
+    return res.status(400).send({ error: 'Username, password, and balance are required' });
+  }
+
+  try {
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = 'INSERT INTO account (username, password, balance) VALUES (?, ?, ?)';
+    db.query(query, [username, hashedPassword, balance], (err, result) => {
+      if (err) {
+        console.error('Error creating account:', err);
+        return res.status(500).send({ error: 'Failed to create account' });
+      }
+      res.send({ data: `Account created successfully with ID ${result.insertId}` });
+    });
+  } catch (err) {
+    console.error('Error hashing password:', err);
+    res.status(500).send({ error: 'Server error' });
+  }
 };
 
 // PUT /accounts/:id - Update an existing account by ID
 const updateAccount = (req, res) => {
   const accountId = req.params.id;
   const { username, balance } = req.body;
-  const query = 'UPDATE accounts SET username = ?, balance = ? WHERE id = ?';
+  const query = 'UPDATE account SET username = ?, balance = ? WHERE id = ?';
   db.query(query, [username, balance, accountId], (err, result) => {
     if (err) {
       console.error('Error updating account:', err);
@@ -63,7 +78,7 @@ const updateAccount = (req, res) => {
 // DELETE /accounts/:id - Delete an account by ID
 const deleteAccount = (req, res) => {
   const accountId = req.params.id;
-  const query = 'DELETE FROM accounts WHERE id = ?';
+  const query = 'DELETE FROM account WHERE id = ?';
   db.query(query, [accountId], (err, result) => {
     if (err) {
       console.error('Error deleting account:', err);
