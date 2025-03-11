@@ -1,6 +1,6 @@
 import "./styles/CardList.css";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 
@@ -11,22 +11,29 @@ import { grey } from "@mui/material/colors";
 import { Stack, Typography } from "@mui/material";
 
 import dayjs from "dayjs";
-import axios from "axios";
+import api from "../api";
 
-const ClassroomList = ({ cardType, header, subheader }) => {
+const ClassroomList = ({ header, subheader }) => {
   const [classrooms, setClassrooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const teacher_id = 6; // NEEDS TO BE MADE VARIABLE
+  const teacher_id = 1; // NEEDS TO BE MADE DYNAMIC
 
-  const getTeacherClassrooms = async (teacher_id) => {
-    const response = await axios.get(`http://localhost:5001/api/classrooms/teacher/${teacher_id}`);
-    return response.data;
-  }
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await api.get(`/classrooms/teacher/${teacher_id}`);
+        setClassrooms(response.data.data);
+      } catch (err) {
+        setError("Failed to fetch classrooms");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  getTeacherClassrooms(teacher_id).then((data) => {
-    setClassrooms(Array.from(data));
-  });
-
+    fetchItems();
+  }, []);
 
   return (
     <Stack
@@ -54,23 +61,27 @@ const ClassroomList = ({ cardType, header, subheader }) => {
           padding: 2,
         }}
       >
-        {classrooms.map((classroom, index) => (
-          <Grid
-            key={index}
-            size={{ xs: 2, sm: 3, md: 3 }}
-            display="flex"
-            justifyContent="center"
-          >
-            <ClassCard
-              title={classroom.title}
-              num_students={0}
-              start_date={classroom.start_date}
-              end_date={classroom.end_date}
-              // start_date={dayjs().format("D/M/YYYY")}
-              // end_date={dayjs().format("D/M/YYYY")}
-            ></ClassCard>
-          </Grid>
-        ))}
+        {loading && <p>Loading...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {!loading &&
+          !error &&
+          classrooms.map((classroom, index) => (
+            <Grid
+              key={index}
+              size={{ xs: 2, sm: 3, md: 3 }}
+              display="flex"
+              justifyContent="center"
+            >
+              <ClassCard
+                title={classroom.class_name}
+                num_students={0} // NEEDS TO BE MADE DYNAMIC
+                // start_date={classroom.start_date}
+                // end_date={classroom.end_date}
+                start_date={dayjs().format("D/M/YYYY")}
+                end_date={dayjs().format("D/M/YYYY")}
+              ></ClassCard>
+            </Grid>
+          ))}
         <Grid
           size={{ xs: 2, sm: 3, md: 3 }}
           display="flex"

@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
-import axios from "axios";
+import api from "../api";
 
 const LoginForm = () => {
+  let navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,15 +20,11 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:5001/api/users/login",
-        formData
-      );
+      const response = await api.post("/users/login", formData);
       console.log(response.data);
+
       alert("User logged in successfully!");
-      setFormData({
-        password: "",
-      }); // Reset password field
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error submitting form:", error);
     }

@@ -71,7 +71,9 @@ const AddNewCard = ({ label }) => {
             borderRadius: 2,
           }}
         >
-          <Typography variant="button" align="center" >Create New Classroom</Typography>
+          <Typography variant="button" align="center">
+            Create New Classroom
+          </Typography>
           <Fab onClick={handleClickOpen}>
             <AddIcon />
           </Fab>

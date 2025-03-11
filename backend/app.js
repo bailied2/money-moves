@@ -10,6 +10,7 @@ const express = require("express");
  * will allow requests from the frontend to the backend.
  **/
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -48,7 +49,8 @@ const studentRoute = require("./routes/students");
 
 // Middleware
 app.use(express.json()); // To parse JSON request bodies
-app.use(cors({ origin: "http://localhost:3000" })); // Allow frontend requests
+app.use(cookieParser()); // Allows reading cookies
+app.use(cors({ origin: "http://localhost:3000", credentials: true })); // Allow frontend requests
 
 // Routes with their respective API prefixes
 app.use("/api/users", userRoute); // User routes

@@ -14,7 +14,7 @@ const Navbar = () => {
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
 
-          <Link
+          {/* <Link
             id="story"
             component={Button}
             variant="body2"
@@ -31,6 +31,26 @@ const Navbar = () => {
             href="/help"
           >
             Help
+          </Link> */}
+          <Link
+            id="dashboard"
+            component={Button}
+            variant="body2"
+            underline="none"
+            href="/dashboard"
+            sx={{ marginRight: "10px" }}
+          >
+            Dashboard
+          </Link>
+          <Link
+            id="about"
+            component={Button}
+            variant="body2"
+            underline="none"
+            href="/about"
+            sx={{ marginRight: "10px" }}
+          >
+            About
           </Link>
           <Link
             id="login"
