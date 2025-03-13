@@ -1,3 +1,6 @@
+/** authMiddleware.js */
+
+// jsonwebtoken library for verifying user's token
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET =
@@ -6,8 +9,9 @@ const JWT_SECRET =
 
 // Middleware to verify token and extract user ID
 const authenticateToken = (req, res, next) => {
+  // Debug logging
   console.log("authenticateToken");
-  console.log("Received Cookies:", req.cookies); // Add this log
+  console.log("Received Cookies:", req.cookies);
   const token = req.cookies?.token;
 
   if (!token) {
@@ -15,6 +19,8 @@ const authenticateToken = (req, res, next) => {
   }
 
   try {
+    // Use jsonwebtoken to verify signed token, returns user id and email
+    // (as they were included when the token was signed during login)
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded; // Attach user info to request object
     next(); // Continue to the next route
