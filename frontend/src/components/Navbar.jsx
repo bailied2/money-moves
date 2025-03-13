@@ -1,10 +1,16 @@
 // import "./styles/Navbar.css";
-import React from "react";
+import React, { useContext } from "react";
 import { AppBar, Box, Toolbar, Button, Link } from "@mui/material";
+
+import AccountMenu from "./AccountMenu";
+
+import { AuthContext } from "../AuthContext";
 
 import { grey } from "@mui/material/colors";
 
 const Navbar = () => {
+  const { user, loading } = useContext(AuthContext);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ bgcolor: grey[300] }}>
@@ -14,24 +20,6 @@ const Navbar = () => {
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>
 
-          {/* <Link
-            id="story"
-            component={Button}
-            variant="body2"
-            underline="none"
-            href="/story"
-          >
-            The Story
-          </Link>
-          <Link
-            id="help"
-            component={Button}
-            variant="body2"
-            underline="none"
-            href="/help"
-          >
-            Help
-          </Link> */}
           <Link
             id="dashboard"
             component={Button}
@@ -52,19 +40,26 @@ const Navbar = () => {
           >
             About
           </Link>
-          <Link
-            id="login"
-            component={Button}
-            variant="body2"
-            underline="none"
-            href="/login"
-            sx={{ marginRight: "10px" }}
-          >
-            Login
-          </Link>
-          <Button component={Link} variant="contained" href="/register">
-            Sign Up
-          </Button>
+          {loading ? (<p>Loading...</p>) : (user ? (
+            <AccountMenu />
+          ) : (
+            <>
+              <Link
+                id="login"
+                component={Button}
+                variant="body2"
+                underline="none"
+                href="/login"
+                sx={{ marginRight: "10px" }}
+              >
+                Login
+              </Link>
+              <Button component={Link} variant="contained" href="/register">
+                Sign Up
+              </Button>
+            </>
+        ))}
+          
         </Toolbar>
       </AppBar>
     </Box>

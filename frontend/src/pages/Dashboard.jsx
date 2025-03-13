@@ -1,39 +1,24 @@
-import React, { useEffect, useState } from "react";
-import api from "../api";
+import React, { useContext } from "react";
+
+import ClassroomList from "../components/ClassroomList";
+
+import { AuthContext } from "../AuthContext";
 
 const Dashboard = () => {
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get("/users/profile");
-        setProfile(response.data.profile);
-      } catch (error) {
-        console.error(
-          "Error fetching profile:",
-          error.response?.data || error.message
-        );
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const { user, loading } = useContext(AuthContext);
 
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Only authorized users can see this content.</p>
-      <p>
-        User Profile: <br />
-        {profile && (
+        {user && (
           <div>
-            <h1>Welcome, {profile.first_name}!</h1>
-            <p>Email: {profile.email}</p>
-            <p>User ID: {profile.id}</p>
+            <h1>Welcome, {user.first_name}!</h1>
+            <p>Email: {user.email}</p>
+            <p>User ID: {user.id}</p>
           </div>
         )}
-      </p>
+        <ClassroomList teacher />
+        <ClassroomList />
     </div>
   );
 };

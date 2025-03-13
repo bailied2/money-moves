@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import api from "../api";
 
 const LoginForm = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,15 +20,18 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
       const response = await api.post("/users/login", formData);
       console.log(response.data);
 
-      alert("User logged in successfully!");
+      // alert("User logged in successfully!");
       navigate("/dashboard");
+      return <Navigate to="/login" />;
     } catch (error) {
       console.error("Error submitting form:", error);
+      setError(error.response.data.error);
     }
   };
 
@@ -38,6 +43,11 @@ const LoginForm = () => {
         <Typography variant="h5" gutterBottom>
           Log In
         </Typography>
+        {error && (
+          <Typography variant="body2" color="error">
+            {error}
+          </Typography>
+        )}
         <form onSubmit={handleSubmit}>
           <TextField
             label="Email"

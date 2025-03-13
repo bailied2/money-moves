@@ -1,7 +1,6 @@
 import "./styles/CardList.css";
 
-import React, { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
+import React, { useContext, useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
 import ClassCard from "./ClassCard";
@@ -10,21 +9,24 @@ import AddNewCard from "./AddNewCard";
 import { grey } from "@mui/material/colors";
 import { Stack, Typography } from "@mui/material";
 
+import { AuthContext } from "../AuthContext";
+
 import dayjs from "dayjs";
 import api from "../api";
 
-const ClassroomList = ({ header, subheader }) => {
+const ClassroomList = ({ header = true, teacher = false }) => {
+  const { user } = useContext(AuthContext);
+
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const teacher_id = 1; // NEEDS TO BE MADE DYNAMIC
-
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await api.get(`/classrooms/teacher/${teacher_id}`);
-        setClassrooms(response.data.data);
+        const response = await api.get(`/classrooms/${teacher ? "teacher" : "student"}/${user.id}`);
+        console.log(response)
+        setClassrooms(response.data.classrooms);
       } catch (err) {
         setError("Failed to fetch classrooms");
       } finally {
@@ -44,8 +46,7 @@ const ClassroomList = ({ header, subheader }) => {
     >
       {header && (
         <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>
-          {header}
-          {subheader && " - " + subheader}
+          My Classrooms - {teacher ? "Teacher" : "Student"}
         </Typography>
       )}
       <Grid
@@ -74,7 +75,7 @@ const ClassroomList = ({ header, subheader }) => {
             >
               <ClassCard
                 title={classroom.class_name}
-                num_students={0} // NEEDS TO BE MADE DYNAMIC
+                num_students={classroom.num_students}
                 // start_date={classroom.start_date}
                 // end_date={classroom.end_date}
                 start_date={dayjs().format("D/M/YYYY")}

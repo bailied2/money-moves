@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { AuthProvider } from "./AuthContext";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
+import UserRegistrationForm from "./components/UserRegistrationForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -12,24 +14,27 @@ import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <Navbar />
+    <AuthProvider>
+      <Router>
+        <Navbar />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="*" element={<NotFound />} /> {/* 404 Route */}
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute route="/dashboard">
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<UserRegistrationForm />} />
+          <Route path="*" element={<NotFound />} /> {/* 404 Route */}
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
