@@ -4,6 +4,8 @@ const db = require('../../sample_database');
 
 const getRandomString = require('../../random_string.js');
 
+const authenticateToken = require("../../authMiddleware.js");
+
 // GET / - Get all classrooms
 const getClassrooms = (req, res) => {
   const query = 'SELECT * FROM classroom';
@@ -16,18 +18,48 @@ const getClassrooms = (req, res) => {
   });
 };
 
-// GET /teacher/:id - Get all classrooms with a specific teacher id
+// GET /teacher - Get all classrooms with a specific teacher id
 const getClassroomsByTeacher = (req, res) => {
+  // Logs for debugging
+  console.log("\n*** getClassroomsByTeacher ***");
+  console.log(req.user);
+
+  // Get user_id from info attached by middleware
+  const user_id = req.user.id;
   const teacherId = req.params.id;
   const query = 'SELECT * FROM classroom WHERE fk_teacher_id = ?';
-  db.query(query, [teacherId], (err, results, _fields) => {
+  db.query(query, [teacherId], (err, results) => {
     if (err) {
       console.error('Error fetching classrooms:', err);
-      return res.status(500).send({ error: 'Failed to fetch classrooms' });
+      return res.status(500).json({ error: 'Failed to fetch classrooms' });
     }
-    res.send({ data: results });
+    res.json({ classrooms: results });
   });
 };
+
+// GET /student - Get all classrooms the user is a student in
+/* 
+ * This function assumes the request has already been through the authenticateToken
+ * middleware, meaning that it has been attached with the current user's info.
+ */
+const getClassroomsByStudent = (req, res) => {
+  // Logs for debugging
+  console.log("getClassroomsByStudent");
+  console.log(req.user);
+
+  // Get user_id from info attached by middleware
+  const user_id = req.user.id;
+
+  const query = 'SELECT classroom.*, COUNT(student.id) AS num_students FROM student INNER JOIN classroom ON student.fk_classroom_id = classroom.id WHERE student.fk_user_id = ? GROUP BY classroom.id';
+  db.query(query, [user_id], (err, results) => {
+    if (err) {
+      console.error('Error fetching classrooms:', err);
+      return res.status(500).json({ error: 'Failed to fetch classrooms' });
+    }
+    console.log(results);
+    res.json({ classrooms: results });
+  });
+}
 
 // GET /:id - Get a single classroom by id
 const getClassroomById = (req, res) => {
@@ -95,10 +127,12 @@ const deleteClassroom = (req, res) => {
 
 // Routes definition using the functions above
 router.get('/', getClassrooms);                   // Get all classrooms
-router.get('/teacher/:id', getClassroomsByTeacher);   // Get all classrooms tied to a particular teacher's user ID.
+router.get('/teacher', authenticateToken, getClassroomsByTeacher);   // Get all classrooms tied to a particular teacher's user ID.
+router.get('/student', authenticateToken, getClassroomsByStudent);   // Get all that a particular student is enrolled in.
 router.get('/:id', getClassroomById);             // Get a classroom by ID
 router.post('/', createClassroom);                // Create a classroom
 router.put('/:id', updateClassroom);              // Update a classroom by ID
 router.delete('/:id', deleteClassroom);           // Delete a classroom by ID
+
 
 module.exports = router;
