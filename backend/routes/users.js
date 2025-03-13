@@ -32,9 +32,17 @@ const getUserById = (req, res) => {
 };
 
 // GET /users/profile - Get the current, authenticated user's profile information
+
+/* 
+ * This function assumes the request has already been through the authenticateToken
+ * middleware, meaning that it has been attached with the current user's info.
+ */
 const getUserProfile = (req, res) => {
-  console.log("getUserProfile");
+  // Logs for debugging
+  console.log("getUserProfile"); 
   console.log(req.user);
+
+  // Get user_id from info attached by middleware
   const user_id = req.user.id;
   const sql = "SELECT id, first_name, last_name, email FROM user WHERE id = ?";
 
@@ -42,8 +50,8 @@ const getUserProfile = (req, res) => {
     if (err) return res.status(500).json({ error: "Database error" });
     if (results.length === 0)
       return res.status(404).json({ error: "User not found" });
-
-    res.json({ profile: results[0] });
+    console.log(results[0]); // Debug log
+    res.json({ user: results[0] }); // Return user profile
   });
 };
 
@@ -151,8 +159,8 @@ const deleteUser = (req, res) => {
 };
 
 // Routes definition using the functions above
-router.get("/profile", authenticateToken, getUserProfile);
 router.get("/", getUsers); // Get all user records
+router.get("/profile", authenticateToken, getUserProfile); // Get a currently authenticated user's profile
 router.get("/:id", getUserById); // Get a user record by ID
 router.post("/", createUser); // Create a new user record
 router.post("/login", handleLogin); // Handle user login attempt
