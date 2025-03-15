@@ -5,19 +5,14 @@ import {
   Typography,
   CardActions,
   Button,
-  IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 
-import { NavLink } from "react-router";
-
-const ClassCard = ({
+const AccountCard = ({
   title,
-  start_date,
-  end_date,
-  num_students,
   id,
-  onDelete = null,
+  account_type,
+  balance = null,
+  investment_account = null,
 }) => {
   return (
     <Card
@@ -38,30 +33,35 @@ const ClassCard = ({
         <Typography variant="h5" component="div">
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {num_students ? num_students : "No"} Student
-          {num_students !== 1 && "s"}
+        <Typography noWrap variant="body2" color="text.secondary">
+          Account ID: {id}
         </Typography>
         <br />
         <Typography noWrap variant="body2" color="text.secondary">
-          Start Date: {start_date}
+          Account Type: {account_type}
         </Typography>
-        <Typography noWrap variant="body2" color="text.secondary">
-          End Date: {end_date}
-        </Typography>
+        {balance && (
+          <Typography noWrap variant="body2" color="text.secondary">
+            Balance: {balance}
+          </Typography>
+        )}
+        {investment_account && (
+          <>
+            <Typography noWrap variant="body2" color="text.secondary">
+              Shares: {investment_account.shares}
+            </Typography>
+            <Typography noWrap variant="body2" color="text.secondary">
+              Total Value: {investment_account.value}
+            </Typography>
+          </>
+        )}
       </CardContent>
       <CardActions sx={{ padding: 0 }}>
-        <NavLink to={`/classroom/${id}`}>
-          <Button size="small">Open</Button>
-        </NavLink>
-        {typeof onDelete === "function" && (
-          <Button size="small" color="error" onClick={onDelete}>
-            Delete
-          </Button>
-        )}
+        {investment_account && <Button size="small">Buy/Sell Shares</Button>}
+        <Button size="small">View Transactions</Button>
       </CardActions>
     </Card>
   );
 };
 
-export default ClassCard;
+export default AccountCard;

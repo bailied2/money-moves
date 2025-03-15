@@ -10,7 +10,7 @@ const JWT_SECRET =
 // Middleware to verify token and extract user ID
 const authenticateToken = (req, res, next) => {
   // Debug logging
-  console.log("authenticateToken");
+  console.log("\n*** authenticateToken middleware ***");
   console.log("Received Cookies:", req.cookies);
   const token = req.cookies?.token;
 

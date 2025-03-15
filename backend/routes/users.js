@@ -33,14 +33,14 @@ const getUserById = (req, res) => {
 
 // GET /users/profile - Get the current, authenticated user's profile information
 
-/* 
+/*
  * This function assumes the request has already been through the authenticateToken
  * middleware, meaning that it has been attached with the current user's info.
  */
 const getUserProfile = (req, res) => {
   // Logs for debugging
-  console.log("getUserProfile"); 
-  console.log(req.user);
+  // console.log("getUserProfile");
+  // console.log(req.user);
 
   // Get user_id from info attached by middleware
   const user_id = req.user.id;
@@ -50,7 +50,7 @@ const getUserProfile = (req, res) => {
     if (err) return res.status(500).json({ error: "Database error" });
     if (results.length === 0)
       return res.status(404).json({ error: "User not found" });
-    console.log(results[0]); // Debug log
+    // console.log(results[0]); // Debug log
     res.json({ user: results[0] }); // Return user profile
   });
 };

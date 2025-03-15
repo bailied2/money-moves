@@ -1,51 +1,48 @@
-import "./styles/CardList.css";
-
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
-import ClassCard from "./ClassCard";
+import AccountCard from "./AccountCard";
 import AddNewCard from "./AddNewCard";
 
 import { grey } from "@mui/material/colors";
 import { Stack, Typography } from "@mui/material";
 
-import dayjs from "dayjs";
 import api from "../api";
 
-const ClassroomList = ({ header = true, teacher = false }) => {
-  const [classrooms, setClassrooms] = useState([]);
+const AccountList = ({ header = true }) => {
+  const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchClassrooms = async () => {
+    const fetchAccounts = async () => {
       try {
         const response = await api.get(
-          `/classrooms/${teacher ? "teacher" : "student"}`
+          `/accounts/student/${/** INSERT ACCOUNT SOMETHING HERE*/ null}`
         );
         console.log(response);
-        setClassrooms(response.data.classrooms);
+        setAccounts(response.data.accounts);
       } catch (err) {
-        setError("Failed to fetch classrooms");
+        setError("Failed to fetch accounts");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchClassrooms();
-  }, [teacher]);
+    fetchAccounts();
+  });
 
-  const addClassroom = (classroom) => {
-    if (classroom) setClassrooms(classrooms.concat(classroom));
+  const addAccount = (account) => {
+    if (account) setAccounts(accounts.concat(account));
   };
 
-  const deleteClassroom = async (classroom_id) => {
+  const deleteAccount = async (account_id) => {
     try {
-      const response = await api.delete(`/classrooms/${classroom_id}`);
+      const response = await api.delete(`/accounts/${account_id}`);
       console.log(response);
-      setClassrooms(classrooms.filter((c) => c.id !== classroom_id));
+      setAccounts(accounts.filter((a) => a.id !== account_id));
     } catch (err) {
-      alert("Error deleting classroom");
+      alert("Error deleting account");
     }
   };
 
@@ -58,7 +55,7 @@ const ClassroomList = ({ header = true, teacher = false }) => {
     >
       {header && (
         <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>
-          My Classrooms - {teacher ? "Teacher" : "Student"}
+          My Accounts
         </Typography>
       )}
       <Grid
@@ -78,23 +75,17 @@ const ClassroomList = ({ header = true, teacher = false }) => {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!loading &&
           !error &&
-          classrooms.map((classroom, index) => (
+          accounts.map((account, index) => (
             <Grid
               key={index}
               size={{ xs: 2, sm: 3, md: 3 }}
               display="flex"
               justifyContent="center"
             >
-              <ClassCard
-                title={classroom.class_name}
-                num_students={classroom.num_students}
-                // start_date={classroom.start_date}
-                // end_date={classroom.end_date}
-                start_date={dayjs(classroom.start_date).format("D/M/YYYY")}
-                end_date={dayjs(classroom.end_date).format("D/M/YYYY")}
-                id={classroom.id}
-                onDelete={deleteClassroom.bind(null, classroom.id)}
-              ></ClassCard>
+              <AccountCard
+                title={account.class_name}
+                id={account.id}
+              ></AccountCard>
             </Grid>
           ))}
         <Grid
@@ -102,14 +93,11 @@ const ClassroomList = ({ header = true, teacher = false }) => {
           display="flex"
           justifyContent="center"
         >
-          <AddNewCard
-            label="Create New Classroom"
-            onClassroomAdded={addClassroom}
-          />
+          <AddNewCard label="Create New Account" onAccountAdded={addAccount} />
         </Grid>
       </Grid>
     </Stack>
   );
 };
 
-export default ClassroomList;
+export default AccountList;

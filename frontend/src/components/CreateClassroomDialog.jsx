@@ -1,23 +1,27 @@
-import "./styles/CreateClassroomForm.css";
-
-import React, { useContext, useState } from "react";
-import dayjs from "dayjs";
-import { Container, Box, Typography, TextField, Button } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Fab,
+  TextField,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
-import { AuthContext } from "../AuthContext";
+import dayjs from "dayjs";
 import api from "../api";
 
-const CreateClassroomForm = () => {
-  const { user } = useContext(AuthContext);
+const CustomFormDialog = ({ open, onClose, onSubmit }) => {
   const current_date = dayjs().startOf("day");
 
   const [startDate, setStartDate] = useState(current_date);
   const [endDate, setEndDate] = useState(current_date.add(6, "M"));
   const [formData, setFormData] = useState({
     class_name: "",
-    teacher_id: user?.id,
     start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
     end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
   });
@@ -57,12 +61,12 @@ const CreateClassroomForm = () => {
     try {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);
+      onSubmit(response.data.classroom);
       alert("Classroom added successfully!");
       setStartDate(current_date); // Reset start date
       setEndDate(current_date.add(6, "M")); // Reset end date
       setFormData({
         class_name: "",
-        teacher_id: 1, // NEEDS TO BE MADE VARIABLE
         start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
         end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
       }); // Reset form data
@@ -72,17 +76,14 @@ const CreateClassroomForm = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
-      >
-        <Typography variant="h5" gutterBottom>
-          Create Classroom
-        </Typography>
-        <form onSubmit={handleSubmit}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Create Classroom</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit} id="create_classroom_form">
           <TextField
             // autoFocus
             required
+            fullWidth
             margin="normal"
             id="class_name"
             name="class_name"
@@ -92,10 +93,7 @@ const CreateClassroomForm = () => {
             onChange={(e) => {
               setFormData({ ...formData, class_name: e.target.value });
             }}
-            fullWidth
           />
-          <br />
-          <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Start Date"
@@ -104,7 +102,6 @@ const CreateClassroomForm = () => {
               value={startDate}
               onChange={handleStartDateChange}
               minDate={dayjs().startOf("day")}
-              disablePast
             ></DatePicker>
             <br />
             <br />
@@ -115,22 +112,51 @@ const CreateClassroomForm = () => {
               value={endDate}
               minDate={startDate.add(1, "day")}
               onChange={handleEndDateChange}
-              disablePast
             ></DatePicker>
           </LocalizationProvider>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Submit
-          </Button>
         </form>
-      </Box>
-    </Container>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          form="create_classroom_form"
+          variant="contained"
+          color="primary"
+        >
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default CreateClassroomForm;
+const ParentComponent = ({ onSubmit }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleSubmit = (data) => {
+    console.log("Form submitted:", data);
+    if (typeof onSubmit === "function") onSubmit(data);
+    handleClose();
+  };
+
+  return (
+    <>
+      <Fab onClick={handleOpen}>
+        <AddIcon />
+      </Fab>
+      <CustomFormDialog
+        open={open}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+      />
+    </>
+  );
+};
+
+export default ParentComponent;
