@@ -20,6 +20,7 @@ CREATE TABLE classroom (
   start_date TIMESTAMP NOT NULL,
   end_date TIMESTAMP NOT NULL,
   is_savings_enabled TINYINT(1) NOT NULL DEFAULT 0,
+  is_join_by_code_enabled TINYINT(1) NOT NULL DEFAULT 0,
   FOREIGN KEY (fk_teacher_id) REFERENCES user(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

@@ -12,7 +12,7 @@ const Navbar = () => {
   const { user, loading } = useContext(AuthContext);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
       <AppBar position="static" sx={{ bgcolor: grey[300] }}>
         <Toolbar id="nav_toolbar">
           <Link id="home" component={Button} underline="none" href="/">
@@ -40,7 +40,9 @@ const Navbar = () => {
           >
             About
           </Link>
-          {loading ? (<p>Loading...</p>) : (user ? (
+          {loading ? (
+            <p>Loading...</p>
+          ) : user ? (
             <AccountMenu />
           ) : (
             <>
@@ -58,8 +60,7 @@ const Navbar = () => {
                 Sign Up
               </Button>
             </>
-        ))}
-          
+          )}
         </Toolbar>
       </AppBar>
     </Box>

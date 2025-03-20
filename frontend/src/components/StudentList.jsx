@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
-import AccountCard from "./AccountCard";
+import StudentCard from "./StudentCard";
 
 import { grey } from "@mui/material/colors";
 import { Stack, Typography, Button } from "@mui/material";
@@ -9,31 +9,31 @@ import { Stack, Typography, Button } from "@mui/material";
 import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
-const AccountList = ({ header = true }) => {
+const StudentList = ({ header = true }) => {
   const { classroom, classroom_loading } = useContext(ClassroomContext);
-  const [accounts, setAccounts] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchStudents = async () => {
       try {
-        const response = await api.get(`/accounts/student/${classroom.id}`);
+        const response = await api.get(`/students/classroom/${classroom.id}`);
         console.log(response);
-        setAccounts(response.data.accounts);
+        setStudents(response.data.students);
         setError(null);
       } catch (err) {
-        setError("Failed to fetch accounts");
+        setError("Failed to fetch students");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAccounts();
+    fetchStudents();
   }, [classroom]);
 
-  const addAccount = (account) => {
-    if (account) setAccounts(accounts.concat(account));
+  const addStudent = (student) => {
+    if (student) setStudents(students.concat(student));
   };
 
   if (classroom_loading) return <p>Loading...</p>;
@@ -46,7 +46,7 @@ const AccountList = ({ header = true }) => {
       }}
     >
       <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
-        {header && <Typography variant="h5">My Accounts</Typography>}
+        {header && <Typography variant="h5">Students</Typography>}
         <Button variant="contained" sx={{ marginLeft: "2em" }}>
           Transfer Funds
         </Button>
@@ -68,19 +68,20 @@ const AccountList = ({ header = true }) => {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!loading &&
           !error &&
-          accounts.map((account, index) => (
+          students.map((student, index) => (
             <Grid
               key={index}
               size={{ xs: 2, sm: 4, md: 4 }}
               display="flex"
               justifyContent="center"
             >
-              <AccountCard
-                id={account.id}
-                account_type={account.account_type}
-                balance={account.balance}
-                investment_account={account.investment_account}
-              ></AccountCard>
+              <StudentCard
+                id={student.id}
+                first_name={student.first_name}
+                last_name={student.last_name}
+                balance={student.balance}
+                investment_student={student.investment_student}
+              ></StudentCard>
             </Grid>
           ))}
         <Grid
@@ -93,4 +94,4 @@ const AccountList = ({ header = true }) => {
   );
 };
 
-export default AccountList;
+export default StudentList;

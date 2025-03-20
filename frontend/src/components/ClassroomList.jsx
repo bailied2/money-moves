@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
 import ClassCard from "./ClassCard";
-import AddNewCard from "./AddNewCard";
+// import AddNewCard from "./AddNewCard";
+import CreateClassroomDialog from "./CreateClassroomDialog";
+import JoinClassroomDialog from "./JoinClassroomDialog";
 
 import { grey } from "@mui/material/colors";
 import { Stack, Typography } from "@mui/material";
@@ -25,6 +27,7 @@ const ClassroomList = ({ header = true, teacher = false }) => {
         );
         console.log(response);
         setClassrooms(response.data.classrooms);
+        setError(null);
       } catch (err) {
         setError("Failed to fetch classrooms");
       } finally {
@@ -102,10 +105,15 @@ const ClassroomList = ({ header = true, teacher = false }) => {
           display="flex"
           justifyContent="center"
         >
-          <AddNewCard
+          {/* {<AddNewCard
             label="Create New Classroom"
             onClassroomAdded={addClassroom}
-          />
+          />} */}
+          {teacher ? (
+            <CreateClassroomDialog onSubmit={addClassroom} />
+          ) : (
+            <JoinClassroomDialog />
+          )}
         </Grid>
       </Grid>
     </Stack>

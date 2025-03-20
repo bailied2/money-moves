@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 
 const AccountCard = ({
-  title,
   id,
   account_type,
   balance = null,
@@ -30,21 +29,18 @@ const AccountCard = ({
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h5" component="div">
-          {title}
+        <Typography variant="h5" gutterBottom component="div">
+          {account_type === 1 && "Checking Account"}
+          {account_type === 2 && "Savings Account"}
+          {account_type === 3 && investment_account.title}
         </Typography>
         <Typography noWrap variant="body2" color="text.secondary">
           Account ID: {id}
         </Typography>
         <br />
         <Typography noWrap variant="body2" color="text.secondary">
-          Account Type: {account_type}
+          Balance: ${balance ? balance : "0.00"}
         </Typography>
-        {balance && (
-          <Typography noWrap variant="body2" color="text.secondary">
-            Balance: {balance}
-          </Typography>
-        )}
         {investment_account && (
           <>
             <Typography noWrap variant="body2" color="text.secondary">
@@ -56,7 +52,7 @@ const AccountCard = ({
           </>
         )}
       </CardContent>
-      <CardActions sx={{ padding: 0 }}>
+      <CardActions>
         {investment_account && <Button size="small">Buy/Sell Shares</Button>}
         <Button size="small">View Transactions</Button>
       </CardActions>

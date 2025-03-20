@@ -5,6 +5,9 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Card,
+  CardActions,
+  Typography,
   Fab,
   TextField,
 } from "@mui/material";
@@ -15,7 +18,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import api from "../api";
 
-const CustomFormDialog = ({ open, onClose, onSubmit }) => {
+const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
   const current_date = dayjs().startOf("day");
 
   const [startDate, setStartDate] = useState(current_date);
@@ -145,17 +148,59 @@ const ParentComponent = ({ onSubmit }) => {
     handleClose();
   };
 
+  // return (
+  // <>
+  //   <Fab onClick={handleOpen}>
+  //     <AddIcon />
+  //   </Fab>
+  //   <CustomFormDialog
+  //     open={open}
+  //     onClose={handleClose}
+  //     onSubmit={handleSubmit}
+  //   />
+  // </>
+
   return (
-    <>
-      <Fab onClick={handleOpen}>
-        <AddIcon />
-      </Fab>
-      <CustomFormDialog
-        open={open}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-      />
-    </>
+    <Card
+      sx={{
+        boxShadow: 0,
+        position: "relative",
+        minHeight: 185,
+        maxWidth: 300,
+        aspectRatio: "3/2",
+        padding: 1,
+        border: "3px dashed lightgrey",
+        borderRadius: 2,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <CardActions
+        disableSpacing
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignContent: "center",
+          gap: 2,
+          padding: 3,
+          borderRadius: 2,
+        }}
+      >
+        <Typography variant="button" align="center">
+          Create New Classroom
+        </Typography>
+        <Fab onClick={handleOpen}>
+          <AddIcon />
+        </Fab>
+        <CreateClassroomDialog
+          open={open}
+          onClose={handleClose}
+          onSubmit={handleSubmit}
+        />
+      </CardActions>
+    </Card>
   );
 };
 

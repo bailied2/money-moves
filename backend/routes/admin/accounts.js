@@ -23,6 +23,11 @@ const getAllAccounts = () => {
 const getAccountsByStudent = (req, res) => {
   const classroom_id = req.params.id;
   const user_id = req.user.id;
+  // Logs for debugging
+  console.log("\n*** getAccountsByStudent ***");
+
+  console.log(classroom_id);
+  console.log(user_id);
 
   const query =
     "SELECT id FROM student WHERE fk_user_id = ? AND fk_classroom_id = ?";
@@ -31,14 +36,34 @@ const getAccountsByStudent = (req, res) => {
     if (err) {
       return res.status(500).send({ error: "Failed to fetch student id" });
     }
-    console.log(result.toString());
     const student_id = result[0].id;
+    console.log(" student id:", student_id);
 
-    const query = "SELECT * FROM account WHERE fk_student_id = ?";
+    // const query = "SELECT * FROM account WHERE fk_student_id = ?";
+    const query =
+      "SELECT account.*, SUM(transaction.amount) AS balance FROM account INNER JOIN transaction ON transaction.fk_account_id = account.id WHERE account.fk_student_id = ? GROUP BY account.id";
 
     db.query(query, [student_id], (err, results) => {
       if (err) {
         return res.status(500).send({ error: "Failed to fetch accounts" });
+      }
+      const investment_accounts = results.filter((a) => {
+        a.account_type === 3;
+      });
+      for (const account of investment_accounts) {
+        const query = "SELECT * FROM investment_account WHERE id = ?";
+        db.query(
+          query,
+          [account.fk_investment_account_id],
+          (err, investment_results) => {
+            if (err) {
+              return res.status(500).json({
+                error: `Failed to fetch investment account data for account ${account.id}`,
+              });
+            }
+            account.investment_account = investment_results[0];
+          }
+        );
       }
       res.json({ accounts: results });
     });
