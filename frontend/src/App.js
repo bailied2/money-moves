@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
 import { ClassroomProvider } from "./ClassroomContext";
@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
+import Loading from "./pages/Loading";
 import NotFound from "./pages/NotFound";
 // import logo from "./logo.svg";
 import "./App.css";
@@ -34,11 +35,9 @@ function App() {
           <Route
             path="/classroom/:id"
             element={
-              <ClassroomProvider>
-                <ProtectedRoute route="/classroom/:id">
-                  <Classroom />
-                </ProtectedRoute>
-              </ClassroomProvider>
+              <ProtectedRoute route="/classroom/:id">
+                <Classroom />
+              </ProtectedRoute>
             }
           />
           <Route path="/login" element={<LoginForm />} />

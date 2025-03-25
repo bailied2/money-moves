@@ -11,24 +11,41 @@ const JWT_SECRET =
   "b165f503224f0b78f682934b5ea8d20c6520b14474c616b3c4392ea6318f91ddf45f019605906819c8484c2f14624fe532db88afd331d1840ca25a52c7f1303c";
 
 // GET /users - Get all user records
-const getUsers = (req, res) => {
+const getUsers = async (req, res) => {
   const sql = "SELECT id, first_name, last_name, email FROM user"; // Query to retrieve all users
-  db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+
+  // db.query(sql, (err, results) => {
+  //   if (err) return res.status(500).json({ error: err.message });
+  //   res.json({ data: results }); // Return the list of users
+  // });
+  try {
+    const [results] = await db.execute(sql);
     res.json({ data: results }); // Return the list of users
-  });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // GET /users/:id - Get a specific user record by ID
-const getUserById = (req, res) => {
+const getUserById = async (req, res) => {
   const { id } = req.params;
+
   const sql = "SELECT id, first_name, last_name, email FROM user WHERE id = ?"; // Query to retrieve user by ID
-  db.query(sql, [id], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+
+  // db.query(sql, [id], (err, results) => {
+  //   if (err) return res.status(500).json({ error: err.message });
+  //   if (results.length === 0)
+  //     return res.status(404).json({ error: "User not found" });
+  //   res.json({ data: results[0] }); // Return the specific user record
+  // });
+  try {
+    const [results] = await db.execute(sql, [id]);
     if (results.length === 0)
       return res.status(404).json({ error: "User not found" });
     res.json({ data: results[0] }); // Return the specific user record
-  });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // GET /users/profile - Get the current, authenticated user's profile information
@@ -37,22 +54,24 @@ const getUserById = (req, res) => {
  * This function assumes the request has already been through the authenticateToken
  * middleware, meaning that it has been attached with the current user's info.
  */
-const getUserProfile = (req, res) => {
+const getUserProfile = async (req, res) => {
   // Logs for debugging
   // console.log("getUserProfile");
   // console.log(req.user);
 
   // Get user_id from info attached by middleware
   const user_id = req.user.id;
+
   const sql = "SELECT id, first_name, last_name, email FROM user WHERE id = ?";
 
-  db.query(sql, [user_id], (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
+  try {
+    const [results] = await db.execute(sql, [user_id]);
     if (results.length === 0)
       return res.status(404).json({ error: "User not found" });
-    // console.log(results[0]); // Debug log
     res.json({ user: results[0] }); // Return user profile
-  });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // POST /users - Create a new user record
@@ -65,40 +84,45 @@ const createUser = async (req, res) => {
 
     const sql =
       "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)"; // Insert query
-    db.query(sql, [first_name, last_name, email, hash], (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
+    try {
+      const [results] = await db.execute(sql, [
+        first_name,
+        last_name,
+        email,
+        hash,
+      ]);
       res.json({
         message: "User registered successfully",
-        id: result.insertId,
+        id: results.insertId,
       });
-    });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   } catch (error) {
     res.status(500).json({ error: "Error hashing password" });
   }
 };
 
-const handleLogin = (req, res) => {
-  console.log("handleLogin");
+const handleLogin = async (req, res) => {
+  console.log("\n*** handleLogin ***");
 
   const { email, password } = req.body;
-  console.log("email:", email, "\npassword:", password);
+  console.log("  email:", email, "\n  password:", password);
 
   const sql = "SELECT id, hash FROM user WHERE email = ?;"; // Prepared statement for finding user by email
 
-  // Query Database
-  db.query(sql, [email], (err, result) => {
-    // If error, return error message
-    if (err) return res.status(500).json({ error: err.message });
+  try {
+    const [results] = await db.execute(sql, [email]);
     // If no results found, return user not found error.
-    if (result.length === 0)
-      return res.status(400).json({ error: "User not found" });
+    if (results.length === 0)
+      return res.status(404).json({ error: "User not found" });
     // Otherwise, if the user exists:
-    const user = result[0];
+    const user = results[0];
     try {
       // Check the provided password
       bcrypt.compare(password, user.hash, (err, isMatch) => {
         // If error, return error message
-        if (err) return res.status(401).json({ error: err.message });
+        if (err) return res.status(401).json({ error: error.message });
         // If no errors, check isMatch
         if (!isMatch) {
           // If isMatch is false, the password does not match. Send error message
@@ -121,11 +145,14 @@ const handleLogin = (req, res) => {
       // If there was an error hashing the password with bcrypt, send back error.
       res.status(500).json({ error: "Error hashing password" });
     }
-  });
+  } catch (error) {
+    // If error, return error message
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // PUT /users/:id - Update a specific user record by ID
-const updateUser = (req, res) => {
+const updateUser = async (req, res) => {
   const { id } = req.params;
   const { first_name, last_name, email, password } = req.body;
 
@@ -138,24 +165,40 @@ const updateUser = (req, res) => {
     ? "UPDATE user SET first_name = ?, last_name = ?, email = ?, hash = ? WHERE id = ?"
     : "UPDATE user SET first_name = ?, last_name = ?, email = ? WHERE id = ?";
 
-  db.query(sql, sqlValues, (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (result.affectedRows === 0)
+  // db.query(sql, sqlValues, (err, result) => {
+  //   if (err) return res.status(500).json({ error: err.message });
+  //   if (result.affectedRows === 0)
+  //     return res.status(404).json({ error: "User not found" });
+  //   res.json({ message: `User with ID ${id} updated successfully` });
+  // });
+  try {
+    const [results] = await db.execute(sql, sqlValues);
+    if (results.affectedRows === 0)
       return res.status(404).json({ error: "User not found" });
     res.json({ message: `User with ID ${id} updated successfully` });
-  });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // DELETE /users/:id - Delete a specific user record by ID
-const deleteUser = (req, res) => {
+const deleteUser = async (req, res) => {
   const { id } = req.params;
   const sql = "DELETE FROM user WHERE id = ?"; // Delete query
-  db.query(sql, [id], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (result.affectedRows === 0)
+  // db.query(sql, [id], (err, result) => {
+  //   if (err) return res.status(500).json({ error: err.message });
+  //   if (result.affectedRows === 0)
+  //     return res.status(404).json({ error: "User not found" });
+  //   res.json({ message: `User with ID ${id} deleted successfully` });
+  // });
+  try {
+    const [results] = await db.execute(sql, [id]);
+    if (results.affectedRows === 0)
       return res.status(404).json({ error: "User not found" });
     res.json({ message: `User with ID ${id} deleted successfully` });
-  });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // Routes definition using the functions above

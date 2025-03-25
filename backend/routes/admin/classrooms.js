@@ -7,19 +7,26 @@ const getRandomString = require("../../random_string.js");
 const authenticateToken = require("../../authMiddleware.js");
 
 // GET / - Get all classrooms
-const getClassrooms = (req, res) => {
+const getClassrooms = async (req, res) => {
   const query = "SELECT * FROM classroom";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching classrooms:", err);
-      return res.status(500).send({ error: "Failed to fetch classrooms" });
-    }
-    res.send({ data: results });
-  });
+  // db.query(query, (err, results) => {
+  //   if (err) {
+  //     console.error("Error fetching classrooms:", err);
+  //     return res.status(500).send({ error: "Failed to fetch classrooms" });
+  //   }
+  //   res.send({ data: results });
+  // });
+  try {
+    const [results] = await db.execute(query);
+    res.json({ data: results });
+  } catch (error) {
+    console.error("Error fetching classrooms:", error);
+    return res.status(500).json({ error: "Failed to fetch classrooms" });
+  }
 };
 
 // GET /teacher - Get all classrooms with a specific teacher id
-const getClassroomsByTeacher = (req, res) => {
+const getClassroomsByTeacher = async (req, res) => {
   // Logs for debugging
   console.log("\n*** getClassroomsByTeacher ***");
   console.log(req.user);
@@ -28,13 +35,14 @@ const getClassroomsByTeacher = (req, res) => {
   const user_id = req.user.id;
 
   const query = "SELECT * FROM classroom WHERE fk_teacher_id = ?";
-  db.query(query, [user_id], (err, results) => {
-    if (err) {
-      console.error("Error fetching classrooms:", err);
-      return res.status(500).json({ error: "Failed to fetch classrooms" });
-    }
+
+  try {
+    const [results] = await db.execute(query, [user_id]);
     res.json({ classrooms: results });
-  });
+  } catch (error) {
+    console.error("Error fetching classrooms:", error);
+    return res.status(500).json({ error: "Failed to fetch classrooms" });
+  }
 };
 
 // GET /student - Get all classrooms the user is a student in
@@ -42,7 +50,7 @@ const getClassroomsByTeacher = (req, res) => {
  * This function assumes the request has already been through the authenticateToken
  * middleware, meaning that it has been attached with the current user's info.
  */
-const getClassroomsByStudent = (req, res) => {
+const getClassroomsByStudent = async (req, res) => {
   // Logs for debugging
   console.log("getClassroomsByStudent");
   console.log(req.user);
@@ -52,36 +60,46 @@ const getClassroomsByStudent = (req, res) => {
 
   const query =
     "SELECT classroom.*, COUNT(student.id) AS num_students FROM student INNER JOIN classroom ON student.fk_classroom_id = classroom.id WHERE student.fk_user_id = ? GROUP BY student.fk_classroom_id";
-  db.query(query, [user_id], (err, results) => {
-    if (err) {
-      console.error("Error fetching classrooms:", err);
-      return res.status(500).json({ error: "Failed to fetch classrooms" });
-    }
-    console.log(results);
+
+  try {
+    const [results] = await db.execute(query, [user_id]);
     res.json({ classrooms: results });
-  });
+  } catch (error) {
+    console.error("Error fetching classrooms:", error);
+    return res.status(500).json({ error: "Failed to fetch classrooms" });
+  }
 };
 
 // GET /:id - Get a single classroom by id
-const getClassroomById = (req, res) => {
+const getClassroomById = async (req, res) => {
   console.log("\n*** getClassroomById ***");
   const classroomId = req.params.id;
   console.log(`  classroom_id: ${classroomId}`);
   const query = "SELECT * FROM classroom WHERE id = ?";
-  db.query(query, [classroomId], (err, results) => {
-    if (err) {
-      console.error("Error fetching classroom:", err);
-      return res.status(500).json({ error: "Failed to fetch classroom" });
-    }
+  // db.query(query, [classroomId], (err, results) => {
+  //   if (err) {
+  //     console.error("Error fetching classroom:", err);
+  //     return res.status(500).json({ error: "Failed to fetch classroom" });
+  //   }
+  //   if (results.length === 0) {
+  //     return res.status(404).json({ error: "Classroom not found" });
+  //   }
+  //   res.json({ classroom: results[0] });
+  // });
+  try {
+    const [results] = await db.execute(query, [classroomId]);
     if (results.length === 0) {
       return res.status(404).json({ error: "Classroom not found" });
     }
     res.json({ classroom: results[0] });
-  });
+  } catch (error) {
+    console.error("Error fetching classroom:", error);
+    return res.status(500).json({ error: "Failed to fetch classroom" });
+  }
 };
 
 // POST / - Create a new classroom
-const createClassroom = (req, res) => {
+const createClassroom = async (req, res) => {
   // Get teacher_id from info attached by middleware
   const teacher_id = req.user.id;
   // Extracting name, start and end dates from the request body
@@ -95,46 +113,48 @@ const createClassroom = (req, res) => {
     start_date: ${start_date}
     end_date: ${end_date}`);
 
-  const insertClassroom = () => {
+  const insertClassroom = async () => {
     const class_code = getRandomString(7);
     console.log(`    class_code: ${class_code}`);
     const query =
       "INSERT INTO classroom (class_name, fk_teacher_id, start_date, end_date, class_code) VALUES (?, ?, ?, ?, ?)";
-    db.query(
-      query,
-      [class_name, teacher_id, start_date, end_date, class_code],
-      (err, result) => {
-        if (err) {
-          if (err.code === "ER_DUP_ENTRY") {
-            // If duplicate class_code, try again
-            console.warn(
-              `Duplicate class_code ${class_code} detected. Retrying...`
-            );
-            return insertClassroom();
-          }
-          console.error("Error creating classroom:", err);
-          return res.status(500).send({ error: "Failed to create classroom" });
-        }
-        res.json({
-          data: `Classroom created successfully with ID ${result.insertId}`,
-          classroom: {
-            id: result.insertId,
-            class_name,
-            start_date,
-            end_date,
-            num_students: 0,
-            class_code,
-          },
-        });
+    try {
+      const [results] = db.execute(query, [
+        class_name,
+        teacher_id,
+        start_date,
+        end_date,
+        class_code,
+      ]);
+      res.json({
+        data: `Classroom created successfully with ID ${results.insertId}`,
+        classroom: {
+          id: result.insertId,
+          class_name,
+          start_date,
+          end_date,
+          num_students: 0,
+          class_code,
+        },
+      });
+    } catch (error) {
+      if (error.code === "ER_DUP_ENTRY") {
+        // If duplicate class_code, try again
+        console.warn(
+          `Duplicate class_code ${class_code} detected. Retrying...`
+        );
+        return insertClassroom();
       }
-    );
+      console.error("Error creating classroom:", error);
+      return res.status(500).json({ error: "Failed to create classroom" });
+    }
   };
   // Call insertClassroom()
   insertClassroom();
 };
 
 // POST /join/:code - Join a classroom by class code
-const joinClassroomByCode = (req, res) => {
+const joinClassroomByCode = async (req, res) => {
   console.log("\n*** joinClassroomByCode ***");
 
   const user_id = req.user.id;
@@ -142,74 +162,89 @@ const joinClassroomByCode = (req, res) => {
   console.log(" user_id: ", user_id);
   console.log(" class_code: ", class_code);
 
-  console.log(" Searching for classroom... ");
-
-  const query = "SELECT * FROM classroom WHERE class_code = ?";
-  db.query(query, [class_code], (err, classroom_result) => {
-    if (err) {
-      console.error("Error fetching classroom by code");
-      return res.status(500).json({ error: "Failed to join classroom" });
-    }
-    if (classroom_result.length === 0) {
+  const selectClassroomQuery = "SELECT * FROM classroom WHERE class_code = ?";
+  const insertStudentQuery =
+    "INSERT INTO student (fk_user_id, fk_classroom_id) VALUES (?, ?)";
+  try {
+    console.log(" Searching for classroom... ");
+    const [classroomResults] = await db.execute(selectClassroomQuery, [
+      user_id,
+      class_code,
+    ]);
+    if (classroomResults.length === 0) {
       return res.status(404).json({ error: "Classroom not found" });
     }
-    console.log(" Classroom found! ");
-    const classroom = classroom_result[0];
-    console.log(" classroom_id: ", classroom.id);
-    if (user_id === classroom.fk_teacher_id) {
-      return res
-        .status(500)
-        .json({ error: "Cannot join a classroom you teach" });
-    }
-    const query =
-      "INSERT INTO student (fk_user_id, fk_classroom_id) VALUES (?, ?)";
 
-    db.query(query, [user_id, classroom.id], (err, result) => {
-      if (err) {
-        console.error("Error adding student to classroom");
-        return res.status(500).json({ error: "Failed to join classroom" });
-      }
-      console.log(` User {${user_id}} joined classroom {${classroom.id}}`);
-      console.log(` with student_id {${result.insertId}}`);
-      res.json({
-        data: `Classroom created successfully with ID ${result.insertId}`,
-        classroom,
-      });
+    console.log(" Classroom found! ");
+    const classroom = classroomResults[0];
+    console.log(" classroom_id: ", classroom.id);
+
+    const [insertedStudent] = await db.execute(insertStudentQuery, [
+      [user_id, classroom.id],
+    ]);
+    console.log(` User {${user_id}} joined classroom {${classroom.id}}`);
+    console.log(` with student_id {${insertedStudent.insertId}}`);
+    res.json({
+      data: `Student successfully joined classroom with student ID ${insertedStudent.insertId}`,
+      classroom,
     });
-  });
+  } catch (error) {
+    console.error("Error joining classroom by code:", error);
+    return res.status(500).json({ error: "Failed to join classroom" });
+  }
 };
 
 // PUT /:id - Update a classroom by id
-const updateClassroom = (req, res) => {
+const updateClassroom = async (req, res) => {
   const classroomId = req.params.id;
   const { name, teacher_id } = req.body; // Extracting updated name and teacher_id from the request body
   const query = "UPDATE classroom SET name = ?, teacher_id = ? WHERE id = ?";
-  db.query(query, [name, teacher_id, classroomId], (err, result) => {
-    if (err) {
-      console.error("Error updating classroom:", err);
-      return res.status(500).send({ error: "Failed to update classroom" });
+  // db.query(query, [name, teacher_id, classroomId], (err, result) => {
+  //   if (err) {
+  //     console.error("Error updating classroom:", err);
+  //     return res.status(500).send({ error: "Failed to update classroom" });
+  //   }
+  //   if (result.affectedRows === 0) {
+  //     return res.status(404).send({ error: "Classroom not found" });
+  //   }
+  //   res.send({ data: `Classroom with ID ${classroomId} updated` });
+  // });
+  try {
+    const [results] = await db.execute(query, [name, teacher_id, classroomId]);
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "Classroom not found" });
     }
-    if (result.affectedRows === 0) {
-      return res.status(404).send({ error: "Classroom not found" });
-    }
-    res.send({ data: `Classroom with ID ${classroomId} updated` });
-  });
+    res.json({ data: `Classroom with ID ${classroomId} updated` });
+  } catch (error) {
+    console.error("Error updating classroom:", error);
+    return res.status(500).json({ error: "Failed to update classroom" });
+  }
 };
 
 // DELETE /:id - Delete a classroom by id
-const deleteClassroom = (req, res) => {
+const deleteClassroom = async (req, res) => {
   const classroomId = req.params.id;
   const query = "DELETE FROM classroom WHERE id = ?";
-  db.query(query, [classroomId], (err, result) => {
-    if (err) {
-      console.error("Error deleting classroom:", err);
-      return res.status(500).send({ error: "Failed to delete classroom" });
+  // db.query(query, [classroomId], (err, result) => {
+  //   if (err) {
+  //     console.error("Error deleting classroom:", err);
+  //     return res.status(500).send({ error: "Failed to delete classroom" });
+  //   }
+  //   if (result.affectedRows === 0) {
+  //     return res.status(404).send({ error: "Classroom not found" });
+  //   }
+  //   res.send({ data: `Classroom with ID ${classroomId} deleted` });
+  // });
+  try {
+    const [results] = await db.execute(query, [classroomId]);
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "Classroom not found" });
     }
-    if (result.affectedRows === 0) {
-      return res.status(404).send({ error: "Classroom not found" });
-    }
-    res.send({ data: `Classroom with ID ${classroomId} deleted` });
-  });
+    res.json({ data: `Classroom with ID ${classroomId} deleted` });
+  } catch (error) {
+    console.error("Error deleting classroom:", error);
+    return res.status(500).json({ error: "Failed to delete classroom" });
+  }
 };
 
 // Routes definition using the functions above

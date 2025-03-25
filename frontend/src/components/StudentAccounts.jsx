@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
 import AccountCard from "./AccountCard";
@@ -6,11 +6,10 @@ import AccountCard from "./AccountCard";
 import { grey } from "@mui/material/colors";
 import { Stack, Typography, Button } from "@mui/material";
 
-import { ClassroomContext } from "../ClassroomContext";
+// import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
-const AccountList = ({ header = true }) => {
-  const { classroom, classroom_loading } = useContext(ClassroomContext);
+const AccountList = ({ classroom_id, header = true }) => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +17,7 @@ const AccountList = ({ header = true }) => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await api.get(`/accounts/student/${classroom.id}`);
+        const response = await api.get(`/accounts/student/${classroom_id}`);
         console.log(response);
         setAccounts(response.data.accounts);
         setError(null);
@@ -30,13 +29,13 @@ const AccountList = ({ header = true }) => {
     };
 
     fetchAccounts();
-  }, [classroom]);
+  }, [classroom_id]);
 
   const addAccount = (account) => {
     if (account) setAccounts(accounts.concat(account));
   };
 
-  if (classroom_loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <Stack

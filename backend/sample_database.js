@@ -1,5 +1,5 @@
 // Import the mysql2 library
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 /**
  * Configured MySQL connection using environment variables
@@ -26,6 +26,7 @@ const pool = mysql.createPool({
   waitForConnections: true, // Wait if all connections are busy
   connectionLimit: 10, // Number of connections in pool
   queueLimit: 0, // 0 means unlimited queue
+  namedPlaceholders: true,
 });
 
 // Establish connection to MySQL database

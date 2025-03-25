@@ -8,6 +8,8 @@ import ClassCard from "./ClassCard";
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
 
+import CircularProgress from "@mui/material/CircularProgress";
+
 import { grey } from "@mui/material/colors";
 import { Stack, Typography } from "@mui/material";
 
@@ -77,7 +79,11 @@ const ClassroomList = ({ header = true, teacher = false }) => {
           padding: 2,
         }}
       >
-        {loading && <p>Loading...</p>}
+        {loading && (
+          <Grid size={12} display="flex" justifyContent="center">
+            <CircularProgress sx={{ margin: "auto" }} />
+          </Grid>
+        )}
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!loading &&
           !error &&
@@ -109,11 +115,12 @@ const ClassroomList = ({ header = true, teacher = false }) => {
             label="Create New Classroom"
             onClassroomAdded={addClassroom}
           />} */}
-          {teacher ? (
-            <CreateClassroomDialog onSubmit={addClassroom} />
-          ) : (
-            <JoinClassroomDialog />
-          )}
+          {!loading &&
+            (teacher ? (
+              <CreateClassroomDialog onSubmit={addClassroom} />
+            ) : (
+              <JoinClassroomDialog />
+            ))}
         </Grid>
       </Grid>
     </Stack>

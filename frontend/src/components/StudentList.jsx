@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
 import StudentCard from "./StudentCard";
+import AddStudentCard from "./AddStudentCard";
 
 import { grey } from "@mui/material/colors";
 import { Stack, Typography, Button } from "@mui/material";
@@ -9,8 +10,7 @@ import { Stack, Typography, Button } from "@mui/material";
 import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
-const StudentList = ({ header = true }) => {
-  const { classroom, classroom_loading } = useContext(ClassroomContext);
+const StudentList = ({ classroom, header = true }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,11 +32,11 @@ const StudentList = ({ header = true }) => {
     fetchStudents();
   }, [classroom]);
 
-  const addStudent = (student) => {
-    if (student) setStudents(students.concat(student));
+  const addStudent = (students) => {
+    if (students) setStudents(students.concat(students));
   };
 
-  if (classroom_loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <Stack
@@ -79,8 +79,7 @@ const StudentList = ({ header = true }) => {
                 id={student.id}
                 first_name={student.first_name}
                 last_name={student.last_name}
-                balance={student.balance}
-                investment_student={student.investment_student}
+                balance={0}
               ></StudentCard>
             </Grid>
           ))}
@@ -88,7 +87,13 @@ const StudentList = ({ header = true }) => {
           size={{ xs: 2, sm: 4, md: 4 }}
           display="flex"
           justifyContent="center"
-        ></Grid>
+        >
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <AddStudentCard classroom={classroom} onSubmit={addStudent} />
+          )}
+        </Grid>
       </Grid>
     </Stack>
   );
