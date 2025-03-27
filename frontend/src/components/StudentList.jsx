@@ -45,12 +45,7 @@ const StudentList = ({ classroom, header = true }) => {
         margin: "0 auto",
       }}
     >
-      <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
-        {header && <Typography variant="h5">Students</Typography>}
-        <Button variant="contained" sx={{ marginLeft: "2em" }}>
-          Transfer Funds
-        </Button>
-      </Stack>
+      {header && <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>Students</Typography>}
       <Grid
         container
         rowSpacing={3}

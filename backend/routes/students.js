@@ -185,7 +185,7 @@ const addStudentsToClassroom = async (req, res) => {
           // Hash random password with bcrypt
           const hash = await bcrypt.hash(password, saltRounds);
           // Attempt to insert new user into database
-          const [insertedUser] = await connection.execute(insertUserQuery, [
+          const insertedUser = await connection.execute(insertUserQuery, [
             student.first_name,
             student.last_name,
             student.email,
@@ -216,14 +216,14 @@ const addStudentsToClassroom = async (req, res) => {
           }
         }
         // Student now has user account, so we can insert the student record
-        const [insertedStudent] = await connection.execute(insertStudentQuery, [
+        const insertedStudent = await connection.execute(insertStudentQuery, [
           student.fk_classroom_id,
           student.fk_user_id,
         ]);
         // Student has been added to classroom
         student.id = insertedStudent.insertId;
         // Now add checkings and savings account
-        const [insertAccountsResults] = await connection.query(
+        const insertAccountsResults = await connection.query(
           insertAccountQuery,
           { student_id: student.id }
         );

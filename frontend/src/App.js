@@ -15,6 +15,8 @@ import NotFound from "./pages/NotFound";
 // import logo from "./logo.svg";
 import "./App.css";
 
+import Test from "./pages/Test";
+
 function App() {
   return (
     <AuthProvider>
@@ -42,6 +44,7 @@ function App() {
           />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<UserRegistrationForm />} />
+          <Route path="/test" element={<Test />} />
           <Route path="*" element={<NotFound />} /> {/* 404 Route */}
         </Routes>
       </Router>

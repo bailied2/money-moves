@@ -99,8 +99,8 @@ const ClassroomList = ({ header = true, teacher = false }) => {
                 num_students={classroom.num_students}
                 // start_date={classroom.start_date}
                 // end_date={classroom.end_date}
-                start_date={dayjs(classroom.start_date).format("D/M/YYYY")}
-                end_date={dayjs(classroom.end_date).format("D/M/YYYY")}
+                start_date={dayjs(classroom.start_date).format("M/D/YYYY")}
+                end_date={dayjs(classroom.end_date).format("M/D/YYYY")}
                 id={classroom.id}
                 onDelete={deleteClassroom.bind(null, classroom.id)}
               ></ClassCard>

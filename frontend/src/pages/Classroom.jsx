@@ -38,9 +38,7 @@ const Classroom = () => {
   }, [id]);
   // const { classroom, classroom_loading } = useContext(ClassroomContext);
 
-  if (loading) return <p>Loading...</p>;
-  if (user_loading) return <p>Loading...</p>;
-  // if (classroom_loading) return <p>Loading...</p>;
+  if (loading || user_loading) return <p>Loading...</p>;
 
   return (
     <div>
