@@ -114,7 +114,7 @@ const createStudent = async (req, res) => {
     "INSERT INTO students (name, email, classroom_id, balance) VALUES (?, ?, ?, ?)";
 
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       name,
       email,
       classroom_id,

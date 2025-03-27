@@ -36,14 +36,14 @@ const createJob = async (req, res) => {
   //   });
   // });
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       title,
       wage,
       description,
       classroom_id,
     ]);
     res.json({
-      data: `New job created successfully with ID ${results.insertId}`,
+      data: `New job created successfully with ID ${result.insertId}`,
     });
   } catch (error) {
     console.error("Error creating job:", error);

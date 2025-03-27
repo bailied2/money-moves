@@ -85,7 +85,7 @@ const createUser = async (req, res) => {
     const sql =
       "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)"; // Insert query
     try {
-      const [results] = await db.execute(sql, [
+      const insertedUser = await db.execute(sql, [
         first_name,
         last_name,
         email,
@@ -93,7 +93,7 @@ const createUser = async (req, res) => {
       ]);
       res.json({
         message: "User registered successfully",
-        id: results.insertId,
+        id: insertedUser.insertId,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

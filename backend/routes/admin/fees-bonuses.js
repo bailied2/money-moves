@@ -42,7 +42,7 @@ const createFeeBonus = async (req, res) => {
   //   }
   // );
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       type,
       amount,
       description,
@@ -50,7 +50,7 @@ const createFeeBonus = async (req, res) => {
       classroom_id,
     ]);
     res.json({
-      data: `Fee/bonus created successfully with ID ${results.insertId}`,
+      data: `Fee/bonus created successfully with ID ${result.insertId}`,
     });
   } catch (error) {
     console.error("Error creating fee/bonus:", error);

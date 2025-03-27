@@ -66,7 +66,7 @@ const createProperty = async (req, res) => {
   //   }
   // );
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       name,
       value,
       rent,
@@ -74,7 +74,7 @@ const createProperty = async (req, res) => {
       owner_id,
     ]);
     res.json({
-      data: `New property created successfully with ID ${results.insertId}`,
+      data: `New property created successfully with ID ${result.insertId}`,
     });
   } catch (error) {
     console.error("Error creating property:", error);

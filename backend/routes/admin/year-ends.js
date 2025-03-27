@@ -71,7 +71,7 @@ const createYearEnd = async (req, res) => {
   //   }
   // );
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       year,
       total_income,
       total_expenses,

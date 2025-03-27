@@ -119,7 +119,7 @@ const createClassroom = async (req, res) => {
     const query =
       "INSERT INTO classroom (class_name, fk_teacher_id, start_date, end_date, class_code) VALUES (?, ?, ?, ?, ?)";
     try {
-      const [results] = db.execute(query, [
+      const insertedClassroom = db.execute(query, [
         class_name,
         teacher_id,
         start_date,
@@ -127,9 +127,9 @@ const createClassroom = async (req, res) => {
         class_code,
       ]);
       res.json({
-        data: `Classroom created successfully with ID ${results.insertId}`,
+        data: `Classroom created successfully with ID ${insertedClassroom.insertId}`,
         classroom: {
-          id: result.insertId,
+          id: insertedClassroom.insertId,
           class_name,
           start_date,
           end_date,
@@ -179,7 +179,7 @@ const joinClassroomByCode = async (req, res) => {
     const classroom = classroomResults[0];
     console.log(" classroom_id: ", classroom.id);
 
-    const [insertedStudent] = await db.execute(insertStudentQuery, [
+    const insertedStudent = await db.execute(insertStudentQuery, [
       [user_id, classroom.id],
     ]);
     console.log(` User {${user_id}} joined classroom {${classroom.id}}`);

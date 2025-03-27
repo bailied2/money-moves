@@ -46,14 +46,14 @@ const createInvestmentAccount = async (req, res) => {
   //   }
   // );
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       account_type,
       balance,
       interest_rate,
       user_id,
     ]);
     res.json({
-      data: `Investment account created successfully with ID ${results.insertId}`,
+      data: `Investment account created successfully with ID ${result.insertId}`,
     });
   } catch (error) {
     console.error("Error creating investment account:", error);

@@ -66,7 +66,7 @@ const createTransaction = async (req, res) => {
   //   }
   // );
   try {
-    const [results] = await db.execute(query, [
+    const result = await db.execute(query, [
       amount,
       type,
       account_id,
@@ -74,7 +74,7 @@ const createTransaction = async (req, res) => {
       date,
     ]);
     res.json({
-      data: `Transaction created successfully with ID ${results.insertId}`,
+      data: `Transaction created successfully with ID ${result.insertId}`,
     });
   } catch (error) {
     console.error("Error creating transaction:", error);
