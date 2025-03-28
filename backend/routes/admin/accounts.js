@@ -39,12 +39,12 @@ const getAccountsByStudent = async (req, res) => {
   const selectStudentQuery =
     "SELECT id FROM student WHERE fk_user_id = ? AND fk_classroom_id = ?";
   const selectAccountQuery =
-    "SELECT account.*, SUM(transaction.amount) AS balance FROM account INNER JOIN transaction ON transaction.fk_account_id = account.id WHERE account.fk_student_id = ? GROUP BY account.id";
+    "SELECT account.*, SUM(transaction.amount) AS balance FROM account LEFT JOIN transaction ON transaction.fk_account_id = account.id WHERE account.fk_student_id = ? GROUP BY account.id";
   const selectInvestmentAccountQuery =
     "SELECT * FROM investment_account WHERE id = ?";
 
   try {
-    const [studentResults] = db.execute(selectStudentQuery, [
+    const [studentResults] = await db.execute(selectStudentQuery, [
       user_id,
       classroom_id,
     ]);

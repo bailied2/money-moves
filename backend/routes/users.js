@@ -151,6 +151,11 @@ const handleLogin = async (req, res) => {
   }
 };
 
+const handleLogout = async (req, res) => {
+  res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "Strict" });
+  res.status(200).json({ message: "Logged out successfully" });
+}
+
 // PUT /users/:id - Update a specific user record by ID
 const updateUser = async (req, res) => {
   const { id } = req.params;
@@ -207,6 +212,7 @@ router.get("/profile", authenticateToken, getUserProfile); // Get a currently au
 router.get("/:id", getUserById); // Get a user record by ID
 router.post("/", createUser); // Create a new user record
 router.post("/login", handleLogin); // Handle user login attempt
+router.post("/logout", handleLogout); // Handle user logout
 router.put("/:id", updateUser); // Update a user record by ID
 router.delete("/:id", deleteUser); // Delete a user record by ID
 

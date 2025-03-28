@@ -93,8 +93,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
       <DialogContent>
         {waiting && (<Backdrop
         sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-        open={open}
-        onClick={handleClose}
+        open={waiting}
       ><CircularProgress /></Backdrop>)}
         <form onSubmit={handleSubmit} id="create_classroom_form">
           <TextField

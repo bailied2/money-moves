@@ -33,18 +33,18 @@ const getStudentsByClassroom = async (req, res) => {
   // Debug logs
   console.log("\n*** getStudentsByClassroom ***");
 
+  console.log("  classroom_id: ", classroom_id);
+
   const selectStudentsQuery = `SELECT student.id AS id, 
   user.first_name AS first_name, 
   user.last_name AS last_name
   FROM student
-  INNER JOIN user
+  LEFT JOIN user
   ON user.id = student.fk_user_id
-  INNER JOIN account
-  ON account.fk_student_id = student.id
   WHERE student.fk_classroom_id = ?;`;
 
   const selectAccountsQuery =
-    "SELECT account.*, SUM(transaction.amount) AS balance FROM account INNER JOIN transaction ON transaction.fk_account_id = account.id WHERE fk_student_id = ?";
+    "SELECT account.*, SUM(transaction.amount) AS balance FROM account LEFT JOIN transaction ON transaction.fk_account_id = account.id WHERE fk_student_id = ? GROUP BY account.id";
 
   const selectInvestmentAccountQuery =
     "SELECT * FROM investment_account WHERE id = ?";
@@ -77,6 +77,7 @@ const getStudentsByClassroom = async (req, res) => {
     }
     res.json({ students });
   } catch (error) {
+    console.error("Error fetching students: ", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -138,7 +139,8 @@ const addStudentsToClassroom = async (req, res) => {
   console.log("\n*** addStudentsToClassroom ***");
   console.log(`    classroom id: ${classroom.id}
     class name: ${classroom.class_name}
-    students:`);
+    students:
+    ---------`);
   for (const student of students) {
     console.log(`      ${student.first_name + " " + student.last_name}
       email: ${student.email}
@@ -185,7 +187,7 @@ const addStudentsToClassroom = async (req, res) => {
           // Hash random password with bcrypt
           const hash = await bcrypt.hash(password, saltRounds);
           // Attempt to insert new user into database
-          const insertedUser = await connection.execute(insertUserQuery, [
+          const [insertedUser] = await connection.execute(insertUserQuery, [
             student.first_name,
             student.last_name,
             student.email,
@@ -216,7 +218,7 @@ const addStudentsToClassroom = async (req, res) => {
           }
         }
         // Student now has user account, so we can insert the student record
-        const insertedStudent = await connection.execute(insertStudentQuery, [
+        const [insertedStudent] = await connection.execute(insertStudentQuery, [
           student.fk_classroom_id,
           student.fk_user_id,
         ]);

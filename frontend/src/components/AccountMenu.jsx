@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
+import { useNavigate } from 'react-router';
 import {
   Box,
   Avatar,
   Menu,
   MenuItem,
   ListItemIcon,
-  Divider,
   IconButton,
 } from '@mui/material';
 import {
@@ -15,7 +15,10 @@ import {
 
 import { AuthContext } from '../AuthContext';
 
+import api from '../api';
+
 export default function AccountMenu() {
+  const navigate = useNavigate();
   const { user, loading } = useContext(AuthContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -26,6 +29,11 @@ export default function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleLogout = async () => {
+    const response = await api.post("/users/logout");
+    alert(response.data.message);
+    navigate("/login", {flushSync: true});
+  }
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -83,7 +91,7 @@ export default function AccountMenu() {
           </ListItemIcon>
           Account Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

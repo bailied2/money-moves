@@ -7,7 +7,7 @@ import {
   Button,
 } from "@mui/material";
 
-const StudentCard = ({ first_name, last_name, checking_balance, savings_balance, jobs = [] }) => {
+const StudentCard = ({ first_name, last_name, checking_balance, savings_balance, jobs = [], savings_enabled = true }) => {
   return (
     <Card
       raised
@@ -27,11 +27,11 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
           {first_name ? first_name + " " + (last_name ? last_name : "") : "Unnamed Student"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Checking Balance: {checking_balance ? checking_balance : "$00.00"}
+          Checking Balance: ${checking_balance ? checking_balance : "00.00"}
         </Typography>
-        {savings_balance && (
+        {savings_enabled && (
           <Typography variant="body2" color="text.secondary">
-            Savings Balance: {savings_balance}
+            Savings Balance: ${savings_balance ? savings_balance : "00.00"}
           </Typography>
         )}
         <Typography variant="body2" color="text.secondary">

@@ -27,7 +27,7 @@ const LoginForm = () => {
       console.log(response.data);
 
       // alert("User logged in successfully!");
-      navigate("/dashboard");
+      navigate("/dashboard", {flushSync:true});
       return <Navigate to="/login" />;
     } catch (error) {
       console.error("Error submitting form:", error);

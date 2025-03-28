@@ -41,7 +41,6 @@ const StudentList = ({ classroom, header = true }) => {
   return (
     <Stack
       sx={{
-        maxWidth: "80%",
         margin: "0 auto",
       }}
     >
@@ -59,10 +58,8 @@ const StudentList = ({ classroom, header = true }) => {
           padding: 2,
         }}
       >
-        {loading && <p>Loading...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {!loading &&
-          !error &&
+        {!error &&
           students.map((student, index) => (
             <Grid
               key={index}
@@ -74,7 +71,8 @@ const StudentList = ({ classroom, header = true }) => {
                 id={student.id}
                 first_name={student.first_name}
                 last_name={student.last_name}
-                balance={0}
+                checking_balance={student.checking_account.balance}
+                savings_balance={student.savings_account.balance}
               ></StudentCard>
             </Grid>
           ))}

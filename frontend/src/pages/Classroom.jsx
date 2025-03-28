@@ -11,6 +11,8 @@ import StudentList from "../components/StudentList";
 import ClassroomHeader from "../components/ClassroomHeader";
 import ClassroomFooter from "../components/ClassroomFooter";
 
+import TeacherView from "../components/TeacherView";
+
 import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
@@ -50,8 +52,8 @@ const Classroom = () => {
       >
         <Grid size="grow">
           <ClassroomHeader class_name={classroom.class_name || "Loading..."} />
-          {user.id === classroom?.fk_teacher_id ? (
-            <StudentList classroom={classroom} />
+          {user.id === classroom.fk_teacher_id ? (
+            <TeacherView classroom={classroom} />
           ) : (
             <StudentAccounts classroom_id={classroom.id} />
           )}
