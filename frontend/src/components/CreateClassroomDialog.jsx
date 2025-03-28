@@ -15,11 +15,16 @@ import AddIcon from "@mui/icons-material/Add";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from '@mui/material/Backdrop';
+
 import dayjs from "dayjs";
 import api from "../api";
 
 const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
   const current_date = dayjs().startOf("day");
+
+  const [waiting, setWaiting] = useState(false);
 
   const [startDate, setStartDate] = useState(current_date);
   const [endDate, setEndDate] = useState(current_date.add(6, "M"));
@@ -56,6 +61,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setWaiting(true);
     // alert(`
     //   class_name: ${formData.class_name}
     //   start_date: ${formData.start_date}
@@ -64,8 +70,9 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
     try {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);
-      onSubmit(response.data.classroom);
-      alert("Classroom added successfully!");
+      const newClassroom = response.data.classroom;
+      onSubmit(newClassroom);
+      alert(response.data.message);
       setStartDate(current_date); // Reset start date
       setEndDate(current_date.add(6, "M")); // Reset end date
       setFormData({
@@ -75,6 +82,8 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
       }); // Reset form data
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      setWaiting(false);
     }
   };
 
@@ -82,6 +91,11 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Create Classroom</DialogTitle>
       <DialogContent>
+        {waiting && (<Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={open}
+        onClick={handleClose}
+      ><CircularProgress /></Backdrop>)}
         <form onSubmit={handleSubmit} id="create_classroom_form">
           <TextField
             // autoFocus

@@ -52,7 +52,7 @@ const getClassroomsByTeacher = async (req, res) => {
  */
 const getClassroomsByStudent = async (req, res) => {
   // Logs for debugging
-  console.log("getClassroomsByStudent");
+  console.log("\n*** getClassroomsByStudent ***");
   console.log(req.user);
 
   // Get user_id from info attached by middleware
@@ -119,23 +119,25 @@ const createClassroom = async (req, res) => {
     const query =
       "INSERT INTO classroom (class_name, fk_teacher_id, start_date, end_date, class_code) VALUES (?, ?, ?, ?, ?)";
     try {
-      const insertedClassroom = db.execute(query, [
+      const [insertedClassroom] = await db.execute(query, [
         class_name,
         teacher_id,
         start_date,
         end_date,
         class_code,
       ]);
+      console.log(insertedClassroom.insertId);
+      const classroom = {
+        id: insertedClassroom.insertId,
+        class_name,
+        start_date,
+        end_date,
+        class_code,
+        num_students: 0,
+      };
       res.json({
-        data: `Classroom created successfully with ID ${insertedClassroom.insertId}`,
-        classroom: {
-          id: insertedClassroom.insertId,
-          class_name,
-          start_date,
-          end_date,
-          num_students: 0,
-          class_code,
-        },
+        message:`Classroom created successfully with ID ${insertedClassroom.insertId}`,
+        classroom,
       });
     } catch (error) {
       if (error.code === "ER_DUP_ENTRY") {
