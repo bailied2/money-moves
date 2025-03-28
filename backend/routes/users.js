@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const db = require("../sample_database.js");
 const authenticateToken = require("../authMiddleware.js");
-const sendEmail = require("../utils/emailService");  // Import email service
-const { default: ResetPassword } = require("../../frontend/src/components/ResetPassword.jsx");
+const {sendForgotPassword} = require("../utils/emailService");  // Import email service
+
 
 const JWT_SECRET = process.env.JWT_SECRET || // Should be kept to just environment variable in production
   "b165f503224f0b78f682934b5ea8d20c6520b14474c616b3c4392ea6318f91ddf45f019605906819c8484c2f14624fe532db88afd331d1840ca25a52c7f1303c";
@@ -27,15 +27,14 @@ router.post("/forgot-password", async (req, res) => {
     }
 
     // Generate token
-    const token = crypto.randomBytes(20).toString("hex");
-    const expiration = Date.now() + 3600000; // Token expires in 1 hour
+    const token = crypto.randomBytes(2).toString("hex");
+    console.log(token);
 
-    const updateSql = "UPDATE user SET password_reset_code = ?, WHERE email = ?";
+    const updateSql = "UPDATE user SET password_reset_code = ? WHERE email = ?";
     await db.execute(updateSql, [token, email]);
 
     // Send reset email using email service
-    const resetLink = `http://localhost:3000/reset-password/${token}`;
-    await sendEmail(email, "Password Reset Request", `Click here to reset your password:\n${resetLink}`);
+    await sendForgotPassword(email, token);
 
     res.json({ message: "Password reset email sent." });
 
@@ -217,6 +216,6 @@ router.get("/:id", getUserById);
 router.post("/", createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
-router.post("/reset-password", ResetPassword);
+
 
 module.exports = router;
