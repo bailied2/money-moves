@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
 import Loading from "./pages/Loading";
 import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/forgotPassword";
 // import logo from "./logo.svg";
 import "./App.css";
 
@@ -44,6 +45,7 @@ function App() {
           />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<UserRegistrationForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/test" element={<Test />} />
           <Route path="*" element={<NotFound />} /> {/* 404 Route */}
         </Routes>
