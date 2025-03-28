@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
-import api from "../api";
+import { TextField, Button, Container, Typography, Box, Link } from "@mui/material";
+import api from "../api"; // Assuming api.js is configured to make requests
 
 const LoginForm = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,7 +22,7 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const response = await api.post("/users/login", formData);
+      const response = await api.post("http://localhost:5001/users/login", formData);
       console.log(response.data);
 
       // alert("User logged in successfully!");
@@ -37,9 +36,7 @@ const LoginForm = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box
-        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
-      >
+      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
         <Typography variant="h5" gutterBottom>
           Log In
         </Typography>
@@ -79,6 +76,11 @@ const LoginForm = () => {
             Submit
           </Button>
         </form>
+        <Box sx={{ mt: 2 }}>
+          <Link href="/forgot-password" variant="body2">
+            Forgot your password?
+          </Link>
+        </Box>
       </Box>
     </Container>
   );
