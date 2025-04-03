@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { TextField, Button, Container, Typography, Box, Link } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Link,
+} from "@mui/material";
 import api from "../api"; // Assuming api.js is configured to make requests
 
 const LoginForm = () => {
@@ -9,7 +16,7 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-  
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -22,11 +29,11 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const response = await api.post("http://localhost:5001/users/login", formData);
+      const response = await api.post("/users/login", formData);
       console.log(response.data);
 
       // alert("User logged in successfully!");
-      navigate("/dashboard", {flushSync:true});
+      navigate("/dashboard", { flushSync: true });
       return <Navigate to="/login" />;
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -36,7 +43,9 @@ const LoginForm = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
+      <Box
+        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
+      >
         <Typography variant="h5" gutterBottom>
           Log In
         </Typography>
