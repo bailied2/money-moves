@@ -12,7 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
 import Loading from "./pages/Loading";
 import NotFound from "./pages/NotFound";
-import ForgotPassword from "./pages/forgotPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 // import logo from "./logo.svg";
 import "./App.css";
 

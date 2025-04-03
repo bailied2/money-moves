@@ -51,7 +51,7 @@ router.post("/forgot-password", async (req, res) => {
 router.post("/reset-password", async (req, res) => {
   const { token, password } = req.body;
 
-  const sql = "SELECT id, reset_token_expiry FROM user WHERE reset_token = ?";
+  const sql = "SELECT id FROM user WHERE reset_token = ?";
   try {
     const [results] = await db.execute(sql, [token]);
 
@@ -62,9 +62,9 @@ router.post("/reset-password", async (req, res) => {
     const user = results[0];
 
     // Check if token has expired
-    if (Date.now() > user.reset_token_expiry) {
-      return res.status(400).json({ error: "Reset token has expired." });
-    }
+    // if (Date.now() > user.reset_token_expiry) {
+    //   return res.status(400).json({ error: "Reset token has expired." });
+    // }
 
     // Hash the new password
     const saltRounds = 10;

@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer"); 
+
 let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -7,19 +8,20 @@ let transporter = nodemailer.createTransport({
       user: "moneymoveseconomy@gmail.com",
       pass: "ktovzdlrsxydhrxt",
     },
-  });
+});
 
-    async function  sendForgotPassword (email,token ){
+async function sendForgotPassword(email, token) {
+    const resetLink = `http://localhost:3000/reset-password/${token}`;  // Fixed link format
 
-    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
     const info = await transporter.sendMail({
-        from: '"moneymoveseconomy" <moneymoveseconomy@gmail.com>', // sender address
-        to: email, // list of receivers
-        subject: "Change Password", // Subject line
-        text: "Click this link to reset your password: " + resetLink, // plain text body
-        html: "<b>Click this link to reset your password: </b>" + resetLink, // html body
-      });
+        from: '"moneymoveseconomy" <moneymoveseconomy@gmail.com>',  // Sender address
+        to: email,  // Recipient
+        subject: "Change Password",  // Subject line
+        text: `Click this link to reset your password: ${resetLink}`,  // Plain text body
+        html: `<b>Click this link to reset your password:</b> <a href="${resetLink}">${resetLink}</a>`  // HTML body
+    });
 
-  }
-  
-module.exports.sendForgotPassword= sendForgotPassword;
+    console.log("Reset password email sent:", info.response);
+}
+
+module.exports.sendForgotPassword = sendForgotPassword;
