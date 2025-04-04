@@ -1,23 +1,24 @@
 import "./styles/CreatePropertyForm.css";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
 import { Container, Box, Typography, TextField, Button, Grid, MenuItem, Select, FormControl, InputLabel, Paper } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "../api"; 
 
-const CreatePropertyForm = () => {
+const CreatePropertyForm = ({ fk_classroom_id }) => {
   const current_date = dayjs().startOf("day");
 
   const [formData, setFormData] = useState({
+    classroom_id: fk_classroom_id,
     title: "",
     description: "",
     value: "",
     rent: "",
     maintenance: "",
-    pay_frequency: "Weekly", // Default value
-    pay_day: "Monday", // Default value
+    pay_frequency: "Weekly", 
+    pay_day: "Monday", 
     icon_class: "",
     start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
     end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
@@ -45,12 +46,17 @@ const CreatePropertyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/properties", formData);
+        // debugging
+        console.log("Form Data before submit:", formData);  
+     
+        //on submit, send post request to backend properties route 
+      const response = await api.post("/properties/properties", {...formData, classroom_id: fk_classroom_id});
       console.log(response.data);
       alert("Property created successfully!");
-      setStartDate(current_date); // Reset start date
-      setEndDate(current_date.add(6, "M")); // Reset end date
+      setStartDate(current_date); 
+      setEndDate(current_date.add(6, "M")); 
       setFormData({
+        classroom_id: fk_classroom_id,
         title: "",
         description: "",
         value: "",
@@ -61,7 +67,10 @@ const CreatePropertyForm = () => {
         icon_class: "",
         start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
         end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
-      }); // Reset form data
+      }); 
+      console.log("Form Data before submit:", formData);
+
+    //   formData.fk_classroom_id = formData.currentClassroomId;
     } catch (error) {
       console.error("Error creating property:", error);
     }
