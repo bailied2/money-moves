@@ -4,7 +4,7 @@ const db = require("../../sample_database");
 
 // GET /properties - Get all properties
 const getProperties = async (req, res) => {
-  const query = "SELECT * FROM properties";
+  const query = "SELECT * FROM property";
   // db.query(query, (err, results) => {
   //   if (err) {
   //     console.error("Error fetching properties:", err);
@@ -16,15 +16,15 @@ const getProperties = async (req, res) => {
     const [results] = await db.execute(query);
     res.json({ data: results });
   } catch (error) {
-    console.error("Error fetching properties:", error);
-    return res.status(500).json({ error: "Failed to fetch properties" });
+    console.error("Error fetching property:", error);
+    return res.status(500).json({ error: "Failed to fetch property" });
   }
 };
 
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = async (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM properties WHERE id = ?";
+  const query = "SELECT * FROM property WHERE id = ?";
   // db.query(query, [id], (err, results) => {
   //   if (err) {
   //     console.error("Error fetching property by ID:", err);
@@ -49,9 +49,12 @@ const getPropertyById = async (req, res) => {
 
 // POST /properties - Create a new property
 const createProperty = async (req, res) => {
-  const { name, value, rent, maintenance_cost, owner_id } = req.body; // Extracting data from request body
+  
+  const { classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class } = req.body;
+  console.log("Request Body:", req.body);
+  // Extracting data from request body
   const query =
-    "INSERT INTO properties (name, value, rent, maintenance_cost, owner_id) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO property (fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
   // db.query(
   //   query,
   //   [name, value, rent, maintenance_cost, owner_id],
@@ -67,11 +70,16 @@ const createProperty = async (req, res) => {
   // );
   try {
     const result = await db.execute(query, [
-      name,
+      classroom_id,
+      title,
+      description,
       value,
       rent,
-      maintenance_cost,
-      owner_id,
+      maintenance, 
+      pay_frequency,
+      pay_day,
+      icon_class,
+
     ]);
     res.json({
       data: `New property created successfully with ID ${result.insertId}`,
@@ -87,7 +95,7 @@ const updateProperty = async (req, res) => {
   const { id } = req.params;
   const { name, value, rent, maintenance_cost } = req.body; // Extracting updated data from request body
   const query =
-    "UPDATE properties SET name = ?, value = ?, rent = ?, maintenance_cost = ? WHERE id = ?";
+    "UPDATE property SET name = ?, value = ?, rent = ?, maintenance_cost = ? WHERE id = ?";
   // db.query(query, [name, value, rent, maintenance_cost, id], (err, result) => {
   //   if (err) {
   //     console.error("Error updating property:", err);
@@ -119,7 +127,7 @@ const updateProperty = async (req, res) => {
 // DELETE /properties/:id - Delete a specific property by ID
 const deleteProperty = async (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM properties WHERE id = ?";
+  const query = "DELETE FROM property WHERE id = ?";
   // db.query(query, [id], (err, result) => {
   //   if (err) {
   //     console.error("Error deleting property:", err);
