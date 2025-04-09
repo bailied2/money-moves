@@ -2,29 +2,35 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
-// GET /properties - Get all properties
 const getProperties = async (req, res) => {
   const query = "SELECT * FROM property";
-  // db.query(query, (err, results) => {
-  //   if (err) {
-  //     console.error("Error fetching properties:", err);
-  //     return res.status(500).send({ error: "Failed to fetch properties" });
-  //   }
-  //   res.send({ data: results });
-  // });
+
   try {
+    // Log before executing the query
+    console.log("Executing query:", query);
+
     const [results] = await db.execute(query);
+
+    // Log the results to see what data was returned
+    console.log("Query results:", results);
+
+    // Check if results are empty
+    if (results.length === 0) {
+      console.log("No properties found.");
+    }
+
     res.json({ data: results });
   } catch (error) {
-    console.error("Error fetching property:", error);
-    return res.status(500).json({ error: "Failed to fetch property" });
+    console.error("Error fetching properties:", error);
+    return res.status(500).json({ error: "Failed to fetch properties" });
   }
 };
+
 
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = async (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM property WHERE id = ?";
+  const query = "SELECT * FROM property WHERE fk_classroom_id = ?";
   // db.query(query, [id], (err, results) => {
   //   if (err) {
   //     console.error("Error fetching property by ID:", err);
@@ -95,7 +101,8 @@ const updateProperty = async (req, res) => {
   const { id } = req.params;
   const { name, value, rent, maintenance_cost } = req.body; // Extracting updated data from request body
   const query =
-    "UPDATE property SET name = ?, value = ?, rent = ?, maintenance_cost = ? WHERE id = ?";
+    "UPDATE property SET title = ?, description = ?, value = ?, rent = ? maintenance = ?, pay_frequency = ?, pay_day = ?, icon_class = ?";
+    // classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class
   // db.query(query, [name, value, rent, maintenance_cost, id], (err, result) => {
   //   if (err) {
   //     console.error("Error updating property:", err);
@@ -154,7 +161,7 @@ const deleteProperty = async (req, res) => {
 router.get("/properties", getProperties); // Get all properties
 router.get("/properties/:id", getPropertyById); // Get a property by ID
 router.post("/properties", createProperty); // Create a new property
-router.put("/properties/:id", updateProperty); // Update a property by ID
+router.put("/Updateproperty/:id", updateProperty); // Update a property by ID
 router.delete("/properties/:id", deleteProperty); // Delete a property by ID
 
 module.exports = router;
