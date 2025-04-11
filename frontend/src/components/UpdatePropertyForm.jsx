@@ -50,7 +50,7 @@ const UpdatePropertyForm = ({ fk_classroom_id }) => {
         console.log("Form Data before submit:", formData);  
      
         //on submit, send post request to backend properties route 
-      const response = await api.post("/properties/updateproperty", {...formData, classroom_id: fk_classroom_id});
+      const response = await api.post("/properties/:id", {...formData, classroom_id: fk_classroom_id});
       console.log(response.data);
       alert("Property updated successfully!");
       setStartDate(current_date); 

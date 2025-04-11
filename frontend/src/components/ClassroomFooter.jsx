@@ -9,7 +9,7 @@ const ClassroomFooter = ({ class_code }) => {
     <Stack
       direction="row"
       sx={{
-        position: "fixed",
+        //position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
