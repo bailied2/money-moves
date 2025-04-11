@@ -27,17 +27,24 @@ const getInvestmentAccounts = async (req, res) => {
 
 // GET /investment-accounts/classroom/:id - Get all investment accounts for a particular classroom
 const getInvestmentAccountsByClass = async (req, res) => {
-  const classroom_id = req.params.id;
+  const classroom_id = req.params.id; // Get classroom_id from params
   
   // Debug logs
   console.log("\n*** getInvestmentAccountsByClass ***");
 
   console.log("  classroom_id: ", classroom_id);
 
+  // Prepared statement
   const query = "SELECT * FROM investment_account WHERE fk_classroom_id = ?";
+
+  const selectYearlyValuesQuery = 
+    "SELECT ";
 
   try {
     const [investment_accounts] = await db.execute(query, [classroom_id]);
+    for (const investment_account of investment_accounts) {
+      
+    }
     res.json({ investment_accounts });
   } catch (error) {
     console.error("Error fetching investment accounts:", error);
