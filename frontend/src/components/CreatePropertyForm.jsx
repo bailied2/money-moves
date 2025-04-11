@@ -7,11 +7,13 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "../api"; 
 
-const CreatePropertyForm = ({ fk_classroom_id }) => {
+const CreatePropertyForm = ({ classroom_id }) => {
+
   const current_date = dayjs().startOf("day");
+  
+console.log("creating property form");
 
   const [formData, setFormData] = useState({
-    classroom_id: fk_classroom_id,
     title: "",
     description: "",
     value: "",
@@ -20,6 +22,7 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
     pay_frequency: "Weekly", 
     pay_day: "Monday", 
     icon_class: "",
+
     start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
     end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
   });
@@ -50,13 +53,12 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
         console.log("Form Data before submit:", formData);  
      
         //on submit, send post request to backend properties route 
-      const response = await api.post("/properties/properties", {...formData, classroom_id: fk_classroom_id});
+      const response = await api.post("/properties", {formData, classroom_id: classroom_id});
       console.log(response.data);
       alert("Property created successfully!");
       setStartDate(current_date); 
       setEndDate(current_date.add(6, "M")); 
       setFormData({
-        classroom_id: fk_classroom_id,
         title: "",
         description: "",
         value: "",

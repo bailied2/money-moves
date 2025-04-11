@@ -113,10 +113,10 @@ const ClassroomList = ({ header = true, teacher = false }) => {
           display="flex"
           justifyContent="center"
         >
-          {/* {<AddNewCard
+          {<AddNewCard
             label="Create New Classroom"
             onClassroomAdded={addClassroom}
-          />} */}
+          />}
           {!loading &&
             (teacher ? (
               <CreateClassroomDialog onSubmit={addClassroom} />

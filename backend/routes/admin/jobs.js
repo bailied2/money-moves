@@ -2,16 +2,10 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
-// GET /jobs - Get all jobs in classrooms
+// GET /jobs - Get all jobs in a specific classroom
 const getJobs = async (req, res) => {
-  const query = "SELECT * FROM jobs";
-  // db.query(query, (err, results) => {
-  //   if (err) {
-  //     console.error("Error fetching jobs:", err);
-  //     return res.status(500).send({ error: "Failed to fetch jobs" });
-  //   }
-  //   res.send({ data: results });
-  // });
+  const query = "SELECT * FROM job WHERE fk_classroom_id = ?";
+ 
   try {
     const [results] = await db.execute(query);
     res.json({ data: results });
@@ -21,30 +15,45 @@ const getJobs = async (req, res) => {
   }
 };
 
+const getJobById = async (req,res) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM job WHERE id = ?";
+  console.log("Request Body:", req.body);
+  try {
+    const [results] = await db.execute(query, [id]);
+    if (results.length === 0) {
+      return res.status(404).json({ error: "job not found" });
+    }
+    res.json({ data: results[0] });
+  } catch (error) {
+    console.error("Error fetching job by ID:", error);
+    return res.status(500).json({ error: "Failed to fetch job" });
+  }
+
+};
+
 // POST /jobs - Create a new job
 const createJob = async (req, res) => {
-  const { title, wage, description, classroom_id } = req.body; // Extracting data from request body
+  const { job_title, wage, job_description, pay_frequency, pay_day, icon_class, is_trustee } = req.body.formData;
+  const {classroom_id}= req.body;
+  // Extracting data from request body
   console.log("Request Body:", req.body);
   const query =
-    "INSERT INTO jobs (title, wage, description, classroom_id) VALUES (?, ?, ?, ?)";
-  // db.query(query, [title, wage, description, classroom_id], (err, result) => {
-  //   if (err) {
-  //     console.error("Error creating job:", err);
-  //     return res.status(500).send({ error: "Failed to create job" });
-  //   }
-  //   res.send({
-  //     data: `New job created successfully with ID ${result.insertId}`,
-  //   });
-  // });
+    "INSERT INTO job (fk_classroom_id, title, wage, description, pay_frequency, pay_day, icon_class, is_trustee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+  
   try {
     const result = await db.execute(query, [
-      title,
-      wage,
-      description,
-      classroom_id,
+      classroom_id, 
+      job_title, 
+      wage, 
+      job_description, 
+      pay_frequency, 
+      pay_day, 
+      icon_class, 
+      is_trustee,
     ]);
     res.json({
-      data: `New job created successfully with ID ${result.insertId}`,
+      data: `New job created successfully `,
     });
   } catch (error) {
     console.error("Error creating job:", error);
@@ -54,21 +63,22 @@ const createJob = async (req, res) => {
 
 // PUT /jobs - Update job details
 const updateJob = async (req, res) => {
-  const { id, title, wage, description } = req.body; // Extracting updated data from request body
+  const { title, wage, description, pay_day, pay_frequency, icon_class, is_trustee } = req.body.formData; // Extracting updated data from request body
+  const id = req.params.id;
   const query =
-    "UPDATE jobs SET title = ?, wage = ?, description = ? WHERE id = ?";
-  // db.query(query, [title, wage, description, id], (err, result) => {
-  //   if (err) {
-  //     console.error("Error updating job:", err);
-  //     return res.status(500).send({ error: "Failed to update job" });
-  //   }
-  //   if (result.affectedRows === 0) {
-  //     return res.status(404).send({ error: "Job not found" });
-  //   }
-  //   res.send({ data: `Job with ID ${id} updated successfully` });
-  // });
+    "UPDATE job SET title = ?, wage = ?, description = ?, pay_day = ?, pay_frequency =?, icon_class = ?, is_trustee = ? WHERE id = ?";
+  
   try {
-    const [results] = await db.execute(query, [title, wage, description, id]);
+    const [results] = await db.execute(query, [
+      title, 
+      wage, 
+      description,
+      pay_day,
+      pay_frequency,
+      icon_class,
+      is_trustee,
+      id
+    ]);
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: "Job not found" });
     }
@@ -89,17 +99,21 @@ const deleteJob = async (req, res) => {
     }
     res.send({ data: "All jobs deleted successfully" });
   });
-  // try {
-  //   const [results] = await db.execute(query);
-  // } catch (error) {
-  //   res.status(500).json({ error: error.message });
-  // }
+ 
 };
 
 // Routes definition using the functions above
-router.get("/jobs", getJobs); // Get all jobs
-router.post("/jobs", createJob); // Create a new job
-router.put("/jobs", updateJob); // Update job details
-router.delete("/jobs", deleteJob); // Delete all jobs
+router.get("/classroom/:id/jobs", getJobs); // Get all jobs
+router.get("/:id", getJobById); // Get a job by ID
+router.post("/", createJob); // Create a new job
+router.put("/:id", updateJob); // Update job details
+router.delete("/:id", deleteJob); //Delete a job
+
+
 
 module.exports = router;
+
+// for updates, fetch all the data for that specific job, 
+// (get request to the backend to get a property by id), 
+// then set the fields to the form data
+//

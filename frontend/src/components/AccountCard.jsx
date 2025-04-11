@@ -7,6 +7,8 @@ import {
   Button,
 } from "@mui/material";
 
+import "./styles/AccountCard.css";
+
 const AccountCard = ({
   id,
   account_type,
