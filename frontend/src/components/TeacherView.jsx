@@ -105,6 +105,9 @@ const TeacherView = ({ classroom }) => {
       <CustomTabPanel value={value} index={3}>
         {/* <PropertyList classroom={classroom} />  */}
          <CreatePropertyForm classroom_id={classroom.id}></CreatePropertyForm>
+         <UpdatePropertyForm
+          property_id= {2}>
+         </UpdatePropertyForm>
       </CustomTabPanel>
 
 

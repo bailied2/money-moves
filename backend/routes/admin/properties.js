@@ -8,7 +8,7 @@ const db = require("../../sample_database");
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = async (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM property WHERE fk_classroom_id = ?, id= ?";
+  const query = "SELECT * FROM property WHERE id= ?";
   console.log("Request Body:", req.body);
   try {
     const [results] = await db.execute(query, [id]);
@@ -56,15 +56,26 @@ const createProperty = async (req, res) => {
 
 // PUT /properties/:id - Update a specific property by ID
 const updateProperty = async (req, res) => {
+  const { title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class } = req.body.formData; // Extracting updated data from request body
   const { id } = req.params;
-  const { fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class } = req.body; // Extracting updated data from request body
   console.log("Request Body:", req.body);
   const query =
-    "UPDATE property SET title = ?, description = ?, value = ?, rent = ? maintenance = ?, pay_frequency = ?, pay_day = ?, icon_class = ?";
+    "UPDATE property SET title = ?, description = ?, value = ?, rent = ?, maintenance = ?, pay_frequency = ?, pay_day = ?, icon_class = ? WHERE id = ?";
     
+console.log([
+  title,
+  description,
+  value,
+  rent,
+  maintenance,
+  pay_frequency,
+  pay_day,
+  icon_class,
+  id,
+]);
+
   try {
     const [results] = await db.execute(query, [
-      fk_classroom_id,
       title,
       description,
       value,
@@ -73,11 +84,12 @@ const updateProperty = async (req, res) => {
       pay_frequency,
       pay_day,
       icon_class,
+      id,
     ]);
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: "Property not found" });
     }
-    res.json({ data: `Property with ID ${id} updated successfully` });
+    res.json({ data: `Property updated successfully` });
   } catch (error) {
     console.error("Error updating property:", error);
     return res.status(500).json({ error: "Failed to update property" });
