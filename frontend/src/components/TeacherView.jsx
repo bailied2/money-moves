@@ -5,10 +5,6 @@ import { AuthContext } from "../AuthContext";
 import PropertyList from "../components/PropertyList";
 import CreateJobForm from "../components/CreateJobForm";
 
-
-
-
-
 import Tab from '@mui/material/Tab';
 import CreatePropertyForm from "./CreatePropertyForm";
 import { Box, CircularProgress, Typography, Stack, Button } from "@mui/material";
@@ -27,9 +23,7 @@ import YearEnds from "./YearEnds";
 
 import Grid from "@mui/material/Grid2";
 
-
 import Tabs from '@mui/material/Tabs';
-
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -79,30 +73,29 @@ const TeacherView = ({ classroom }) => {
         </Tabs>
       </Box>
 
-      <CustomTabPanel value={value} index={0}>
+      {/* Students Tab */}
+      <CustomTabPanel id="students_tab_panel" value={value} index={0}>
         <StudentList classroom={classroom} />
       </CustomTabPanel>
 
 
-      <CustomTabPanel value={value} index={1}>
+      {/* Fees/Bonuses Tab */}
+      <CustomTabPanel id="fees_bonuses_tab_panel" value={value} index={1}>
         Fees/Bonuses
       </CustomTabPanel>
 
 
-      <CustomTabPanel value={value} index={2}>
+      {/* Jobs Tab */}
+      <CustomTabPanel id="jobs_tab_panel" value={value} index={2}>
         {/* Jobs tab- Display Create Jobs Form*/}
-        <CreateJobForm  
-        classroom_id = {classroom.id} >
-        </CreateJobForm>
+        <CreateJobForm classroom_id={classroom.id} />
 
         {/* Jobs tab- Display Update Jobs Form*/}
-        <UpdateJobForm
-        job_id = {2}>
-        </UpdateJobForm>
-
-
+        <UpdateJobForm job_id = {2} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      
+      {/* Properties Tab */}
+      <CustomTabPanel id="properties_tab_panel" value={value} index={3}>
         {/* <PropertyList classroom={classroom} />  */}
          <CreatePropertyForm classroom_id={classroom.id}></CreatePropertyForm>
          <UpdatePropertyForm
@@ -111,44 +104,20 @@ const TeacherView = ({ classroom }) => {
       </CustomTabPanel>
 
 
-      <CustomTabPanel value={value} index={4}>
-        Investment Accounts
-      </CustomTabPanel>
-
-
-      <CustomTabPanel value={value} index={5}>
-        Year Ends
-      </CustomTabPanel>
-
-
-          {/* Buttons to Switch View Modes */}
-          <Box sx={{ marginTop: 2 }}>
-            <Button onClick={() => setViewMode("list")}>View Properties</Button>
-            <Button onClick={() => setViewMode("create")}>Create Property</Button>
-            <Button onClick={() => setViewMode("update")}>Update Property</Button>
-          </Box>
-        
-      
-  
-      <CustomTabPanel value={value} index={0}>
-        <StudentList classroom={classroom} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        Fees/Bonuses
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Jobs
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
-        Properties
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
+      {/* Investment Accounts Tab */}
+      <CustomTabPanel id="investment_accounts_tab_panel" value={value} index={4}>
         <InvestmentAccountList classroom_id={classroom.id} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+
+
+      {/* Year Ends Tab */}
+      <CustomTabPanel id="year_ends_tab_panel" value={value} index={5}>
         <YearEnds classroom_id={classroom.id} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={6}>
+
+
+      {/* Settings Tab */}
+      <CustomTabPanel id="settings_tab_panel" value={value} index={6}>
         Settings
       </CustomTabPanel>
     </Box>
