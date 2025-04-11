@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" >
         <Toolbar id="nav_toolbar">
           <Link id="home" component={Button} underline="none" href="/">
             Money Moves Academy

@@ -8,7 +8,7 @@ const theme = createTheme({
     
         palette: {
           primary: {
-            main: "#FFFFFF",
+            main: "#EADCD7",
           },
           secondary: {
             main: "#9c27b0",
@@ -33,6 +33,13 @@ const theme = createTheme({
             styleOverrides: {
               root: {
                 backgroundColor: "#FA7921", // Global background color for all cards
+              },
+            },
+          },
+          MuiAppBar: {
+            styleOverrides: {
+              root: {
+                backgroundColor: "#08415c",
               },
             },
           },
