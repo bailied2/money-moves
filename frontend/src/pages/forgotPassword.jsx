@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";  // For making API requests
 import { useNavigate } from "react-router-dom";
 
 import api from "../api";
@@ -45,7 +44,7 @@ const ForgotPassword = () => {
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
 
-        <form onSubmit={NewPassword} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
             <input

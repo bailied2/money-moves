@@ -18,7 +18,7 @@ const AddNewCard = ({ label, onClassroomAdded }) => {
           maxWidth: 300,
           aspectRatio: "3/2",
           padding: 1,
-          border: "3px dashed lightgrey",
+          border: "3px dashed #174C66",
           borderRadius: 2,
           display: "flex",
           alignItems: "center",

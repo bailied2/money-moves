@@ -3,6 +3,7 @@ import React from "react";
 import { NavLink } from "react-router";
 
 import { Stack, Typography, Paper } from "@mui/material";
+import "./styles/ClassroomFooter.css";
 
 const ClassroomFooter = ({ class_code }) => {
   return (

@@ -2,18 +2,34 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../AuthContext";
 
-import StudentList from "../components/StudentList";
 import PropertyList from "../components/PropertyList";
 import CreateJobForm from "../components/CreateJobForm";
-import UpdateJobForm from "../components/UpdateJobForm";
 
 
 
-import { Box } from '@mui/material';
 
-import Tabs from '@mui/material/Tabs';
+
 import Tab from '@mui/material/Tab';
 import CreatePropertyForm from "./CreatePropertyForm";
+import { Box, CircularProgress, Typography, Stack, Button } from "@mui/material";
+
+import PropertyCard from "../components/PropertyCard"; // Import PropertyCard
+import UpdatePropertyForm from "../components/UpdatePropertyForm"; // Import UpdatePropertyForm
+import UpdateJobForm from "../components/UpdateJobForm"; // Import UpdatePropertyForm
+
+import api from "../api"; // Assuming you have an API setup to fetch properties
+
+import { grey } from "@mui/material/colors";
+
+import StudentList from "../components/StudentList";
+import InvestmentAccountList from "./InvestmentAccountList";
+import YearEnds from "./YearEnds";
+
+import Grid from "@mui/material/Grid2";
+
+
+import Tabs from '@mui/material/Tabs';
+
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -40,6 +56,7 @@ const TeacherView = ({ classroom }) => {
   const { user, user_loading } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [value, setValue] = useState(0);
+  const [viewMode, setViewMode] = useState("list");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -86,7 +103,7 @@ const TeacherView = ({ classroom }) => {
 
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <PropertyList classroom={classroom} /> 
+        {/* <PropertyList classroom={classroom} />  */}
          <CreatePropertyForm classroom_id={classroom.id}></CreatePropertyForm>
       </CustomTabPanel>
 
@@ -101,6 +118,33 @@ const TeacherView = ({ classroom }) => {
       </CustomTabPanel>
 
 
+          {/* Buttons to Switch View Modes */}
+          <Box sx={{ marginTop: 2 }}>
+            <Button onClick={() => setViewMode("list")}>View Properties</Button>
+            <Button onClick={() => setViewMode("create")}>Create Property</Button>
+            <Button onClick={() => setViewMode("update")}>Update Property</Button>
+          </Box>
+        
+      
+  
+      <CustomTabPanel value={value} index={0}>
+        <StudentList classroom={classroom} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        Fees/Bonuses
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        Jobs
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        Properties
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={4}>
+        <InvestmentAccountList classroom_id={classroom.id} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={5}>
+        <YearEnds classroom_id={classroom.id} />
+      </CustomTabPanel>
       <CustomTabPanel value={value} index={6}>
         Settings
       </CustomTabPanel>

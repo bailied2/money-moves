@@ -7,17 +7,18 @@ import {
   Typography,
   Fab,
   TextField,
+  InputAdornment,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 import api from "../api";
 
-const AddStudentCard = ({ classroom = null, onSubmit }) => {
+const AddInvestmentCard = ({ classroom_id, onSubmit }) => {
   const [opened, setOpened] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
+    title: "",
+    description: "",
+    initial_value: "",
   });
 
   const handleOpen = () => {
@@ -34,22 +35,22 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!classroom) {
-      alert("No classroom prop! Cannot submit form.");
+    if (!classroom_id) {
+      alert("No classroom_id prop! Cannot submit form.");
     } else {
       try {
-        const response = await api.post("/students/classroom/add", {
-          students: [formData],
-          classroom,
+        const response = await api.post("/investment-accounts", {
+          ...formData,
+          classroom_id: classroom_id,
         });
         if (typeof onSubmit === "function") {
-          onSubmit(response.data.students);
+          onSubmit(response.data.investment_account);
         }
-        alert("Student added successfully!");
+        alert("Investment account added successfully!");
         setFormData({
-          first_name: "",
-          last_name: "",
-          email: "",
+          title: "",
+          description: "",
+          initial_value: "",
         }); // Reset form data
       } catch (error) {
         console.error("Error submitting form:", error);
@@ -57,16 +58,6 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
     }
   };
 
-  // sx={{
-  //   position: "relative",
-  //   minHeight: 185,
-  //   maxWidth: 300,
-  //   aspectRatio: "3/2",
-  //   padding: 1,
-  //   borderRadius: 2,
-  //   display: "flex",
-  //   flexDirection: "column",
-  // }}
   if (opened)
     return (
       <Card
@@ -83,20 +74,17 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
           flexDirection: "column",
         }}
       >
-        <CardContent >
-          <form onSubmit={handleSubmit} id="add_student_form">
+        <CardContent>
+          <form onSubmit={handleSubmit} id="add_investment_account_form">
             <Typography variant="h5">
-              Add Student
-              <Button variant="outlined" size="small" sx={{ marginLeft: 2 }}>
-                Import
-              </Button>
+              Add Investment Account
             </Typography>
             <TextField
               size="small"
               variant="standard"
-              label="First Name"
-              name="first_name"
-              value={formData.first_name}
+              label="Title"
+              name="title"
+              value={formData.title}
               onChange={handleChange}
               fullWidth
               margin="dense"
@@ -105,9 +93,9 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
             <TextField
               size="small"
               variant="standard"
-              label="Last Name"
-              name="last_name"
-              value={formData.last_name}
+              label="Description"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               fullWidth
               margin="dense"
@@ -116,19 +104,23 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
             <TextField
               size="small"
               variant="standard"
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
+              label="Initial Value"
+              name="initial_value"
+              value={formData.initial_value}
               onChange={handleChange}
               fullWidth
               margin="dense"
               required
+              slotProps={{
+                input: {
+                  startAdornment:<InputAdornment position="start">$</InputAdornment>
+                }
+              }}
             />
           </form>
         </CardContent>
         <CardActions>
-          <Button size="small" type="submit" form="add_student_form">
+          <Button size="small" type="submit" form="add_investment_account_form">
             Submit
           </Button>
           <Button size="small" onClick={handleClose} color="error">
@@ -167,7 +159,7 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
         }}
       >
         <Typography variant="button" align="center">
-          Add Student
+          Add Investment Account
         </Typography>
         <Fab onClick={handleOpen}>
           <AddIcon />
@@ -177,4 +169,4 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
   );
 };
 
-export default AddStudentCard;
+export default AddInvestmentCard;

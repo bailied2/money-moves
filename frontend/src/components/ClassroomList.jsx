@@ -59,6 +59,11 @@ const ClassroomList = ({ header = true, teacher = false }) => {
       sx={{
         maxWidth: "80%",
         margin: "0 auto",
+        marginBottom: 2,
+        borderRadius: 5,
+        boxShadow: 1,
+        bgcolor: "#174C66",
+        padding: 2,
       }}
     >
       {header && (
@@ -72,11 +77,7 @@ const ClassroomList = ({ header = true, teacher = false }) => {
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
-          borderRadius: 5,
-          boxShadow: 1,
-          bgcolor: grey[300],
           alignItems: "flex-start",
-          padding: 2,
         }}
       >
         {loading && (
@@ -95,13 +96,14 @@ const ClassroomList = ({ header = true, teacher = false }) => {
               justifyContent="center"
             >
               <ClassCard
-                title={classroom.class_name}
-                num_students={classroom.num_students}
-                // start_date={classroom.start_date}
-                // end_date={classroom.end_date}
-                start_date={dayjs(classroom.start_date).format("M/D/YYYY")}
-                end_date={dayjs(classroom.end_date).format("M/D/YYYY")}
-                id={classroom.id}
+                // title={classroom.class_name}
+                // num_students={classroom.num_students}
+                // // start_date={classroom.start_date}
+                // // end_date={classroom.end_date}
+                // start_date={dayjs(classroom.start_date).format("M/D/YYYY")}
+                // end_date={dayjs(classroom.end_date).format("M/D/YYYY")}
+                // id={classroom.id}
+                classroom={classroom}
                 onDelete={deleteClassroom.bind(null, classroom.id)}
               ></ClassCard>
             </Grid>
