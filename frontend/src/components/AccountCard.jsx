@@ -21,7 +21,7 @@ const AccountCard = ({
         overflow: "visible",
         minHeight: 185,
         maxWidth: 300,
-        aspectRatio: "3/2",
+        // aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
         display: "flex",

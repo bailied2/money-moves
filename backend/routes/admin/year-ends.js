@@ -23,6 +23,46 @@ const getYearEnds = async (req, res) => {
   }
 };
 
+// GET /year-ends/classroom/:id - Get all investment accounts for a particular classroom
+const getYearEndsByClass = async (req, res) => {
+  const classroom_id = req.params.id; // Get classroom_id from params
+  
+  // Debug logs
+  console.log("\n*** getYearEndsByClass ***");
+
+  console.log("  classroom_id: ", classroom_id);
+
+  // Prepared statement
+  const selectYearEndsQuery = "SELECT * FROM year_end WHERE fk_classroom_id = ?";
+
+  const selectInvestmentValuesQuery = 
+    `SELECT investment_values.fk_year_end_id AS fk_year_end_id, investment_account.title as title, investment_values.share_value AS value 
+    FROM investment_values
+    RIGHT JOIN investment_account
+    ON investment_values.fk_account_id = investment_account.id
+    WHERE investment_account.fk_classroom_id = ?`;
+
+  try {
+    // Get all year ends for classroom
+    const [year_ends] = await db.execute(selectYearEndsQuery, [classroom_id]);
+    // Get yearly values for classroom
+    const [investment_values] = await db.execute(selectInvestmentValuesQuery, [classroom_id]);
+
+    // For each year end
+    for (const year_end of year_ends) {
+      // Add account values for the year to the object
+      year_end.investment_values = investment_values.filter((row) => row.fk_year_end_id == year_end.id);
+    }
+    // Send response with year_ends
+    res.json({ year_ends });
+  } catch (error) {
+    console.error("Error fetching year ends:", error);
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch year ends" });
+  }
+};
+
 // GET /year-ends/:id - Get a specific year-end record by ID
 const getYearEndById = async (req, res) => {
   const { id } = req.params;
@@ -137,10 +177,11 @@ const deleteYearEnd = async (req, res) => {
 };
 
 // Routes definition using the functions above
-router.get("/year-ends", getYearEnds); // Get all year-end records
-router.get("/year-ends/:id", getYearEndById); // Get a year-end record by ID
-router.post("/year-ends", createYearEnd); // Create a new year-end record
-router.put("/year-ends/:id", updateYearEnd); // Update a year-end record by ID
-router.delete("/year-ends/:id", deleteYearEnd); // Delete a year-end record by ID
+router.get("/", getYearEnds); // Get all year-end records
+router.get("/classroom/:id", getYearEndsByClass) // Get all year ends for a particular class
+router.get("/:id", getYearEndById); // Get a year-end record by ID
+router.post("/", createYearEnd); // Create a new year-end record
+router.put("/:id", updateYearEnd); // Update a year-end record by ID
+router.delete("/:id", deleteYearEnd); // Delete a year-end record by ID
 
 module.exports = router;

@@ -10,14 +10,14 @@ const ClassroomFooter = ({ class_code }) => {
     <Stack
       direction="row"
       sx={{
-        position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         alignItems: "baseline",
         justifyContent: "space-around",
         padding: 2,
-        flexBasis: "",
+        
+        // flexBasis: "",
       }}
     >
       <NavLink to="/">

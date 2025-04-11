@@ -47,7 +47,7 @@ const ClassCard = ({
           End Date: {dayjs(classroom.end_date).format("M/D/YYYY")}
         </Typography>
       </CardContent>
-      <CardActions sx={{ padding: 0 }}>
+      <CardActions>
         <Link to={`/classroom/${classroom.id}`} state={{classroom}}>
           <Button size="small">Open</Button>
         </Link>
