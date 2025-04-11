@@ -1,4 +1,4 @@
-import "./styles/CreatePropertyForm.css";
+import "./styles/UpdatePropertyForm.css";
 
 import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
@@ -7,7 +7,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "../api"; 
 
-const CreatePropertyForm = ({ fk_classroom_id }) => {
+const UpdatePropertyForm = ({ fk_classroom_id }) => {
   const current_date = dayjs().startOf("day");
 
   const [formData, setFormData] = useState({
@@ -50,9 +50,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
         console.log("Form Data before submit:", formData);  
      
         //on submit, send post request to backend properties route 
-      const response = await api.post("/properties/properties", {...formData, classroom_id: fk_classroom_id});
+      const response = await api.post("/properties/updateproperty", {...formData, classroom_id: fk_classroom_id});
       console.log(response.data);
-      alert("Property created successfully!");
+      alert("Property updated successfully!");
       setStartDate(current_date); 
       setEndDate(current_date.add(6, "M")); 
       setFormData({
@@ -72,7 +72,7 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
 
     //   formData.fk_classroom_id = formData.currentClassroomId;
     } catch (error) {
-      console.error("Error creating property:", error);
+      console.error("Error updating property:", error);
     }
   };
 
@@ -80,7 +80,7 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
     <Container maxWidth="sm">
       <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
         <Typography variant="h5" gutterBottom>
-          Create Property
+          Update Property
         </Typography>
         <form onSubmit={handleSubmit}>
           {/* Property Title */}
@@ -243,7 +243,7 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             fullWidth
             sx={{ mt: 2 }}
           >
-            Create Property
+            Update Property
           </Button>
         </form>
       </Box>
@@ -251,4 +251,4 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
   );
 };
 
-export default CreatePropertyForm;
+export default UpdatePropertyForm;

@@ -55,21 +55,6 @@ const createYearEnd = async (req, res) => {
     req.body;
   const query =
     "INSERT INTO year_ends (year, total_income, total_expenses, net_profit, classroom_id) VALUES (?, ?, ?, ?, ?)";
-  // db.query(
-  //   query,
-  //   [year, total_income, total_expenses, net_profit, classroom_id],
-  //   (err, result) => {
-  //     if (err) {
-  //       console.error("Error creating year-end record:", err);
-  //       return res
-  //         .status(500)
-  //         .send({ error: "Failed to create year-end record" });
-  //     }
-  //     res.send({
-  //       data: `Year-end record created successfully with ID ${result.insertId}`,
-  //     });
-  //   }
-  // );
   try {
     const result = await db.execute(query, [
       year,

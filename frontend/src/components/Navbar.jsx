@@ -1,4 +1,4 @@
-// import "./styles/Navbar.css";
+import "./styles/Navbar.css";
 import React, { useContext } from "react";
 import { AppBar, Box, Toolbar, Button, Link } from "@mui/material";
 
@@ -29,6 +29,7 @@ const Navbar = () => {
 
           <Link
             id="dashboard"
+            className="dashboard"
             component={Button}
             variant="body2"
             underline="none"

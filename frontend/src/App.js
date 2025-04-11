@@ -9,10 +9,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
-import Classroom from "./pages/Classroom";
+import Classroom from "./pages/Classroom2";
 import Loading from "./pages/Loading";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
+
 // import logo from "./logo.svg";
 import "./App.css";
 

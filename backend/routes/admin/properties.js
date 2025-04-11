@@ -2,18 +2,23 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
-// GET /properties - Get all properties
 const getProperties = async (req, res) => {
-  const query = "SELECT * FROM properties";
-  // db.query(query, (err, results) => {
-  //   if (err) {
-  //     console.error("Error fetching properties:", err);
-  //     return res.status(500).send({ error: "Failed to fetch properties" });
-  //   }
-  //   res.send({ data: results });
-  // });
+  const query = "SELECT * FROM property";
+
   try {
+    // Log before executing the query
+    console.log("Executing query:", query);
+
     const [results] = await db.execute(query);
+
+    // Log the results to see what data was returned
+    console.log("Query results:", results);
+
+    // Check if results are empty
+    if (results.length === 0) {
+      console.log("No properties found.");
+    }
+
     res.json({ data: results });
   } catch (error) {
     console.error("Error fetching properties:", error);
@@ -21,10 +26,11 @@ const getProperties = async (req, res) => {
   }
 };
 
+
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = async (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM properties WHERE id = ?";
+  const query = "SELECT * FROM property WHERE fk_classroom_id = ?";
   // db.query(query, [id], (err, results) => {
   //   if (err) {
   //     console.error("Error fetching property by ID:", err);
@@ -49,9 +55,12 @@ const getPropertyById = async (req, res) => {
 
 // POST /properties - Create a new property
 const createProperty = async (req, res) => {
-  const { name, value, rent, maintenance_cost, owner_id } = req.body; // Extracting data from request body
+  
+  const { classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class } = req.body;
+  console.log("Request Body:", req.body);
+  // Extracting data from request body
   const query =
-    "INSERT INTO properties (name, value, rent, maintenance_cost, owner_id) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO property (fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
   // db.query(
   //   query,
   //   [name, value, rent, maintenance_cost, owner_id],
@@ -67,11 +76,16 @@ const createProperty = async (req, res) => {
   // );
   try {
     const result = await db.execute(query, [
-      name,
+      classroom_id,
+      title,
+      description,
       value,
       rent,
-      maintenance_cost,
-      owner_id,
+      maintenance, 
+      pay_frequency,
+      pay_day,
+      icon_class,
+
     ]);
     res.json({
       data: `New property created successfully with ID ${result.insertId}`,
@@ -87,7 +101,8 @@ const updateProperty = async (req, res) => {
   const { id } = req.params;
   const { name, value, rent, maintenance_cost } = req.body; // Extracting updated data from request body
   const query =
-    "UPDATE properties SET name = ?, value = ?, rent = ?, maintenance_cost = ? WHERE id = ?";
+    "UPDATE property SET title = ?, description = ?, value = ?, rent = ? maintenance = ?, pay_frequency = ?, pay_day = ?, icon_class = ?";
+    // classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class
   // db.query(query, [name, value, rent, maintenance_cost, id], (err, result) => {
   //   if (err) {
   //     console.error("Error updating property:", err);
@@ -119,7 +134,7 @@ const updateProperty = async (req, res) => {
 // DELETE /properties/:id - Delete a specific property by ID
 const deleteProperty = async (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM properties WHERE id = ?";
+  const query = "DELETE FROM property WHERE id = ?";
   // db.query(query, [id], (err, result) => {
   //   if (err) {
   //     console.error("Error deleting property:", err);
@@ -146,7 +161,7 @@ const deleteProperty = async (req, res) => {
 router.get("/properties", getProperties); // Get all properties
 router.get("/properties/:id", getPropertyById); // Get a property by ID
 router.post("/properties", createProperty); // Create a new property
-router.put("/properties/:id", updateProperty); // Update a property by ID
+router.put("/Updateproperty/:id", updateProperty); // Update a property by ID
 router.delete("/properties/:id", deleteProperty); // Delete a property by ID
 
 module.exports = router;

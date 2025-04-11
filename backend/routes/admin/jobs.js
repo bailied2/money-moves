@@ -24,6 +24,7 @@ const getJobs = async (req, res) => {
 // POST /jobs - Create a new job
 const createJob = async (req, res) => {
   const { title, wage, description, classroom_id } = req.body; // Extracting data from request body
+  console.log("Request Body:", req.body);
   const query =
     "INSERT INTO jobs (title, wage, description, classroom_id) VALUES (?, ?, ?, ?)";
   // db.query(query, [title, wage, description, classroom_id], (err, result) => {
