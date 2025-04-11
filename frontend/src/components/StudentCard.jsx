@@ -6,8 +6,10 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 const StudentCard = ({ first_name, last_name, checking_balance, savings_balance, jobs = [], savings_enabled = true }) => {
+  const theme = useTheme(); // Use the theme here
   return (
     <Card
       raised
@@ -20,6 +22,7 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
+        
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>

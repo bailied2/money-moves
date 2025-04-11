@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: grey[300] }}>
+      <AppBar position="static">
         <Toolbar id="nav_toolbar">
           <Link id="home" component={Button} underline="none" href="/">
             Money Moves Academy
@@ -22,6 +22,7 @@ const Navbar = () => {
 
           <Link
             id="dashboard"
+            className="dashboard"
             component={Button}
             variant="body2"
             underline="none"
