@@ -97,10 +97,15 @@ const TeacherView = ({ classroom }) => {
       {/* Properties Tab */}
       <CustomTabPanel id="properties_tab_panel" value={value} index={3}>
         {/* <PropertyList classroom={classroom} />  */}
-         <CreatePropertyForm classroom_id={classroom.id}></CreatePropertyForm>
-         <UpdatePropertyForm
-          property_id= {2}>
-         </UpdatePropertyForm>
+        <CreatePropertyForm classroom_id={classroom.id} />
+        <UpdatePropertyForm property_id= {2} />
+        
+        {/* Buttons to Switch View Modes */}
+        <Box sx={{ marginTop: 2 }}>
+          <Button onClick={() => setViewMode("list")}>View Properties</Button>
+          <Button onClick={() => setViewMode("create")}>Create Property</Button>
+          <Button onClick={() => setViewMode("update")}>Update Property</Button>
+        </Box>
       </CustomTabPanel>
 
 

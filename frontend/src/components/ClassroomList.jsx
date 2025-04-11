@@ -4,16 +4,14 @@ import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 
 import ClassCard from "./ClassCard";
-import AddNewCard from "./AddNewCard";
+
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { grey } from "@mui/material/colors";
 import { Stack, Typography } from "@mui/material";
 
-import dayjs from "dayjs";
 import api from "../api";
 
 const ClassroomList = ({ header = true, teacher = false }) => {
@@ -113,10 +111,6 @@ const ClassroomList = ({ header = true, teacher = false }) => {
           display="flex"
           justifyContent="center"
         >
-          {<AddNewCard
-            label="Create New Classroom"
-            onClassroomAdded={addClassroom}
-          />}
           {!loading &&
             (teacher ? (
               <CreateClassroomDialog onSubmit={addClassroom} />
