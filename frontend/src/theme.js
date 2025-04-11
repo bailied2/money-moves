@@ -2,7 +2,6 @@ import { createTheme } from "@mui/material/styles";
 // import { lighten, darken } from "@mui/system";
 
 const theme = createTheme({
-<<<<<<< HEAD
   // palette: {
   //   primary: {
   //     main: "#08415c",
@@ -106,36 +105,6 @@ variants: [
               // Reset on touch devices, it doesn't add specificity
               '@media (hover: none)': {
                 boxShadow: (theme.vars || theme).shadows[2],
-=======
-    
-        palette: {
-          primary: {
-            main: "#FFFFFF",
-          },
-          secondary: {
-            main: "#9c27b0",
-          },
-          background: {
-            default: "#08415c", // You can keep your original background color here
-          },
-          text: {
-            primary: '#EADCD7',
-          },
-          
-        },
-        typography: {
-          fontFamily: '"Cabin", sans-serif',
-          fontSize: 20,
-          fontWeightRegular: 200,
-          letterSpacing: 0,
-        },
-        components: {
-          // Override MUI Card component styles globally
-          MuiCard: {
-            styleOverrides: {
-              root: {
-                backgroundColor: "#FA7921", // Global background color for all cards
->>>>>>> e342b00 (added more styling to the website)
               },
             },
             '&:active': {
@@ -150,7 +119,6 @@ variants: [
               backgroundColor: (theme.vars || theme).palette.action.disabledBackground,
             },
           },
-<<<<<<< HEAD
         },
         {
           props: { variant: 'outlined' },
@@ -223,8 +191,6 @@ variants: [
               },
             },
           },
-=======
->>>>>>> e342b00 (added more styling to the website)
         },
         {
           props: {
