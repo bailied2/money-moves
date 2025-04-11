@@ -1,24 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Box, Grid, CircularProgress, Typography, Stack, Button } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, CircularProgress, Typography, Stack, Button } from "@mui/material";
+
 import PropertyCard from "../components/PropertyCard"; // Import PropertyCard
 import CreatePropertyForm from "../components/CreatePropertyForm"; // Import CreatePropertyForm
 import UpdatePropertyForm from "../components/UpdatePropertyForm"; // Import UpdatePropertyForm
 import CreateJobForm from "../components/CreateJobForm"; // Import CreateJobForm
 import api from "../api"; // Assuming you have an API setup to fetch properties
-import { Tab, Tabs } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
 
-import { AuthContext } from "../AuthContext";
+import { grey } from "@mui/material/colors";
 
 import StudentList from "../components/StudentList";
 import InvestmentAccountList from "./InvestmentAccountList";
 import YearEnds from "./YearEnds";
 
-import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
-import Box from '@mui/material/Box'
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
