@@ -83,7 +83,7 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
           flexDirection: "column",
         }}
       >
-        <CardContent>
+        <CardContent >
           <form onSubmit={handleSubmit} id="add_student_form">
             <Typography variant="h5">
               Add Student
