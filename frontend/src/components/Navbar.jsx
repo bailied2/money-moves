@@ -1,4 +1,4 @@
-// import "./styles/Navbar.css";
+import "./styles/Navbar.css";
 import React, { useContext } from "react";
 import { AppBar, Box, Toolbar, Button, Link } from "@mui/material";
 

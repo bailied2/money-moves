@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthContext";
 
 import StudentList from "../components/StudentList";
+import InvestmentAccountList from "./InvestmentAccountList";
+import YearEnds from "./YearEnds";
 
 import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -73,10 +75,10 @@ const TeacherView = ({ classroom }) => {
         Properties
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-        Investment Accounts
+        <InvestmentAccountList classroom_id={classroom.id} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
-        Year Ends
+        <YearEnds classroom_id={classroom.id} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={6}>
         Settings

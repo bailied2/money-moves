@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
     try {
       // Post request to the backend API on port 5001
-      const response = await api.post("http://localhost:5001/users/forgot-password", { email });
+      const response = await api.post("/users/forgot-password", { email });
       setMessage(response.data.message);
       navigate("/login"); // Redirect after success
     } catch (err) {
