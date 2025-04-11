@@ -15,17 +15,16 @@ import { Link } from "react-router";
 
 const ClassCard = ({
   classroom,
-  onDelete = null,
+  onDelete,
 }) => {
   return (
     <Card
       raised
       sx={{
         position: "relative",
-        overflow: "visible",
-        minHeight: 185,
+        // overflow: "hidden",
         maxWidth: 300,
-        aspectRatio: "3/2",
+        // aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
         display: "flex",
