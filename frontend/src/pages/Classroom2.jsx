@@ -18,18 +18,22 @@ const Classroom = () => {
   const { user, user_loading } = useContext(AuthContext);
   const classroom = location.state?.classroom;
 
-  if (!classroom) return (
-    <>
-      <p>No classroom data found. Please return to the dashboard and try again.</p>
-      <Link to="/dashboard">Go Back</Link>
-    </>
-  );
+  if (!classroom)
+    return (
+      <>
+        <p>
+          No classroom data found. Please return to the dashboard and try again.
+        </p>
+        <Link to="/dashboard">Go Back</Link>
+      </>
+    );
 
-  if (user_loading) return (
-    <Stack sx={{ width:"100%", alignItems:"center", marginTop:3}}>
-      <CircularProgress />
-    </Stack>
-  );
+  if (user_loading)
+    return (
+      <Stack sx={{ width: "100%", alignItems: "center", marginTop: 3 }}>
+        <CircularProgress />
+      </Stack>
+    );
 
   return (
     <div>
@@ -41,7 +45,7 @@ const Classroom = () => {
       >
         <Grid size="grow">
           <ClassroomHeader class_name={classroom.class_name || "Loading..."} />
-          {user.id === classroom.fk_teacher_id ? (
+          {user?.id === classroom.fk_teacher_id ? (
             <TeacherView classroom={classroom} />
           ) : (
             <StudentAccounts classroom_id={classroom.id} />
