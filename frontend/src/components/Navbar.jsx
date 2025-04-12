@@ -1,7 +1,11 @@
-import "./styles/Navbar.css";
 import React, { useContext } from "react";
+
 import { Link as RouterLink } from "react-router-dom";
-import { AppBar, Box, Toolbar, Button, Link } from "@mui/material";
+
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Button from "@mui/material/Button";
 
 import { ReactComponent as NavSeparator } from "../assets/thinlinecolor.svg";
 
@@ -18,72 +22,74 @@ const Navbar = () => {
     <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
       <AppBar position="static" sx={{ bgcolor: "#08415C" }}>
         <Toolbar id="nav_toolbar" sx={{ color: "#EADCD7" }}>
-          <IconShapes style={{ width: 32, height: 32, marginRight: 8 }} />
-
-          <Link
+          <Button
             id="home"
-            component={Button}
-            underline="none"
-            href="/"
-            sx={{ color: "#EADCD7", textTransform: "none" }}
+            component={RouterLink}
+            startIcon={
+              <IconShapes style={{ width: 32, height: 32, marginRight: 8 }} />
+            }
+            to="/"
+            sx={{
+              color: "#EADCD7",
+              fontSize: "1.43rem",
+              textTransform: "none",
+              textDecoration: "none",
+            }}
           >
             Money Moves Academy
-          </Link>
+          </Button>
           <Box sx={{ flexGrow: 1 }}></Box>
 
-          <Link
+          <Button
             id="dashboard"
             className="dashboard"
-            component={Button}
-            variant="body2"
-            underline="none"
-            href="/dashboard"
+            component={RouterLink}
+            to="/dashboard"
             sx={{
               marginRight: "10px",
               color: "#EADCD7",
               textTransform: "none",
+              textDecoration: "none",
             }}
           >
             Dashboard
-          </Link>
-          <Link
+          </Button>
+          <Button
             id="about"
-            component={Button}
-            variant="body2"
-            underline="none"
-            href="/about"
+            component={RouterLink}
+            to="/about"
             sx={{
               marginRight: "10px",
               color: "#EADCD7",
               textTransform: "none",
+              textDecoration: "none",
             }}
           >
             About
-          </Link>
+          </Button>
           {loading ? (
             <p>Loading...</p>
           ) : user ? (
             <AccountMenu />
           ) : (
             <>
-              <Link
+              <Button
                 id="login"
-                component={Button}
-                variant="body2"
-                underline="none"
-                href="/login"
+                component={RouterLink}
+                to="/login"
                 sx={{
                   marginRight: "10px",
                   color: "#EADCD7",
                   textTransform: "none",
+                  textDecoration: "none",
                 }}
               >
                 Login
-              </Link>
+              </Button>
               <Button
-                component={Link}
+                component={RouterLink}
                 variant="contained"
-                href="/register"
+                to="/register"
                 sx={{
                   color: "#EADCD7",
                   backgroundColor: "#E55934",
