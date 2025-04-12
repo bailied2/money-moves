@@ -2,16 +2,28 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../AuthContext";
 
-import StudentList from "../components/StudentList";
+import PropertyList from "../components/PropertyList";
+import CreateJobForm from "../components/CreateJobForm";
 
-import { Stack } from "@mui/material";
+import Tab from '@mui/material/Tab';
+import CreatePropertyForm from "./CreatePropertyForm";
+import { Box, CircularProgress, Typography, Stack, Button } from "@mui/material";
+
+import PropertyCard from "../components/PropertyCard"; // Import PropertyCard
+import UpdatePropertyForm from "../components/UpdatePropertyForm"; // Import UpdatePropertyForm
+import UpdateJobForm from "../components/UpdateJobForm"; // Import UpdatePropertyForm
+
+import api from "../api"; // Assuming you have an API setup to fetch properties
+
+import { grey } from "@mui/material/colors";
+
+import StudentList from "../components/StudentList";
+import InvestmentAccountList from "./InvestmentAccountList";
+import YearEnds from "./YearEnds";
+
 import Grid from "@mui/material/Grid2";
 
-import Box from '@mui/material/Box'
-
 import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -38,6 +50,7 @@ const TeacherView = ({ classroom }) => {
   const { user, user_loading } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [value, setValue] = useState(0);
+  const [viewMode, setViewMode] = useState("list");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -47,7 +60,7 @@ const TeacherView = ({ classroom }) => {
 
   // Students - Fees/Bonuses - Jobs - Properties - Investment Accounts - Year Ends - Settings
   return (
-    <Box sx={{width: "80%", margin: "auto"}}>
+    <Box sx={{ width: "80%", margin: "auto" }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Students" {...a11yProps(0)} />
@@ -59,26 +72,57 @@ const TeacherView = ({ classroom }) => {
           <Tab label="Settings" {...a11yProps(6)} />
         </Tabs>
       </Box>
-  
-      <CustomTabPanel value={value} index={0}>
+
+      {/* Students Tab */}
+      <CustomTabPanel id="students_tab_panel" value={value} index={0}>
         <StudentList classroom={classroom} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+
+
+      {/* Fees/Bonuses Tab */}
+      <CustomTabPanel id="fees_bonuses_tab_panel" value={value} index={1}>
         Fees/Bonuses
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Jobs
+
+
+      {/* Jobs Tab */}
+      <CustomTabPanel id="jobs_tab_panel" value={value} index={2}>
+        {/* Jobs tab- Display Create Jobs Form*/}
+        <CreateJobForm classroom_id={classroom.id} />
+
+        {/* Jobs tab- Display Update Jobs Form*/}
+        <UpdateJobForm job_id = {2} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
-        Properties
+      
+      {/* Properties Tab */}
+      <CustomTabPanel id="properties_tab_panel" value={value} index={3}>
+        {/* <PropertyList classroom={classroom} />  */}
+        <CreatePropertyForm classroom_id={classroom.id} />
+        <UpdatePropertyForm property_id= {2} />
+        
+        {/* Buttons to Switch View Modes */}
+        <Box sx={{ marginTop: 2 }}>
+          <Button onClick={() => setViewMode("list")}>View Properties</Button>
+          <Button onClick={() => setViewMode("create")}>Create Property</Button>
+          <Button onClick={() => setViewMode("update")}>Update Property</Button>
+        </Box>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
-        Investment Accounts
+
+
+      {/* Investment Accounts Tab */}
+      <CustomTabPanel id="investment_accounts_tab_panel" value={value} index={4}>
+        <InvestmentAccountList classroom_id={classroom.id} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
-        Year Ends
+
+
+      {/* Year Ends Tab */}
+      <CustomTabPanel id="year_ends_tab_panel" value={value} index={5}>
+        <YearEnds classroom_id={classroom.id} />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={6}>
+
+
+      {/* Settings Tab */}
+      <CustomTabPanel id="settings_tab_panel" value={value} index={6}>
         Settings
       </CustomTabPanel>
     </Box>
@@ -86,4 +130,3 @@ const TeacherView = ({ classroom }) => {
 };
 
 export default TeacherView;
-

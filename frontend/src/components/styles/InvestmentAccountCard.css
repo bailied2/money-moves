@@ -1,0 +1,15 @@
+.yearly_value_form {
+    width: 100%;
+}
+
+.MuiAccordionDetails-root .MuiTypography-caption {
+    font-size: 1rem;
+}
+
+.MuiAccordionDetails-root .MuiStack-root {
+    padding: 0.2rem;
+}
+
+.MuiAccordionDetails-root .yearly_value_form:nth-child(even) .MuiStack-root {
+    background-color: lightgrey;
+}

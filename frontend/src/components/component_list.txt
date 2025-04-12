@@ -19,8 +19,8 @@ Student Card - Work in Progress
 Add Student Popup
 Import Students
 
-Fee/Bonus Card
-Add/Update Fee/Bonus Popup
+Fee/Bonus Card- done
+Add/Update Fee/Bonus Popup- mostly done
 Apply Fee/Bonus Popup
 
 Make Deposit/Withdrawal Popup
@@ -28,8 +28,8 @@ Make Deposit/Withdrawal Popup
 Job Card
 Add/Update Property Popup
 
-Property Card
-Add/Update Property Popup
+Property Card- done
+Add/Update Property Popup- mostly
 
 Basic Account Card
 Basic Transaction

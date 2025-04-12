@@ -3,20 +3,21 @@ import React from "react";
 import { NavLink } from "react-router";
 
 import { Stack, Typography, Paper } from "@mui/material";
+import "./styles/ClassroomFooter.css";
 
 const ClassroomFooter = ({ class_code }) => {
   return (
     <Stack
       direction="row"
       sx={{
-        position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         alignItems: "baseline",
         justifyContent: "space-around",
         padding: 2,
-        flexBasis: "",
+        
+        // flexBasis: "",
       }}
     >
       <NavLink to="/">

@@ -116,37 +116,53 @@ const createClassroom = async (req, res) => {
   const insertClassroom = async () => {
     const class_code = getRandomString(7);
     console.log(`    class_code: ${class_code}`);
-    const query =
+    const insertClassroomQuery =
       "INSERT INTO classroom (class_name, fk_teacher_id, start_date, end_date, class_code) VALUES (?, ?, ?, ?, ?)";
+    const insertYearEndQuery = 
+      "INSERT INTO year_end (fk_classroom_id, end_date, savings_apr) VALUES (?, TIMESTAMP'1970-01-01 00:00:00', 0)";
     try {
-      const [insertedClassroom] = await db.execute(query, [
-        class_name,
-        teacher_id,
-        start_date,
-        end_date,
-        class_code,
-      ]);
-      console.log(insertedClassroom.insertId);
-      const classroom = {
-        id: insertedClassroom.insertId,
-        class_name,
-        start_date,
-        end_date,
-        class_code,
-        num_students: 0,
-      };
-      res.json({
-        message:`Classroom created successfully with ID ${insertedClassroom.insertId}`,
-        classroom,
-      });
-    } catch (error) {
-      if (error.code === "ER_DUP_ENTRY") {
-        // If duplicate class_code, try again
-        console.warn(
-          `Duplicate class_code ${class_code} detected. Retrying...`
-        );
-        return insertClassroom();
+      const connection = await db.getConnection();
+      // Begin the database transaction (so changes are only saved if all are successful)
+      await connection.beginTransaction();
+      try {
+        const [insertedClassroom] = await connection.execute(insertClassroomQuery, [
+          class_name,
+          teacher_id,
+          start_date,
+          end_date,
+          class_code,
+        ]);
+        console.log(insertedClassroom.insertId);
+        const classroom = {
+          id: insertedClassroom.insertId,
+          class_name,
+          start_date,
+          end_date,
+          class_code,
+          num_students: 0,
+        };
+        const [insertedYearEnd] = await connection.execute(insertYearEndQuery, [classroom.id]);
+        await connection.commit(); // Commit database transaction
+        connection.release(); // Release the connection back to the pool
+        res.json({
+          message:`Classroom created successfully with ID ${insertedClassroom.insertId}`,
+          classroom,
+        });
+      } catch (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+          // If duplicate class_code, try again
+          console.warn(
+            `Duplicate class_code ${class_code} detected. Retrying...`
+          );
+          return insertClassroom();
+        }
+        console.error("Error creating classroom:", error);
+        // Rollback changes since start of transaction
+        await connection.rollback();
+        connection.release(); // Release the connection back to the pool
+        return res.status(500).json({ error: "Failed to create classroom" });
       }
+    } catch (error) {
       console.error("Error creating classroom:", error);
       return res.status(500).json({ error: "Failed to create classroom" });
     }

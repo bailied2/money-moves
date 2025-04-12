@@ -9,7 +9,7 @@ const authenticateToken = require("../authMiddleware.js");
 
 // GET /students - Get all student records
 const getStudents = async (req, res) => {
-  const query = "SELECT * FROM students";
+  const query = "SELECT * FROM student";
   // db.query(query, (err, results) => {
   //   if (err) {
   //     console.error("Error fetching student records:", err);
@@ -246,6 +246,7 @@ const addStudentsToClassroom = async (req, res) => {
         await connection.commit(); // Commit database transaction
         connection.release(); // Release the connection back to the pool
       }
+      res.json({ message:`Students added successfully` });
     } catch (error) {
       console.error("Error adding students to classroom:", error);
       // Rollback changes since start of transaction

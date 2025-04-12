@@ -8,7 +8,9 @@ import {
   Box,
   Link,
 } from "@mui/material";
-import api from "../api"; // Assuming api.js is configured to make requests
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import api from "../api";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ const LoginForm = () => {
   });
 
   const [error, setError] = useState("");
+  const [working, setWorking] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +30,7 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setWorking(true);
 
     try {
       const response = await api.post("/users/login", formData);
@@ -38,13 +42,15 @@ const LoginForm = () => {
     } catch (error) {
       console.error("Error submitting form:", error);
       setError(error.response.data.error);
+    } finally {
+      setWorking(false);
     }
   };
 
   return (
     <Container maxWidth="sm">
       <Box
-        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
+        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "#174C66" }}
       >
         <Typography variant="h5" gutterBottom>
           Log In
@@ -84,6 +90,11 @@ const LoginForm = () => {
           >
             Submit
           </Button>
+          {working && (
+            <Backdrop open={working} sx={{width:"100%"}}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          )}
         </form>
         <Box sx={{ mt: 2 }}>
           <Link href="/forgot-password" variant="body2">

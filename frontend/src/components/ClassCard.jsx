@@ -9,25 +9,22 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { NavLink } from "react-router";
+import dayjs from "dayjs";
+
+import { Link } from "react-router";
 
 const ClassCard = ({
-  title,
-  start_date,
-  end_date,
-  num_students,
-  id,
-  onDelete = null,
+  classroom,
+  onDelete,
 }) => {
   return (
     <Card
       raised
       sx={{
         position: "relative",
-        overflow: "visible",
-        minHeight: 185,
+        // overflow: "hidden",
         maxWidth: 300,
-        aspectRatio: "3/2",
+        // aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
         display: "flex",
@@ -36,24 +33,24 @@ const ClassCard = ({
     >
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h5" component="div">
-          {title}
+          {classroom.class_name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {num_students ? num_students : "No"} Student
-          {num_students !== 1 && "s"}
+          {classroom.num_students ? classroom.num_students : "No"} Student
+          {classroom.num_students !== 1 && "s"}
         </Typography>
         <br />
         <Typography noWrap variant="body2" color="text.secondary">
-          Start Date: {start_date}
+          Start Date: {dayjs(classroom.start_date).format("M/D/YYYY")}
         </Typography>
         <Typography noWrap variant="body2" color="text.secondary">
-          End Date: {end_date}
+          End Date: {dayjs(classroom.end_date).format("M/D/YYYY")}
         </Typography>
       </CardContent>
-      <CardActions sx={{ padding: 0 }}>
-        <NavLink to={`/classroom/${id}`}>
+      <CardActions>
+        <Link to={`/classroom/${classroom.id}`} state={{classroom}}>
           <Button size="small">Open</Button>
-        </NavLink>
+        </Link>
         {typeof onDelete === "function" && (
           <Button size="small" color="error" onClick={onDelete}>
             Delete
