@@ -5,18 +5,15 @@ import {
   Typography,
   CardActions,
   Button,
-  IconButton,
+  // IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+// import DeleteIcon from "@mui/icons-material/Delete";
 
 import dayjs from "dayjs";
 
-import { Link } from "react-router";
+import { Link as RouterLink } from "react-router-dom";
 
-const ClassCard = ({
-  classroom,
-  onDelete,
-}) => {
+const ClassCard = ({ classroom, onDelete }) => {
   return (
     <Card
       raised
@@ -48,9 +45,14 @@ const ClassCard = ({
         </Typography>
       </CardContent>
       <CardActions>
-        <Link to={`/classroom/${classroom.id}`} state={{classroom}}>
-          <Button size="small">Open</Button>
-        </Link>
+        <Button
+          size="small"
+          component={RouterLink}
+          to={`/classroom/${classroom.id}`}
+          state={{ classroom }}
+        >
+          Open
+        </Button>
         {typeof onDelete === "function" && (
           <Button size="small" color="error" onClick={onDelete}>
             Delete
