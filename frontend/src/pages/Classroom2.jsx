@@ -10,7 +10,9 @@ import ClassroomFooter from "../components/ClassroomFooter";
 import TeacherView from "../components/TeacherView";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import { Stack } from "@mui/material";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 
 const Classroom = () => {
@@ -20,12 +22,12 @@ const Classroom = () => {
 
   if (!classroom)
     return (
-      <>
-        <p>
+      <Box sx={{ padding: 3 }}>
+        <Typography>
           No classroom data found. Please return to the dashboard and try again.
-        </p>
+        </Typography>
         <Link to="/dashboard">Go Back</Link>
-      </>
+      </Box>
     );
 
   if (user_loading)
@@ -36,7 +38,7 @@ const Classroom = () => {
     );
 
   return (
-    <div>
+    <Box sx={{ padding: 3 }}>
       <Grid
         container
         rowSpacing={3}
@@ -54,7 +56,7 @@ const Classroom = () => {
       </Grid>
       <Grid size="auto"></Grid>
       <ClassroomFooter class_code={classroom.class_code || "XXXXXXX"} />
-    </div>
+    </Box>
   );
 };
 

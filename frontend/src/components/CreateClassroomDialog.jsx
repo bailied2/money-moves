@@ -16,7 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from '@mui/material/Backdrop';
+import Backdrop from "@mui/material/Backdrop";
 
 import dayjs from "dayjs";
 import api from "../api";
@@ -91,10 +91,14 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Create Classroom</DialogTitle>
       <DialogContent>
-        {waiting && (<Backdrop
-        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-        open={waiting}
-      ><CircularProgress /></Backdrop>)}
+        {waiting && (
+          <Backdrop
+            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+            open={waiting}
+          >
+            <CircularProgress />
+          </Backdrop>
+        )}
         <form onSubmit={handleSubmit} id="create_classroom_form">
           <TextField
             // autoFocus
@@ -110,6 +114,8 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
               setFormData({ ...formData, class_name: e.target.value });
             }}
           />
+          <br />
+          <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Start Date"

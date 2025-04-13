@@ -3,8 +3,7 @@ import Grid from "@mui/material/Grid2";
 
 import AccountCard from "./AccountCard";
 
-import { grey } from "@mui/material/colors";
-import { Stack, Typography, Button } from "@mui/material";
+import { Stack, Typography, Button, Paper, Divider } from "@mui/material";
 
 // import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
@@ -39,28 +38,32 @@ const AccountList = ({ classroom_id, header = true }) => {
 
   return (
     <Stack
+      component={Paper}
       sx={{
+        borderRadius: 5,
+        boxShadow: 1,
         maxWidth: "80%",
         margin: "0 auto",
+        padding: 2,
       }}
     >
-      <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
+      <Stack
+        direction="row"
+        sx={{ marginLeft: "1em", padding: 1, justifyContent: "space-between" }}
+      >
         {header && <Typography variant="h5">My Accounts</Typography>}
-        <Button variant="contained" sx={{ marginLeft: "2em" }}>
+        <Button variant="contained" color="primary" sx={{ marginRight: "1em" }}>
           Transfer Funds
         </Button>
       </Stack>
+      <Divider></Divider>
       <Grid
         container
         rowSpacing={3}
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
-          borderRadius: 5,
-          boxShadow: 1,
-          bgcolor: grey[300],
           alignItems: "flex-start",
-          padding: 2,
         }}
       >
         {loading && <p>Loading...</p>}

@@ -1,13 +1,18 @@
 import React from "react";
 
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 const About = () => (
-  <div>
-    <h1>About Us</h1>
-    <p>
+  <Box sx={{ padding: 3 }}>
+    <Typography variant="h4" gutterBottom>
+      About Us
+    </Typography>
+    <Typography>
       Money Moves Academy is an educational platform for classroom economy
       simulations.
-    </p>
-  </div>
+    </Typography>
+  </Box>
 );
 
 export default About;

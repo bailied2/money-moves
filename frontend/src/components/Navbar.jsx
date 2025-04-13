@@ -20,8 +20,8 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#08415C" }}>
-        <Toolbar id="nav_toolbar" sx={{ color: "#EADCD7" }}>
+      <AppBar position="static" color="transparent">
+        <Toolbar>
           <Button
             id="home"
             component={RouterLink}
@@ -30,7 +30,6 @@ const Navbar = () => {
             }
             to="/"
             sx={{
-              color: "#EADCD7",
               fontSize: "1.43rem",
               textTransform: "none",
               textDecoration: "none",
@@ -38,29 +37,30 @@ const Navbar = () => {
           >
             Money Moves Academy
           </Button>
+
           <Box sx={{ flexGrow: 1 }}></Box>
 
-          <Button
-            id="dashboard"
-            className="dashboard"
-            component={RouterLink}
-            to="/dashboard"
-            sx={{
-              marginRight: "10px",
-              color: "#EADCD7",
-              textTransform: "none",
-              textDecoration: "none",
-            }}
-          >
-            Dashboard
-          </Button>
+          {user && (
+            <Button
+              id="dashboard"
+              className="dashboard"
+              component={RouterLink}
+              to="/dashboard"
+              sx={{
+                marginRight: "10px",
+                textTransform: "none",
+                textDecoration: "none",
+              }}
+            >
+              Dashboard
+            </Button>
+          )}
           <Button
             id="about"
             component={RouterLink}
             to="/about"
             sx={{
               marginRight: "10px",
-              color: "#EADCD7",
               textTransform: "none",
               textDecoration: "none",
             }}
@@ -70,7 +70,7 @@ const Navbar = () => {
           {loading ? (
             <p>Loading...</p>
           ) : user ? (
-            <AccountMenu />
+            <AccountMenu user={user} />
           ) : (
             <>
               <Button
@@ -79,7 +79,6 @@ const Navbar = () => {
                 to="/login"
                 sx={{
                   marginRight: "10px",
-                  color: "#EADCD7",
                   textTransform: "none",
                   textDecoration: "none",
                 }}
@@ -89,11 +88,9 @@ const Navbar = () => {
               <Button
                 component={RouterLink}
                 variant="contained"
+                color="primary"
                 to="/register"
                 sx={{
-                  color: "#EADCD7",
-                  backgroundColor: "#E55934",
-                  "&:hover": { backgroundColor: "#cc472a" },
                   textTransform: "none",
                 }}
               >

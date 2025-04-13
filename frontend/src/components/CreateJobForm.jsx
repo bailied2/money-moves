@@ -2,24 +2,34 @@
 
 import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
-import { Container, Box, Typography, TextField, Button, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import {
+  Container,
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "../api";
 
-const CreateJobForm = ({classroom_id }) => {
-
+const CreateJobForm = ({ classroom_id }) => {
   const current_date = dayjs().startOf("day");
 
   console.log("Creating job form.");
- 
+
   const [formData, setFormData] = useState({
     job_title: "",
     job_description: "",
     wage: "",
-    pay_frequency: "Weekly", 
-    pay_day: "", 
-    icon_class: "", 
+    pay_frequency: "Weekly",
+    pay_day: "",
+    icon_class: "",
     is_trustee: false,
   });
   const [startDate, setStartDate] = useState(current_date);
@@ -28,12 +38,11 @@ const CreateJobForm = ({classroom_id }) => {
   const handleStartDateChange = (value) => {
     setStartDate(dayjs(value));
 
-      setFormData({
-        ...formData,
-        start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-      });
-  }
-
+    setFormData({
+      ...formData,
+      start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+    });
+  };
 
   const handleEndDateChange = (value) => {
     setEndDate(dayjs(value));
@@ -47,33 +56,35 @@ const CreateJobForm = ({classroom_id }) => {
     console.log("Attempting form submit");
     e.preventDefault();
     try {
-        //debug
-        console.log("Form data before submitting", formData);
-      const response = await api.post("/jobs", {formData,classroom_id: classroom_id});
+      //debug
+      console.log("Form data before submitting", formData);
+      const response = await api.post("/jobs", {
+        formData,
+        classroom_id: classroom_id,
+      });
       console.log(response.data);
       alert("Job added successfully!");
-      setStartDate(current_date); 
-      setEndDate(current_date.add(6, "M")); 
+      setStartDate(current_date);
+      setEndDate(current_date.add(6, "M"));
       setFormData({
         job_title: "",
         job_description: "",
         wage: "",
-        pay_frequency: "Weekly",  
+        pay_frequency: "Weekly",
         pay_day: "",
         icon_class: "",
         is_trustee: false,
-       
       }); // Reset form data
     } catch (error) {
       console.error("Error creating job:", error);
     }
   };
 
-
   return (
     <Container maxWidth="sm">
       <Box
-        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
+        component={Paper}
+        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}
       >
         <Typography variant="h5" gutterBottom>
           Create Job
@@ -184,6 +195,9 @@ const CreateJobForm = ({classroom_id }) => {
                 setFormData({ ...formData, is_trustee: e.target.value });
               }}
               label="Is Trustee"
+              sx={{
+                minWidth: "10rem",
+              }}
             >
               <MenuItem value={false}>No</MenuItem>
               <MenuItem value={true}>Yes</MenuItem>
@@ -203,5 +217,5 @@ const CreateJobForm = ({classroom_id }) => {
       </Box>
     </Container>
   );
-}
+};
 export default CreateJobForm;

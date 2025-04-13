@@ -5,10 +5,10 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const db = require("../sample_database.js");
 const authenticateToken = require("../authMiddleware.js");
-const {sendForgotPassword} = require("../utils/emailService");  // Import email service
+const { sendForgotPassword } = require("../utils/emailService"); // Import email service
 
-
-const JWT_SECRET = process.env.JWT_SECRET || // Should be kept to just environment variable in production
+const JWT_SECRET =
+  process.env.JWT_SECRET || // Should be kept to just environment variable in production
   "b165f503224f0b78f682934b5ea8d20c6520b14474c616b3c4392ea6318f91ddf45f019605906819c8484c2f14624fe532db88afd331d1840ca25a52c7f1303c";
 
 /**
@@ -37,10 +37,11 @@ router.post("/forgot-password", async (req, res) => {
     await sendForgotPassword(email, token);
 
     res.json({ message: "Password reset email sent." });
-
   } catch (error) {
     console.error("Forgot password error:", error);
-    res.status(500).json({ error: "An error occurred while processing your request." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing your request." });
   }
 });
 
@@ -71,14 +72,16 @@ router.post("/reset-password", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Update password in database
-    const updateSql = "UPDATE user SET hash = ?, reset_token = NULL, reset_token_expiry = NULL WHERE reset_token = ?";
+    const updateSql =
+      "UPDATE user SET hash = ?, reset_token = NULL, reset_token_expiry = NULL WHERE reset_token = ?";
     await db.execute(updateSql, [hashedPassword, token]);
 
     res.json({ message: "Password successfully reset." });
-
   } catch (error) {
     console.error("Reset password error:", error);
-    res.status(500).json({ error: "An error occurred while resetting the password." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while resetting the password." });
   }
 });
 
@@ -119,7 +122,7 @@ const getUserById = async (req, res) => {
 /**
  * GET /users/profile
  * - Get the current, authenticated user's profile information
- * 
+ *
  * This function assumes the request has already been through the authenticateToken
  * middleware, meaning that it has been attached with the current user's info.
  */
@@ -149,8 +152,9 @@ const createUser = async (req, res) => {
     const saltRounds = 10; // Number of salt rounds for hashing
     const hash = await bcrypt.hash(password, saltRounds);
 
-    const sql = "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)"; // Insert query
-    
+    const sql =
+      "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)"; // Insert query
+
     try {
       const insertedUser = await db.execute(sql, [
         first_name,
@@ -161,6 +165,12 @@ const createUser = async (req, res) => {
       res.json({
         message: "User registered successfully",
         id: insertedUser.insertId,
+        user: {
+          id: insertedUser.insertId,
+          first_name,
+          last_name,
+          email,
+        },
       });
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -176,7 +186,8 @@ const handleLogin = async (req, res) => {
   const { email, password } = req.body;
   console.log("  email:", email, "\n  password:", password);
 
-  const sql = "SELECT id, hash FROM user WHERE email = ?;"; // Prepared statement for finding user by email
+  const sql =
+    "SELECT id, first_name, last_name, hash FROM user WHERE email = ?;"; // Prepared statement for finding user by email
 
   try {
     const [results] = await db.execute(sql, [email]);
@@ -205,7 +216,15 @@ const handleLogin = async (req, res) => {
               secure: false, // Use 'true' in production (requires HTTPS)
               sameSite: "Strict", // Prevents CSRF attacks
             })
-            .json({ message: "Login successful" });
+            .json({
+              message: "Login successful",
+              user: {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email,
+              },
+            });
         }
       });
     } catch (error) {
@@ -219,9 +238,14 @@ const handleLogin = async (req, res) => {
 };
 
 const handleLogout = async (req, res) => {
-  res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "Strict" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  });
+  res.redirect("/logout");
   res.status(200).json({ message: "Logged out successfully" });
-}
+};
 
 /**
  * PUT /users/:id
@@ -245,7 +269,6 @@ const updateUser = async (req, res) => {
     if (results.affectedRows === 0)
       return res.status(404).json({ error: "User not found" });
     res.json({ message: `User with ID ${id} updated successfully` });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -264,7 +287,6 @@ const deleteUser = async (req, res) => {
     if (results.affectedRows === 0)
       return res.status(404).json({ error: "User not found" });
     res.json({ message: `User with ID ${id} deleted successfully` });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -274,7 +296,7 @@ const deleteUser = async (req, res) => {
 router.get("/", getUsers); // Get all user records
 router.get("/profile", authenticateToken, getUserProfile); // Get a currently authenticated user's profile
 router.get("/:id", getUserById); // Get a user record by ID
-router.post("/", createUser); // Create a new user record
+router.post("/register", createUser); // Create a new user record
 router.post("/login", handleLogin); // Handle user login attempt
 router.post("/logout", handleLogout); // Handle user logout
 router.put("/:id", updateUser); // Update a user record by ID

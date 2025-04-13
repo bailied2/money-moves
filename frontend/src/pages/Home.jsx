@@ -1,10 +1,15 @@
 import React from "react";
 
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 const Home = () => (
-  <div>
-    <h1>Home Page</h1>
-    <p>Welcome to Money Moves Academy!</p>
-  </div>
+  <Box sx={{ padding: 3 }}>
+    <Typography variant="h4" gutterBottom>
+      Home Page
+    </Typography>
+    <Typography variant="body1">Welcome to Money Moves Academy!</Typography>
+  </Box>
 );
 
 export default Home;

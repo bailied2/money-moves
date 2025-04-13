@@ -1,20 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import theme from './theme'; // your custom theme file
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme"; // your custom theme file
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    
-     <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Optional: resets default browser styles */}
-    <App />
-     </ThemeProvider>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>
 );
 

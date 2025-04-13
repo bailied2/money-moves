@@ -1,5 +1,8 @@
 import React, { useContext } from "react";
 
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 import ClassroomList from "../components/ClassroomList";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -12,18 +15,18 @@ const Dashboard = () => {
   if (loading) return <CircularProgress sx={{ margin: "1 auto" }} />;
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <Box sx={{ padding: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
       {user && (
-        <div>
-          <h1>Welcome, {user.first_name}!</h1>
-          <p>Email: {user.email}</p>
-          <p>User ID: {user.id}</p>
-        </div>
+        <Typography variant="h6" gutterBottom>
+          Welcome, {user.first_name}!
+        </Typography>
       )}
       <ClassroomList teacher />
       <ClassroomList />
-    </div>
+    </Box>
   );
 };
 

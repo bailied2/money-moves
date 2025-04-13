@@ -1,11 +1,13 @@
 import React from "react";
+
+import Box from "@mui/material/Box";
 import ResetPassword from "../components/ResetPassword";
 
 const NewPassword = () => {
   return (
-    <div>
+    <Box sx={{ padding: 3 }}>
       <ResetPassword />
-    </div>
+    </Box>
   );
 };
 

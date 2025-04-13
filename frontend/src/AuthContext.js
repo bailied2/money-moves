@@ -21,10 +21,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, setUser }}>
       {children}
     </AuthContext.Provider>
   );

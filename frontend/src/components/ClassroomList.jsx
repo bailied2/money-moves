@@ -7,10 +7,11 @@ import ClassCard from "./ClassCard";
 
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
+import ConfirmDelete from "./ConfirmDelete";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Paper } from "@mui/material";
 
 import api from "../api";
 
@@ -54,18 +55,22 @@ const ClassroomList = ({ header = true, teacher = false }) => {
 
   return (
     <Stack
+      component={Paper}
       sx={{
         maxWidth: "80%",
         margin: "0 auto",
         marginBottom: 2,
         borderRadius: 5,
         boxShadow: 1,
-        bgcolor: "#174C66",
         padding: 2,
       }}
     >
       {header && (
-        <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ marginLeft: "1em", padding: 1 }}
+        >
           My Classrooms - {teacher ? "Teacher" : "Student"}
         </Typography>
       )}

@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 // import DeleteIcon from "@mui/icons-material/Delete";
 
+import ConfirmDelete from "./ConfirmDelete";
+
 import dayjs from "dayjs";
 
 import { Link as RouterLink } from "react-router-dom";
@@ -54,9 +56,16 @@ const ClassCard = ({ classroom, onDelete }) => {
           Open
         </Button>
         {typeof onDelete === "function" && (
-          <Button size="small" color="error" onClick={onDelete}>
-            Delete
-          </Button>
+          <ConfirmDelete
+            onSubmit={onDelete}
+            routeName="classroom"
+            deleteId={classroom.id}
+            confirmationMessage={
+              `Really delete classroom ${classroom.class_name}? Class Code: ${classroom.class_code}\n` +
+              `Enter class code below to confirm:`
+            }
+            confirmationKey={classroom.class_code}
+          />
         )}
       </CardActions>
     </Card>

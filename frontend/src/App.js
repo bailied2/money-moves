@@ -4,6 +4,7 @@ import { AuthProvider } from "./AuthContext";
 import { ClassroomProvider } from "./ClassroomContext";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
+import Login from "./pages/Login";
 import UserRegistrationForm from "./components/UserRegistrationForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
@@ -13,6 +14,7 @@ import Classroom from "./pages/Classroom2";
 import Loading from "./pages/Loading";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
+import Logout from "./pages/Logout";
 
 // import logo from "./logo.svg";
 import "./App.css";
@@ -44,7 +46,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<UserRegistrationForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/test" element={<Test />} />
