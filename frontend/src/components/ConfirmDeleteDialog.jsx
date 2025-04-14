@@ -11,22 +11,16 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 
-import api from "../api";
-
 const ConfirmDeleteDialog = ({
   open, // Boolean prop for whether dialog is open or not
   onClose, // Function prop for when dialog is closed
-  onSubmit, // Function prop for when form is submitted
+  onSuccess, // Function prop for when form is submitted
   deleteTarget /* Object prop for the item to be deleted:
     Should follow the format:
       deleteTarget = {
         type: The type of object to be deleted, e.g. "classroom", "student", or "property"
         name: The name of the object to be deleted in plain text. Usually it's title, or first_name+" "+last_name for students, etc.
-        id: The database id for the backend request path
-        path: The path for the delete target's corresponding database table for the backend request path
-          For example, if deleting a:
-            classroom - path = "classrooms" => [ api.delete(`/classrooms/${deleteTarget.id}`) ]
-            job       - path = "jobs" => [ api.delete(`/jobs/${deleteTarget.id}`) ]
+        id: The database id of the object to be deleted
         key: The value the user must type in order to confirm the deletion. Usually the target's name, but for classes it could be the class code.
         keyName: The name of the key in plain text for the confirmation message.
       }
@@ -41,19 +35,8 @@ const ConfirmDeleteDialog = ({
     // Check if entered value matches the target's key
     if (confirmation_entry === deleteTarget.key) {
       // If so, make the delete request
-      try {
-        const response = await api.delete(
-          `/${deleteTarget.path}/${deleteTarget.id}`
-        );
-        console.log(response.data); // Debug log
-        onSubmit(response.data.deleteId || null); // Call onSubmit function with deleted ID (or null)
-        alert(`${deleteTarget.name} deleted successfully!`);
-        setConfirmationEntry(""); // Reset entry
-      } catch (error) {
-        console.error(
-          `Error submitting form while attempting to delete ${deleteTarget.name}: ${error}`
-        );
-      }
+      onSuccess(); // Call onSuccess function
+      setConfirmationEntry(""); // Reset entry
     } else {
       // If entered value does not match, set error text.
       setError("Confirmation entry does not match.");
@@ -141,9 +124,9 @@ const ParentComponent = ({ onSubmit, deleteTarget }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSubmit = (deleteId) => {
-    console.log("Form submitted. Deleted ID:", deleteId);
-    if (typeof onSubmit === "function") onSubmit(deleteId);
+  const handleSubmit = () => {
+    console.log("Form submitted.");
+    if (typeof onSubmit === "function") onSubmit(deleteTarget.id);
     handleClose();
   };
 
@@ -156,7 +139,7 @@ const ParentComponent = ({ onSubmit, deleteTarget }) => {
       <ConfirmDeleteDialog
         open={open}
         onClose={handleClose}
-        onSubmit={handleSubmit}
+        onSuccess={handleSubmit}
         deleteTarget={deleteTarget}
       />
     </>

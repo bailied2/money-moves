@@ -7,7 +7,7 @@ import ClassCard from "./ClassCard";
 
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
-import ConfirmDelete from "./ConfirmDeleteDialog";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -19,6 +19,7 @@ const ClassroomList = ({ header = true, teacher = false }) => {
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     const fetchClassrooms = async () => {
@@ -48,6 +49,7 @@ const ClassroomList = ({ header = true, teacher = false }) => {
       const response = await api.delete(`/classrooms/${classroom_id}`);
       console.log(response);
       setClassrooms(classrooms.filter((c) => c.id !== classroom_id));
+      setAlertMessage("Classroom deleted successfully!");
     } catch (err) {
       alert("Error deleting classroom");
     }
@@ -107,7 +109,9 @@ const ClassroomList = ({ header = true, teacher = false }) => {
                 // end_date={dayjs(classroom.end_date).format("M/D/YYYY")}
                 // id={classroom.id}
                 classroom={classroom}
-                onDelete={deleteClassroom.bind(null, classroom.id)}
+                onDelete={
+                  teacher ? deleteClassroom.bind(null, classroom.id) : null
+                }
               ></ClassCard>
             </Grid>
           ))}
