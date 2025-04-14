@@ -152,7 +152,8 @@ const createYearEnd = async (req, res) => {
       for (const investment_account of investment_accounts) {
         const previous_value = previous_investment_values.find(
           (prev) => prev.title === investment_account.title
-        ).value;
+        );
+
         // For each investment_account, insert a corresponding investment value for the new year end
         const [insertedInvestmentValue] = await connection.execute(
           insertValueQuery,
