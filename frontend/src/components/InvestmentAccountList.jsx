@@ -7,10 +7,9 @@ import AddInvestmentCard from "./AddInvestmentCard";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { grey } from "@mui/material/colors";
-import { Stack, Typography, Button } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-// import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
 const InvestmentAccountList = ({ classroom_id, header = true }) => {
@@ -21,7 +20,9 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await api.get(`/investment-accounts/classroom/${classroom_id}`);
+        const response = await api.get(
+          `/investment-accounts/classroom/${classroom_id}`
+        );
         console.log(response);
         setAccounts(response.data.investment_accounts);
         setError(null);
@@ -36,7 +37,8 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
   }, [classroom_id]);
 
   const addInvestmentAccount = (investment_account) => {
-    if (investment_account) setAccounts(investment_accounts.concat(investment_account));
+    if (investment_account)
+      setAccounts(investment_accounts.concat(investment_account));
   };
 
   if (loading) return <p>Loading...</p>;
@@ -91,7 +93,10 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
           display="flex"
           justifyContent="center"
         >
-          <AddInvestmentCard classroom_id={classroom_id} onSubmit={addInvestmentAccount} />
+          <AddInvestmentCard
+            classroom_id={classroom_id}
+            onSubmit={addInvestmentAccount}
+          />
         </Grid>
       </Grid>
     </Stack>

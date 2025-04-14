@@ -2,20 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import {
-  Container,
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+// import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "../api";
 
 // for updates, fetch all the data for that specific job,
@@ -37,8 +35,8 @@ const UpdateJobForm = ({ job_id }) => {
     icon_class: "",
     is_trustee: false,
   });
-  const [startDate, setStartDate] = useState(current_date);
-  const [endDate, setEndDate] = useState(current_date.add(6, "M"));
+  // const [startDate, setStartDate] = useState(current_date);
+  // const [endDate, setEndDate] = useState(current_date.add(6, "M"));
   console.log(job_id);
   //fetching specific job
   useEffect(() => {
@@ -56,22 +54,22 @@ const UpdateJobForm = ({ job_id }) => {
     fetchJob();
   }, [job_id]);
 
-  const handleStartDateChange = (value) => {
-    setStartDate(dayjs(value));
+  // const handleStartDateChange = (value) => {
+  //   setStartDate(dayjs(value));
 
-    setFormData({
-      ...formData,
-      start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-    });
-  };
+  //   setFormData({
+  //     ...formData,
+  //     start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+  //   });
+  // };
 
-  const handleEndDateChange = (value) => {
-    setEndDate(dayjs(value));
-    setFormData({
-      ...formData,
-      end_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-    });
-  };
+  // const handleEndDateChange = (value) => {
+  //   setEndDate(dayjs(value));
+  //   setFormData({
+  //     ...formData,
+  //     end_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+  //   });
+  // };
 
   const handleSubmit = async (e) => {
     console.log("Attempting form submit");
@@ -82,8 +80,8 @@ const UpdateJobForm = ({ job_id }) => {
       const response = await api.put(`/jobs/${job_id}`, { formData });
       //   console.log(response.data);
       alert("Job updated successfully!");
-      setStartDate(current_date);
-      setEndDate(current_date.add(6, "M"));
+      // setStartDate(current_date);
+      // setEndDate(current_date.add(6, "M"));
       setFormData({
         title: "",
         description: "",

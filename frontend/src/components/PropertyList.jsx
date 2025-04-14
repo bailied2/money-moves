@@ -3,23 +3,22 @@ import "./styles/CardList.css";
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid2";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Stack, Typography } from "@mui/material";
-import { grey } from "@mui/material/colors";
-import AddNewCard from "./AddNewCard";
+import Stack from "@mui/material/Stack";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import AddNewCard from "./old/AddNewCard";
 
 import PropertyCard from "./PropertyCard";
 import CreatePropertyDialog from "./CreatePropertyDialogue"; // Optional dialog for creating new properties
 import dayjs from "dayjs";
 import api from "../api";
 
-const PropertyList = ({ classroomId, showHeader = true }) => {
+const PropertyList = ({ classroomId }) => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-  
-
     const fetchProperties = async () => {
       try {
         const response = await api.get(`/properties/classroom/${classroomId}`);
@@ -51,27 +50,25 @@ const PropertyList = ({ classroomId, showHeader = true }) => {
 
   return (
     <Stack
+      component={Paper}
       sx={{
+        borderRadius: 5,
+        boxShadow: 1,
         maxWidth: "80%",
         margin: "0 auto",
+        padding: 2,
       }}
     >
-      {showHeader && (
-        <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>
-          Classroom Properties
-        </Typography>
-      )}
+      <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>
+        Classroom Properties
+      </Typography>
       <Grid
         container
         rowSpacing={3}
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
-          borderRadius: 5,
-          boxShadow: 1,
-          bgcolor: grey[300],
           alignItems: "flex-start",
-          padding: 2,
         }}
       >
         {loading && (
@@ -104,12 +101,18 @@ const PropertyList = ({ classroomId, showHeader = true }) => {
           display="flex"
           justifyContent="center"
         >
-
-          {<AddNewCard
-            label="Create New Property"
-            onClassroomAdded={addProperty}
-          />}
-          {!loading && <CreatePropertyDialog classroomId={classroomId} onSubmit={addProperty} />}
+          {
+            <AddNewCard
+              label="Create New Property"
+              onClassroomAdded={addProperty}
+            />
+          }
+          {!loading && (
+            <CreatePropertyDialog
+              classroomId={classroomId}
+              onSubmit={addProperty}
+            />
+          )}
         </Grid>
       </Grid>
     </Stack>

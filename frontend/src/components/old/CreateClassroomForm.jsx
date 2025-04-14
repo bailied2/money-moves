@@ -49,11 +49,6 @@ const CreateClassroomForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // alert(`
-    //   class_name: ${formData.class_name}
-    //   start_date: ${formData.start_date}
-    //   end_date: ${formData.end_date}
-    //   `);
     try {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);

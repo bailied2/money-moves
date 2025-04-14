@@ -1,29 +1,25 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { AuthContext } from "../AuthContext";
-
-import PropertyList from "../components/PropertyList";
+// import PropertyList from "../components/PropertyList";
 import CreateJobForm from "../components/CreateJobForm";
 
-import Tab from '@mui/material/Tab';
-import CreatePropertyForm from "./CreatePropertyForm";
-import { Box, CircularProgress, Typography, Stack, Button } from "@mui/material";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+// import CircularProgress from "@mui/material/CircularProgress";
+// import Typography from "@mui/material/Typography";
+// import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 
-import PropertyCard from "../components/PropertyCard"; // Import PropertyCard
+import CreatePropertyForm from "./CreatePropertyForm";
+// import PropertyCard from "../components/PropertyCard"; // Import PropertyCard
 import UpdatePropertyForm from "../components/UpdatePropertyForm"; // Import UpdatePropertyForm
 import UpdateJobForm from "../components/UpdateJobForm"; // Import UpdatePropertyForm
-
-import api from "../api"; // Assuming you have an API setup to fetch properties
-
-import { grey } from "@mui/material/colors";
 
 import StudentList from "../components/StudentList";
 import InvestmentAccountList from "./InvestmentAccountList";
 import YearEnds from "./YearEnds";
 
-import Grid from "@mui/material/Grid2";
-
-import Tabs from '@mui/material/Tabs';
+import Tabs from "@mui/material/Tabs";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -37,31 +33,26 @@ const CustomTabPanel = ({ children, value, index, ...other }) => {
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
-}
+};
 
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
 const TeacherView = ({ classroom }) => {
-  const { user, user_loading } = useContext(AuthContext);
-  const [loading, setLoading] = useState(true);
   const [value, setValue] = useState(0);
-  const [viewMode, setViewMode] = useState("list");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  if (user_loading) return <p>Loading...</p>;
-
   // Students - Fees/Bonuses - Jobs - Properties - Investment Accounts - Year Ends - Settings
   return (
     <Box sx={{ width: "80%", margin: "auto" }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label="Students" {...a11yProps(0)} />
           <Tab label="Fees/Bonuses" {...a11yProps(1)} />
@@ -78,12 +69,10 @@ const TeacherView = ({ classroom }) => {
         <StudentList classroom={classroom} />
       </CustomTabPanel>
 
-
       {/* Fees/Bonuses Tab */}
       <CustomTabPanel id="fees_bonuses_tab_panel" value={value} index={1}>
         Fees/Bonuses
       </CustomTabPanel>
-
 
       {/* Jobs Tab */}
       <CustomTabPanel id="jobs_tab_panel" value={value} index={2}>
@@ -91,35 +80,36 @@ const TeacherView = ({ classroom }) => {
         <CreateJobForm classroom_id={classroom.id} />
 
         {/* Jobs tab- Display Update Jobs Form*/}
-        <UpdateJobForm job_id = {2} />
+        <UpdateJobForm job_id={2} />
       </CustomTabPanel>
-      
+
       {/* Properties Tab */}
       <CustomTabPanel id="properties_tab_panel" value={value} index={3}>
         {/* <PropertyList classroom={classroom} />  */}
         <CreatePropertyForm classroom_id={classroom.id} />
-        <UpdatePropertyForm property_id= {2} />
-        
+        <UpdatePropertyForm property_id={2} />
+
         {/* Buttons to Switch View Modes */}
         <Box sx={{ marginTop: 2 }}>
-          <Button onClick={() => setViewMode("list")}>View Properties</Button>
-          <Button onClick={() => setViewMode("create")}>Create Property</Button>
-          <Button onClick={() => setViewMode("update")}>Update Property</Button>
+          <Button>View Properties</Button>
+          <Button>Create Property</Button>
+          <Button>Update Property</Button>
         </Box>
       </CustomTabPanel>
 
-
       {/* Investment Accounts Tab */}
-      <CustomTabPanel id="investment_accounts_tab_panel" value={value} index={4}>
+      <CustomTabPanel
+        id="investment_accounts_tab_panel"
+        value={value}
+        index={4}
+      >
         <InvestmentAccountList classroom_id={classroom.id} />
       </CustomTabPanel>
-
 
       {/* Year Ends Tab */}
       <CustomTabPanel id="year_ends_tab_panel" value={value} index={5}>
         <YearEnds classroom_id={classroom.id} />
       </CustomTabPanel>
-
 
       {/* Settings Tab */}
       <CustomTabPanel id="settings_tab_panel" value={value} index={6}>

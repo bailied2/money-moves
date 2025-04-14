@@ -5,26 +5,30 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // For initial loading state
 
+  // ✅ Check if user is authenticated on app load
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchUser = async () => {
       try {
-        const response = await api.get("/users/profile");
+        const response = await api.get("/users/profile"); // Checks cookie token
         setUser(response.data.user);
       } catch (error) {
-        console.error("Failed to fetch profile:", error);
+        console.log(
+          "No valid session:",
+          error.response?.data?.error || error.message
+        );
         setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserProfile();
+    fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

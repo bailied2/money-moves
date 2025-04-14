@@ -10,21 +10,17 @@ import {
   AccordionSummary,
   AccordionDetails,
   Divider,
-  TextField,
-  InputAdornment,
+  // TextField,
+  // InputAdornment,
 } from "@mui/material";
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
-import './styles/InvestmentAccountCard.css'
+import "./styles/InvestmentAccountCard.css";
 
-const InvestmentAccountCard = ({
-  title,
-  description,
-  yearly_values
-}) => {
+const InvestmentAccountCard = ({ title, description, yearly_values }) => {
   // Utility function for displaying current share value
   const getCurrentValue = () => {
     // If yearly_values is missing or not an array, no value can be found.
@@ -35,15 +31,15 @@ const InvestmentAccountCard = ({
 
     let current_value; // Variable to update in loop
     // Loop through each yearly value, ensuring the values are sorted by end_date:
-    for (const year of yearly_values.sort((a, b) => a.end_date - b.end_date)) { 
+    for (const year of yearly_values.sort((a, b) => a.end_date - b.end_date)) {
       current_value = year.value; // Update current_value
 
       if (new Date(year.end_date) > Date.now()) {
         // If the current year has not yet ended, we have found the current value.
-        return current_value; // Return the current value, 
+        return current_value; // Return the current value,
       }
     }
-  }
+  };
 
   return (
     <Card
@@ -65,9 +61,11 @@ const InvestmentAccountCard = ({
           {title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Description: 
+          Description:
         </Typography>
-        <Typography variant="caption" color="text.secondary">{description}</Typography>
+        <Typography variant="caption" color="text.secondary">
+          {description}
+        </Typography>
         <br />
         <Typography variant="body2" color="text.secondary">
           Share Value: ${getCurrentValue()}
@@ -89,12 +87,15 @@ const InvestmentAccountCard = ({
                 </Typography>
               </Stack>
             </form>
-            {yearly_values.toSpliced(0,1).map((year, index) => {
+            {yearly_values.toSpliced(0, 1).map((year, index) => {
               return (
                 <form className="yearly_value_form">
-                  <Divider aria-hidden="true" sx={{margin:1}}/>
+                  <Divider aria-hidden="true" sx={{ margin: 1 }} />
                   <Stack>
-                    <Stack direction="row" sx={{justifyContent: "space-between"}}>
+                    <Stack
+                      direction="row"
+                      sx={{ justifyContent: "space-between" }}
+                    >
                       <Typography variant="caption" color="text.secondary">
                         Year {index + 1}
                       </Typography>
@@ -102,7 +103,13 @@ const InvestmentAccountCard = ({
                         ends on {dayjs(year.end_date).format("M/D/YY")}
                       </Typography>
                     </Stack>
-                    <Stack direction="row" sx={{justifyContent: "space-around", alignItems: "center"}}>
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                      }}
+                    >
                       <Typography variant="caption" color="text.secondary">
                         Value
                       </Typography>
@@ -133,14 +140,16 @@ const InvestmentAccountCard = ({
                     </Stack>
                   </Stack>
                 </form>
-              )
+              );
             })}
           </AccordionDetails>
         </Accordion>
       </CardContent>
       <CardActions>
         <Button size="small">Edit</Button>
-        <Button size="small" color="error">Delete</Button>
+        <Button size="small" color="error">
+          Delete
+        </Button>
       </CardActions>
     </Card>
   );

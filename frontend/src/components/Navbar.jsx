@@ -16,7 +16,7 @@ import { AuthContext } from "../AuthContext";
 import { IconShapes } from "./IconShapes";
 
 const Navbar = () => {
-  const { user, loading } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
@@ -67,9 +67,7 @@ const Navbar = () => {
           >
             About
           </Button>
-          {loading ? (
-            <p>Loading...</p>
-          ) : user ? (
+          {user ? (
             <AccountMenu user={user} />
           ) : (
             <>

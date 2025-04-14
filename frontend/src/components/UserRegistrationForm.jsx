@@ -1,13 +1,19 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Container, Typography, Paper } from "@mui/material";
+
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+
 import api from "../api";
 
 import { AuthContext } from "../AuthContext";
 
 const UserRegistrationForm = () => {
   const navigate = useNavigate();
-  const auth = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -36,7 +42,7 @@ const UserRegistrationForm = () => {
       const response = await api.post("/users/register", formData);
       console.log(response.data);
       if (response.status === 200) {
-        auth.setUser(response.data.user);
+        setUser(response.data.user);
         navigate("/dashboard");
       }
       setFormData({

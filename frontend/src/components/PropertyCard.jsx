@@ -6,14 +6,25 @@ import {
   CardActions,
   Button,
   Stack,
-  TextField,
+  // TextField,
   MenuItem,
   Select,
   InputLabel,
   FormControl,
 } from "@mui/material";
 
-const PropertyCard = ({ title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class, onCreate, onDelete }) => {
+const PropertyCard = ({
+  title,
+  description,
+  value,
+  rent,
+  maintenance,
+  pay_frequency,
+  pay_day,
+  icon_class,
+  onCreate,
+  onDelete,
+}) => {
   return (
     <Card
       raised
@@ -46,7 +57,7 @@ const PropertyCard = ({ title, description, value, rent, maintenance, pay_freque
         <Typography variant="body2" color="text.secondary">
           Maintenance: ${maintenance || "0.00"}
         </Typography>
-        
+
         <FormControl fullWidth sx={{ marginTop: 1 }}>
           <InputLabel>Pay Frequency</InputLabel>
           <Select
@@ -75,11 +86,7 @@ const PropertyCard = ({ title, description, value, rent, maintenance, pay_freque
         >
           Create Property
         </Button>
-        <Button
-          size="small"
-          onClick={onDelete}
-          color="error"
-        >
+        <Button size="small" onClick={onDelete} color="error">
           Delete Property
         </Button>
       </CardActions>

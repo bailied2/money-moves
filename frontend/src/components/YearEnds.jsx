@@ -1,35 +1,26 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
 
-import AccountCard from "./AccountCard";
-
-import AddInvestmentCard from "./AddInvestmentCard";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Divider from "@mui/material/Divider";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { grey } from "@mui/material/colors";
-import {
-  Box,
-  Paper,
-  Stack,
-  Typography,
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-
 import dayjs from "dayjs";
 
-// import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
 const YearEnds = ({ classroom_id, header = true }) => {
@@ -62,10 +53,10 @@ const YearEnds = ({ classroom_id, header = true }) => {
 
   return (
     <Stack
+      component={Paper}
       sx={{
         borderRadius: 5,
         boxShadow: 1,
-        bgcolor: "#174C66",
         margin: "0 auto",
         padding: 2,
       }}

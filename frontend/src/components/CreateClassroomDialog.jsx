@@ -62,11 +62,6 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setWaiting(true);
-    // alert(`
-    //   class_name: ${formData.class_name}
-    //   start_date: ${formData.start_date}
-    //   end_date: ${formData.end_date}
-    //   `);
     try {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);
@@ -166,18 +161,6 @@ const ParentComponent = ({ onSubmit }) => {
     if (typeof onSubmit === "function") onSubmit(data);
     handleClose();
   };
-
-  // return (
-  // <>
-  //   <Fab onClick={handleOpen}>
-  //     <AddIcon />
-  //   </Fab>
-  //   <CustomFormDialog
-  //     open={open}
-  //     onClose={handleClose}
-  //     onSubmit={handleSubmit}
-  //   />
-  // </>
 
   return (
     <Card

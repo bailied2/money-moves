@@ -15,7 +15,7 @@ import { AuthContext } from "../AuthContext";
 import api from "../api";
 
 export default function AccountMenu() {
-  const auth = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -30,7 +30,7 @@ export default function AccountMenu() {
   const handleLogout = async () => {
     await api.post("/users/logout");
     localStorage.removeItem("token");
-    auth.setUser(null);
+    setUser(null);
     // window.location.href = "/login"; // force navigation + reload
     navigate("/logout");
   };
@@ -47,7 +47,7 @@ export default function AccountMenu() {
           aria-expanded={open ? "true" : undefined}
         >
           <Avatar sx={{ width: 32, height: 32 }}>
-            {auth.user ? auth.user.first_name[0] : "?"}
+            {user ? user.first_name[0] : "?"}
           </Avatar>
         </IconButton>
       </Box>

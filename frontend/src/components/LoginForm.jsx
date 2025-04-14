@@ -17,7 +17,7 @@ import { AuthContext } from "../AuthContext";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const auth = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -39,7 +39,7 @@ const LoginForm = () => {
     try {
       const response = await api.post("/users/login", formData);
       if (response.status === 200) {
-        auth.setUser(response.data.user);
+        setUser(response.data.user);
         navigate("/dashboard");
       }
       // alert("User logged in successfully!");
