@@ -23,7 +23,7 @@ const UserRegistrationForm = () => {
     setFormData({ ...formData, [name]: value });
 
     // Check if passwords match
-    if (name === "confirmPassword") {
+    if (name === "confirm_password") {
       setPasswordError(value !== formData.password);
     }
   };

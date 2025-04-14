@@ -1,49 +1,44 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 
-import { useParams } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 import { AuthContext } from "../AuthContext";
 
-import api from "../api";
-
 import StudentAccounts from "../components/StudentAccounts";
-import StudentList from "../components/StudentList";
 import ClassroomHeader from "../components/ClassroomHeader";
 import ClassroomFooter from "../components/ClassroomFooter";
-
 import TeacherView from "../components/TeacherView";
 
-import { Stack } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 
 const Classroom = () => {
-  const { id } = useParams();
+  const location = useLocation();
   const { user, user_loading } = useContext(AuthContext);
-  const [classroom, setClassroom] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const classroom = location.state?.classroom;
 
-  useEffect(() => {
-    const fetchClassroom = async () => {
-      try {
-        const response = await api.get(`/classrooms/${id}`);
+  if (!classroom)
+    return (
+      <Box sx={{ padding: 3 }}>
+        <Typography>
+          No classroom data found. Please return to the dashboard and try again.
+        </Typography>
+        <Link to="/dashboard">Go Back</Link>
+      </Box>
+    );
 
-        setClassroom(response.data.classroom);
-      } catch (error) {
-        console.error("Failed to fetch classroom:", error);
-        setClassroom(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchClassroom();
-  }, [id]);
-  // const { classroom, classroom_loading } = useContext(ClassroomContext);
-
-  if (loading || user_loading) return <p>Loading...</p>;
+  if (user_loading)
+    return (
+      <Stack sx={{ width: "100%", alignItems: "center", marginTop: 3 }}>
+        <CircularProgress />
+      </Stack>
+    );
 
   return (
-    <div>
+    <Box sx={{ padding: 3 }}>
       <Grid
         container
         rowSpacing={3}
@@ -52,7 +47,7 @@ const Classroom = () => {
       >
         <Grid size="grow">
           <ClassroomHeader class_name={classroom.class_name || "Loading..."} />
-          {user.id === classroom.fk_teacher_id ? (
+          {user?.id === classroom.fk_teacher_id ? (
             <TeacherView classroom={classroom} />
           ) : (
             <StudentAccounts classroom_id={classroom.id} />
@@ -61,7 +56,7 @@ const Classroom = () => {
       </Grid>
       <Grid size="auto"></Grid>
       <ClassroomFooter class_code={classroom.class_code || "XXXXXXX"} />
-    </div>
+    </Box>
   );
 };
 

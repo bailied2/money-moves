@@ -156,22 +156,34 @@ const createUser = async (req, res) => {
       "INSERT INTO user (first_name, last_name, email, hash) VALUES (?, ?, ?, ?)"; // Insert query
 
     try {
+      // Insert new user into database
       const insertedUser = await db.execute(sql, [
         first_name,
         last_name,
         email,
         hash,
       ]);
-      res.json({
-        message: "User registered successfully",
-        id: insertedUser.insertId,
-        user: {
-          id: insertedUser.insertId,
-          first_name,
-          last_name,
-          email,
-        },
+      // Generate newly signed token for user
+      const token = jwt.sign({ id: insertedUser.insertId, email }, JWT_SECRET, {
+        expiresIn: "1h",
       });
+      // Send response back to frontend with new token cookie
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: false, // true in production
+          sameSite: "Strict",
+        })
+        .json({
+          message: "User registered successfully",
+          id: insertedUser.insertId,
+          user: {
+            id: insertedUser.insertId,
+            first_name,
+            last_name,
+            email,
+          },
+        });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -237,13 +249,16 @@ const handleLogin = async (req, res) => {
   }
 };
 
+/**
+ * POST /users/logout
+ * - Logout current user
+ */
 const handleLogout = async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: true,
     sameSite: "Strict",
   });
-  res.redirect("/logout");
   res.status(200).json({ message: "Logged out successfully" });
 };
 
