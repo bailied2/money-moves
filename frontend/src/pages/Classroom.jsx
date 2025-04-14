@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import { AuthContext } from "../AuthContext";
 
@@ -9,15 +9,15 @@ import ClassroomHeader from "../components/ClassroomHeader";
 import ClassroomFooter from "../components/ClassroomFooter";
 import TeacherView from "../components/TeacherView";
 
-import CircularProgress from "@mui/material/CircularProgress";
+// import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
+// import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 
 const Classroom = () => {
   const location = useLocation();
-  const { user, user_loading } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const classroom = location.state?.classroom;
 
   if (!classroom)
@@ -30,13 +30,6 @@ const Classroom = () => {
       </Box>
     );
 
-  if (user_loading)
-    return (
-      <Stack sx={{ width: "100%", alignItems: "center", marginTop: 3 }}>
-        <CircularProgress />
-      </Stack>
-    );
-
   return (
     <Box sx={{ padding: 3 }}>
       <Grid
@@ -47,7 +40,7 @@ const Classroom = () => {
       >
         <Grid size="grow">
           <ClassroomHeader class_name={classroom.class_name || "Loading..."} />
-          {user?.id === classroom.fk_teacher_id ? (
+          {user.id === classroom.fk_teacher_id ? (
             <TeacherView classroom={classroom} />
           ) : (
             <StudentAccounts classroom_id={classroom.id} />

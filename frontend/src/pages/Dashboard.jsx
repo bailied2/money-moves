@@ -5,14 +5,10 @@ import Typography from "@mui/material/Typography";
 
 import ClassroomList from "../components/ClassroomList";
 
-import CircularProgress from "@mui/material/CircularProgress";
-
 import { AuthContext } from "../AuthContext";
 
 const Dashboard = () => {
-  const { user, loading } = useContext(AuthContext);
-
-  if (loading) return <CircularProgress sx={{ margin: "1 auto" }} />;
+  const { user } = useContext(AuthContext);
 
   return (
     <Box sx={{ padding: 3 }}>
