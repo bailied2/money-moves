@@ -16,7 +16,11 @@ const ClassroomHeader = ({ class_name }) => {
         <ChevronLeftIcon />
         <Typography>Classes</Typography>
       </Button>
-      <Typography variant="h4" align="center" width="100%">
+      <Typography
+        variant="h4"
+        align="center"
+        sx={{ display: "absolute", margin: "auto" }}
+      >
         {class_name}
       </Typography>
     </Stack>

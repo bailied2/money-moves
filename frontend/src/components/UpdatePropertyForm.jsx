@@ -55,7 +55,7 @@ const UpdatePropertyForm = ({ property_id }) => {
     };
 
     fetchProperty();
-  }, []);
+  }, [property_id]);
 
   const handleStartDateChange = (value) => {
     setStartDate(dayjs(value));

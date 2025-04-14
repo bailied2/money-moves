@@ -6,15 +6,15 @@ import AccountCard from "./AccountCard";
 import AddInvestmentCard from "./AddInvestmentCard";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { grey } from "@mui/material/colors";
-import { 
+import {
   Box,
   Paper,
-  Stack, 
-  Typography, 
-  Button, 
+  Stack,
+  Typography,
+  Button,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -73,72 +73,60 @@ const YearEnds = ({ classroom_id, header = true }) => {
       <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
         {header && <Typography variant="h5">Year Ends</Typography>}
       </Stack>
-      {loading && (
-        <CircularProgress sx={{ margin: "auto" }} />
-      )}
+      {loading && <CircularProgress sx={{ margin: "auto" }} />}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {!loading &&
-          !error &&
-              year_ends.toSpliced(0,1).map((year, index) => (
-                <Accordion>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="body2" color="text.secondary">
-                      Year {index + 1}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
-                        End Date: {dayjs(year.end_date).format("M/D/YY")}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Savings APR: {year.savings_apr}%
-                      </Typography>
-                    </Box>
-                    <TableContainer component={Paper} sx={{bgcolor:"grey"}}>
-                      <Table>
-                        <TableRow>
-                          <TableCell>
-                            End Date
-                          </TableCell>
-                          <TableCell>
-                            {dayjs(year.end_date).format("M/D/YY")}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            Savings APR
-                          </TableCell>
-                          <TableCell>
-                            {year.savings_apr}%
-                          </TableCell>
-                        </TableRow>
-                        {year.investment_values.map((account) => 
-                          <TableRow>
-                            <TableCell>
-                              {account.title}
-                            </TableCell>
-                            <TableCell>
-                              ${account.value}
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </Table>
-                    </TableContainer>
+        !error &&
+        year_ends.toSpliced(0, 1).map((year, index) => (
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="body2" color="text.secondary">
+                Year {index + 1}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  End Date: {dayjs(year.end_date).format("M/D/YY")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Savings APR: {year.savings_apr}%
+                </Typography>
+              </Box>
+              <TableContainer component={Paper} sx={{ bgcolor: "grey" }}>
+                <Table>
+                  <TableRow>
+                    <TableCell>End Date</TableCell>
+                    <TableCell>
+                      {dayjs(year.end_date).format("M/D/YY")}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Savings APR</TableCell>
+                    <TableCell>{year.savings_apr}%</TableCell>
+                  </TableRow>
+                  {year.investment_values.map((account) => (
+                    <TableRow>
+                      <TableCell>{account.title}</TableCell>
+                      <TableCell>${account.value}</TableCell>
+                    </TableRow>
+                  ))}
+                </Table>
+              </TableContainer>
 
-                    <TableContainer component={Paper}>
-                      <Table sx={{ minWidth: 650 }}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Dessert (100g serving)</TableCell>
-                            <TableCell align="right">Calories</TableCell>
-                            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {/* {rows.map((row) => (
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Dessert (100g serving)</TableCell>
+                      <TableCell align="right">Calories</TableCell>
+                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                      <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                      <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {/* {rows.map((row) => (
                             <TableRow
                               key={row.name}
                               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -152,12 +140,11 @@ const YearEnds = ({ classroom_id, header = true }) => {
                               <TableCell align="right">{row.protein}</TableCell>
                             </TableRow>
                           ))} */}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-
-                    {/* <Stack direction="row" sx={{justifyContent: "space-around", alignItems: "center"}}>
+              {/* <Stack direction="row" sx={{justifyContent: "space-around", alignItems: "center"}}>
                       <Typography variant="body2" color="text.secondary">
                         End Date:
                       </Typography>
@@ -183,13 +170,9 @@ const YearEnds = ({ classroom_id, header = true }) => {
                         </Typography>
                       </Stack>
                     })} */}
-
-
-
-                  </AccordionDetails>
-                </Accordion>
-              ))
-      }
+            </AccordionDetails>
+          </Accordion>
+        ))}
     </Stack>
   );
 };

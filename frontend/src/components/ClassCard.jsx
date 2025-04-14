@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 // import DeleteIcon from "@mui/icons-material/Delete";
 
-import ConfirmDelete from "./ConfirmDelete";
+import ConfirmDelete from "./ConfirmDeleteDialog";
 
 import dayjs from "dayjs";
 
@@ -22,7 +22,8 @@ const ClassCard = ({ classroom, onDelete }) => {
       sx={{
         position: "relative",
         // overflow: "hidden",
-        maxWidth: 300,
+        width: "auto",
+        minWidth: 250,
         // aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
@@ -58,18 +59,18 @@ const ClassCard = ({ classroom, onDelete }) => {
         {typeof onDelete === "function" && (
           <ConfirmDelete
             onSubmit={onDelete}
-            routeName="classroom"
-            deleteId={classroom.id}
-            confirmationMessage={
-              `Really delete classroom ${classroom.class_name}? Class Code: ${classroom.class_code}\n` +
-              `Enter class code below to confirm:`
-            }
-            confirmationKey={classroom.class_code}
+            deleteTarget={{
+              type: "classroom",
+              name: classroom.class_name,
+              id: classroom.id,
+              path: "classrooms",
+              key: classroom.class_code,
+              keyName: "Class Code",
+            }}
           />
         )}
       </CardActions>
     </Card>
   );
 };
-
 export default ClassCard;

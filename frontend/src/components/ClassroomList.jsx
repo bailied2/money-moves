@@ -7,7 +7,7 @@ import ClassCard from "./ClassCard";
 
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
-import ConfirmDelete from "./ConfirmDelete";
+import ConfirmDelete from "./ConfirmDeleteDialog";
 
 import CircularProgress from "@mui/material/CircularProgress";
 

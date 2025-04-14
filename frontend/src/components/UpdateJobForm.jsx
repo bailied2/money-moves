@@ -54,7 +54,7 @@ const UpdateJobForm = ({ job_id }) => {
     };
 
     fetchJob();
-  }, []);
+  }, [job_id]);
 
   const handleStartDateChange = (value) => {
     setStartDate(dayjs(value));
