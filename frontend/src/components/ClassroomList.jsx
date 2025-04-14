@@ -2,12 +2,15 @@ import "./styles/CardList.css";
 
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Snackbar from "@mui/material/Snackbar";
 
 import ClassCard from "./ClassCard";
 
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
-import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -15,11 +18,16 @@ import { Stack, Typography, Paper } from "@mui/material";
 
 import api from "../api";
 
-const ClassroomList = ({ header = true, teacher = false }) => {
+const ClassroomList = ({ teacher = false }) => {
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [alertMessage, setAlertMessage] = useState(null);
+
+  const [alert, setAlert] = useState({
+    message: null,
+    color: "success",
+    open: false,
+  });
 
   useEffect(() => {
     const fetchClassrooms = async () => {
@@ -40,8 +48,15 @@ const ClassroomList = ({ header = true, teacher = false }) => {
     fetchClassrooms();
   }, [teacher]);
 
-  const addClassroom = (classroom) => {
+  const addClassroom = (classroom, message) => {
     if (classroom) setClassrooms(classrooms.concat(classroom));
+    if (message) {
+      setAlert({
+        message: message,
+        color: "success",
+        open: true,
+      });
+    }
   };
 
   const deleteClassroom = async (classroom_id) => {
@@ -49,9 +64,18 @@ const ClassroomList = ({ header = true, teacher = false }) => {
       const response = await api.delete(`/classrooms/${classroom_id}`);
       console.log(response);
       setClassrooms(classrooms.filter((c) => c.id !== classroom_id));
-      setAlertMessage("Classroom deleted successfully!");
+      setAlert({
+        message: "Classroom deleted successfully!",
+        color: "success",
+        open: true,
+      });
     } catch (err) {
-      alert("Error deleting classroom");
+      console.log("Error deleting classroom: ", err);
+      setAlert({
+        message: "Error deleting classroom.",
+        color: "error",
+        open: true,
+      });
     }
   };
 
@@ -67,15 +91,49 @@ const ClassroomList = ({ header = true, teacher = false }) => {
         padding: 2,
       }}
     >
-      {header && (
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{ marginLeft: "1em", padding: 1 }}
+      {/* Classroom List Header */}
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{ padding: 1, marginLeft: "1em" }}
+      >
+        My Classrooms - {teacher ? "Teacher" : "Student"}
+      </Typography>
+
+      {/* Alert Message */}
+      <Snackbar
+        anchorOrigin={{ horizontal: "center", vertical: "top" }}
+        open={alert.open}
+        autoHideDuration={6000}
+        onClose={() => {
+          setAlert({ ...alert, open: false });
+        }}
+        sx={{
+          display: "block",
+        }}
+      >
+        <Alert
+          color={alert.color}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={(event, reason) => {
+                if (reason === "clickaway") return;
+                setAlert({ ...alert, open: false });
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
         >
-          My Classrooms - {teacher ? "Teacher" : "Student"}
-        </Typography>
-      )}
+          {alert.message}
+        </Alert>
+      </Snackbar>
+
+      {/* Classroom List Grid */}
       <Grid
         container
         rowSpacing={3}

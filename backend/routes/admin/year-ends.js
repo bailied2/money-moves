@@ -26,17 +26,17 @@ const getYearEnds = async (req, res) => {
 // GET /year-ends/classroom/:id - Get all investment accounts for a particular classroom
 const getYearEndsByClass = async (req, res) => {
   const classroom_id = req.params.id; // Get classroom_id from params
-  
+
   // Debug logs
   console.log("\n*** getYearEndsByClass ***");
 
   console.log("  classroom_id: ", classroom_id);
 
   // Prepared statement
-  const selectYearEndsQuery = "SELECT * FROM year_end WHERE fk_classroom_id = ?";
+  const selectYearEndsQuery =
+    "SELECT * FROM year_end WHERE fk_classroom_id = ?";
 
-  const selectInvestmentValuesQuery = 
-    `SELECT investment_values.fk_year_end_id AS fk_year_end_id, investment_account.title as title, investment_values.share_value AS value 
+  const selectInvestmentValuesQuery = `SELECT investment_values.fk_year_end_id AS fk_year_end_id, investment_account.title as title, investment_values.share_value AS value 
     FROM investment_values
     RIGHT JOIN investment_account
     ON investment_values.fk_account_id = investment_account.id
@@ -46,20 +46,22 @@ const getYearEndsByClass = async (req, res) => {
     // Get all year ends for classroom
     const [year_ends] = await db.execute(selectYearEndsQuery, [classroom_id]);
     // Get yearly values for classroom
-    const [investment_values] = await db.execute(selectInvestmentValuesQuery, [classroom_id]);
+    const [investment_values] = await db.execute(selectInvestmentValuesQuery, [
+      classroom_id,
+    ]);
 
     // For each year end
     for (const year_end of year_ends) {
       // Add account values for the year to the object
-      year_end.investment_values = investment_values.filter((row) => row.fk_year_end_id == year_end.id);
+      year_end.investment_values = investment_values.filter(
+        (row) => row.fk_year_end_id == year_end.id
+      );
     }
     // Send response with year_ends
     res.json({ year_ends });
   } catch (error) {
     console.error("Error fetching year ends:", error);
-    return res
-      .status(500)
-      .json({ error: "Failed to fetch year ends" });
+    return res.status(500).json({ error: "Failed to fetch year ends" });
   }
 };
 
@@ -89,10 +91,20 @@ const getYearEndById = async (req, res) => {
   }
 };
 
+/*
+CREATE TABLE year_end (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  fk_classroom_id INT UNSIGNED NOT NULL,
+  end_date TIMESTAMP NOT NULL,
+  savings_apr DECIMAL(5,2) NOT NULL,
+  UNIQUE (fk_classroom_id, end_date),
+  FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+*/
+
 // POST /year-ends - Create a new year-end record
 const createYearEnd = async (req, res) => {
-  const { year, total_income, total_expenses, net_profit, classroom_id } =
-    req.body;
+  const { classroom_id, end_date } = req.body;
   const query =
     "INSERT INTO year_ends (year, total_income, total_expenses, net_profit, classroom_id) VALUES (?, ?, ?, ?, ?)";
   try {
@@ -178,7 +190,7 @@ const deleteYearEnd = async (req, res) => {
 
 // Routes definition using the functions above
 router.get("/", getYearEnds); // Get all year-end records
-router.get("/classroom/:id", getYearEndsByClass) // Get all year ends for a particular class
+router.get("/classroom/:id", getYearEndsByClass); // Get all year ends for a particular class
 router.get("/:id", getYearEndById); // Get a year-end record by ID
 router.post("/", createYearEnd); // Create a new year-end record
 router.put("/:id", updateYearEnd); // Update a year-end record by ID
