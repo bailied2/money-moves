@@ -7,7 +7,6 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import SaveIcon from "@mui/icons-material/Save";
 
 const Test = () => (
   <Box sx={{ padding: 3 }}>

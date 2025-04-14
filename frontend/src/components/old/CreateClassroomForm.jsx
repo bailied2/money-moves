@@ -6,8 +6,8 @@ import { Container, Box, Typography, TextField, Button } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
-import { AuthContext } from "../AuthContext";
-import api from "../api";
+import { AuthContext } from "../../AuthContext";
+import api from "../../api";
 
 const CreateClassroomForm = () => {
   const { user } = useContext(AuthContext);

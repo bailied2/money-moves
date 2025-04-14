@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../api";
-import NewPassword from "./NewPassword";
+// import NewPassword from "./NewPassword";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -21,11 +21,11 @@ const ForgotPassword = () => {
 
     try {
       const response = await api.post("/users/forgot-password", { email });
-      
+
       if (response.status === 200) {
         setMessage("Password reset email sent. Check your inbox.");
         setEmail("");
-        setTimeout(() => navigate("/login"), 3000);  // Redirect to login page after 3 seconds
+        setTimeout(() => navigate("/login"), 3000); // Redirect to login page after 3 seconds
       }
     } catch (error) {
       console.error("Error:", error);
@@ -46,7 +46,12 @@ const ForgotPassword = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email Address
+            </label>
             <input
               type="email"
               id="email"
@@ -70,11 +75,15 @@ const ForgotPassword = () => {
           </button>
         </form>
 
-        {message && <p className="text-green-600 mt-4 text-center">{message}</p>}
+        {message && (
+          <p className="text-green-600 mt-4 text-center">{message}</p>
+        )}
         {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
 
         <div className="mt-4 text-center">
-          <a href="/login" className="text-blue-500 hover:underline">Back to Login</a>
+          <a href="/login" className="text-blue-500 hover:underline">
+            Back to Login
+          </a>
         </div>
       </div>
     </div>
