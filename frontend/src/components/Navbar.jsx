@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 
 import { ReactComponent as NavSeparator } from "../assets/thinlinecolor.svg";
 
-import AccountMenu from "./AccountMenu";
+import UserAccountMenu from "./UserAccountMenu";
 
 import { AuthContext } from "../AuthContext";
 
@@ -68,7 +68,7 @@ const Navbar = () => {
             About
           </Button>
           {user ? (
-            <AccountMenu user={user} />
+            <UserAccountMenu user={user} />
           ) : (
             <>
               <Button

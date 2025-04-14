@@ -14,7 +14,7 @@ import { AuthContext } from "../AuthContext";
 
 import api from "../api";
 
-export default function AccountMenu() {
+export default function UserAccountMenu() {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
