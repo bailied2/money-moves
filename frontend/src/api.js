@@ -9,7 +9,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && error.response?.user) {
       // Token is invalid or expired
       // Optional: auto-logout or redirect
       localStorage.removeItem("token");
