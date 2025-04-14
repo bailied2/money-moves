@@ -49,11 +49,24 @@ const YearEnds = ({ classroom_id }) => {
 
   const addYearEnd = async () => {
     try {
-      const response = await api.post(`/year-ends`, classroom_id);
+      const nextWeek = dayjs(
+        year_ends.length > 1 ? year_ends.at(-1).end_date : Date.now()
+      )
+        .startOf("day")
+        .add(1, "week")
+        .format("YYYY-MM-DD HH:mm:ss");
+      const response = await api.post(`/year-ends`, {
+        classroom_id,
+        end_date: nextWeek,
+        savings_apr:
+          year_ends.length > 1 ? year_ends.at(-1).savings_apr : "0.05",
+        previous_investment_values: year_ends.at(-1).investment_values,
+      });
+      if (response.data.year_end)
+        setYearEnds(year_ends.concat(response.data.year_end));
     } catch (error) {
       console.log("Error adding year end:", error);
     }
-    // if (year_end) setYearEnds(year_ends.concat(year_end));
   };
 
   return (
