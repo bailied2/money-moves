@@ -64,12 +64,8 @@ const ClassroomList = ({ header = true, teacher = false }) => {
         marginBottom: 2,
         borderRadius: 5,
         boxShadow: 1,
-<<<<<<< HEAD
-        padding: 2,
-=======
         bgcolor: "#174C66",
         padding: 3,
->>>>>>> 9bdf7e4 (added more styling to the website)
       }}
     >
       {header && (
