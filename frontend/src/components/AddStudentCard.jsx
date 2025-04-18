@@ -72,6 +72,7 @@ const AddStudentCard = ({ classroom = null, onSubmit }) => {
       <Card
         raised
         sx={{
+          bgcolor:"#FA7921",
           position: "relative",
           overflow: "visible",
           maxWidth: 300,
