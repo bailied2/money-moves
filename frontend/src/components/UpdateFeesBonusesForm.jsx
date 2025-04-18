@@ -29,7 +29,6 @@ const UpdateFeesBonusesForm = ({feesbonuses_id }) => {
   });
   const [startDate, setStartDate] = useState(current_date);
   const [endDate, setEndDate] = useState(current_date.add(6, "M"));
-console.log(property_id);
   //fetching specific job
   useEffect(() => {
   const fetchFeesBonuses = async () => {

@@ -21,7 +21,7 @@ import InvestmentAccountList from "./InvestmentAccountList";
 import YearEnds from "./YearEnds";
 
 import Tabs from "@mui/material/Tabs";
-import UpdateFeesBonusesForm from "./UpdateFeesBonusesForm";
+import UpdateFeesBonusesForm from "./UpdateFeesBonusesForm.jsx";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -73,8 +73,8 @@ const TeacherView = ({ classroom }) => {
 
       {/* Fees/Bonuses Tab */}
       <CustomTabPanel id="feesbonuses_tab_panel" value={value} index={1}>
-      <CreateFeesBonusesForm classroom_id={classroom.id} />
-      <UpdateFeesBonusesForm property_id={2} />
+        <CreateFeesBonusesForm classroom_id={classroom.id} />
+        <UpdateFeesBonusesForm property_id={2} />
 
 
       </CustomTabPanel>

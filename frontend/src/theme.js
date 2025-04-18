@@ -87,8 +87,16 @@ const theme = createTheme({
         color: "secondary",
       },
     },
+    
   },
 });
+
+/*
+
+.MuiAccordionDetails-root .yearly_value_form:nth-child(even) .MuiStack-root {
+    background-color: lightgrey;
+}
+*/
 
 export default theme;
 
