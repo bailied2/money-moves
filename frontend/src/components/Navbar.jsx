@@ -8,7 +8,7 @@ import AccountMenu from "./AccountMenu";
 
 import { AuthContext } from "../AuthContext";
 
-import { IconShapes } from "./IconShapes";
+import IconShapes from './IconShapes';
 
 import { grey } from "@mui/material/colors";
 
@@ -22,7 +22,7 @@ const Navbar = () => {
 
         <IconShapes style={{ width: 32, height: 32, marginRight: 8 }} />
 
-          <Link id="home" component={Button} underline="none" href="/" sx={{ color: "#EADCD7",textTransform: "none" }}>
+          <Link id="home" component={Button} underline="none" href="/" sx={{ color: "#EADCD7",textTransform: "none",fontWeight: 'bold' }}>
             Money Moves Academy 
           </Link>
           <Box sx={{ flexGrow: 1 }}></Box>

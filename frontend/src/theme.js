@@ -8,7 +8,7 @@ const theme = createTheme({
     
         palette: {
           primary: {
-            main: "#EADCD7",
+            main: "#E55934", // Primary color (link text, buttons, etc.)
           },
           secondary: {
             main: "#9c27b0",
