@@ -21,6 +21,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 
+import ShapesLoader from "./ShapesLoader";
+
 import dayjs from "dayjs";
 
 import api from "../api";
@@ -82,8 +84,15 @@ const YearEnds = ({ classroom_id }) => {
       <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
         <Typography variant="h5">Year Ends</Typography>
       </Stack>
+
+      <CircularProgress sx={{ margin: "auto" }} />
+      <ShapesLoader sx={{ margin: "1rem auto" }} />
+
       {loading ? (
-        <CircularProgress sx={{ margin: "auto" }} />
+        <>
+          <CircularProgress sx={{ margin: "auto" }} />
+          {/* <IconShapes style={{ width: 48, height: 48, margin: "auto" }} /> */}
+        </>
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
@@ -127,7 +136,7 @@ const YearEnds = ({ classroom_id }) => {
           </Accordion>
         ))
       )}
-      <Divider>
+      <Divider sx={{ mt: 2 }}>
         <Fab onClick={addYearEnd}>
           <AddIcon />
         </Fab>
