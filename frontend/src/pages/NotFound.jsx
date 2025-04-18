@@ -1,10 +1,15 @@
 import React from "react";
 
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
 const NotFound = () => (
-  <div>
-    <h1>404 - Not Found</h1>
-    <p>Oops! The page you’re looking for doesn’t exist.</p>
-  </div>
+  <Box sx={{ padding: 3 }}>
+    <Typography variant="h4" gutterBottom>
+      404 - Not Found
+    </Typography>
+    <Typography>Oops! The page you’re looking for doesn’t exist.</Typography>
+  </Box>
 );
 
 export default NotFound;

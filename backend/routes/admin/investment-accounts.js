@@ -35,16 +35,27 @@ const getInvestmentAccountsByClass = async (req, res) => {
   console.log("  classroom_id: ", classroom_id);
 
   // Prepared statement
-  const query = "SELECT * FROM investment_account WHERE fk_classroom_id = ?";
+  const selectInvestmentAccountsQuery = "SELECT * FROM investment_account WHERE fk_classroom_id = ?";
 
   const selectYearlyValuesQuery = 
-    "SELECT ";
+    `SELECT investment_values.fk_account_id AS fk_investment_account_id, year_end.end_date as end_date, investment_values.share_value AS value 
+    FROM investment_values
+    RIGHT JOIN year_end
+    ON investment_values.fk_year_end_id = year_end.id
+    WHERE year_end.fk_classroom_id = ?`;
 
   try {
-    const [investment_accounts] = await db.execute(query, [classroom_id]);
+    // Get all investment accounts for classroom
+    const [investment_accounts] = await db.execute(selectInvestmentAccountsQuery, [classroom_id]);
+    // Get yearly values for classroom
+    const [yearly_values] = await db.execute(selectYearlyValuesQuery, [classroom_id]);
+
+    // For each investment account
     for (const investment_account of investment_accounts) {
-      
+      // Add yearly values for the account to the object
+      investment_account.yearly_values = yearly_values.filter((row) => row.fk_investment_account_id == investment_account.id);
     }
+    // Send response with investment_accounts
     res.json({ investment_accounts });
   } catch (error) {
     console.error("Error fetching investment accounts:", error);

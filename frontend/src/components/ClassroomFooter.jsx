@@ -1,8 +1,8 @@
 import React from "react";
 
-import { NavLink } from "react-router";
+import { Link as RouterLink } from "react-router";
 
-import { Stack, Typography, Paper } from "@mui/material";
+import { Stack, Typography, Button, Paper } from "@mui/material";
 import "./styles/ClassroomFooter.css";
 
 const ClassroomFooter = ({ class_code }) => {
@@ -10,20 +10,20 @@ const ClassroomFooter = ({ class_code }) => {
     <Stack
       direction="row"
       sx={{
-        position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         alignItems: "baseline",
         justifyContent: "space-around",
         padding: 2,
-        flexBasis: "",
+
+        // flexBasis: "",
       }}
     >
-      <NavLink to="/">
+      <Button component={RouterLink} to="/" sx={{ textTransform: "none" }}>
         <Typography variant="h6">Money Moves Academy</Typography>
-      </NavLink>
-      <Typography variant="h5">
+      </Button>
+      <Typography variant="h6">
         Class Code:{" "}
         <Paper sx={{ display: "inline-block", padding: 1 }}>{class_code}</Paper>
       </Typography>

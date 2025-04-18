@@ -18,10 +18,10 @@ const mysql = require("mysql2/promise");
  **/
 const pool = mysql.createPool({
   // Connection configuration
-  host: process.env.DB_HOST || "deltona.birdnest.org", // Replace with your host
-  user: process.env.DB_USER || "my.goffk3", // Replace with your MySQL username
-  password: process.env.DB_PASSWORD || "42ha@p489", // Replace with your MySQL password
-  database: process.env.DB_NAME || "my_goffk3_moneymovesdb", // Replace with your MySQL database name
+  host: process.env.DB_HOST || "deltona.birdnest.org", 
+  user: process.env.DB_USER || "my.goffk3", 
+  password: process.env.DB_PASSWORD || "42ha@p489", 
+  database: process.env.DB_NAME || "my_goffk3_moneymovesdb", 
   // Pool configuration
   waitForConnections: true, // Wait if all connections are busy
   connectionLimit: 10, // Number of connections in pool

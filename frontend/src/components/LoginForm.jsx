@@ -1,19 +1,23 @@
-import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TextField,
   Button,
   Container,
   Typography,
+  Paper,
   Box,
   Link,
 } from "@mui/material";
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import api from "../api";
+
+import { AuthContext } from "../AuthContext";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -34,11 +38,11 @@ const LoginForm = () => {
 
     try {
       const response = await api.post("/users/login", formData);
-      console.log(response.data);
-
+      if (response.status === 200) {
+        setUser(response.data.user);
+        navigate("/dashboard");
+      }
       // alert("User logged in successfully!");
-      navigate("/dashboard", { flushSync: true });
-      return <Navigate to="/login" />;
     } catch (error) {
       console.error("Error submitting form:", error);
       setError(error.response.data.error);
@@ -49,9 +53,7 @@ const LoginForm = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box
-        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "#174C66" }}
-      >
+      <Paper sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
         <Typography variant="h5" gutterBottom>
           Log In
         </Typography>
@@ -91,7 +93,7 @@ const LoginForm = () => {
             Submit
           </Button>
           {working && (
-            <Backdrop open={working} sx={{width:"100%"}}>
+            <Backdrop open={working} sx={{ width: "100%" }}>
               <CircularProgress color="inherit" />
             </Backdrop>
           )}
@@ -101,7 +103,7 @@ const LoginForm = () => {
             Forgot your password?
           </Link>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 };

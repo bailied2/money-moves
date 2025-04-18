@@ -5,25 +5,25 @@ import {
   Typography,
   CardActions,
   Button,
-  IconButton,
+  // IconButton,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+// import DeleteIcon from "@mui/icons-material/Delete";
+
+import ConfirmDelete from "./ConfirmDeleteDialog";
 
 import dayjs from "dayjs";
 
-import { Link } from "react-router";
+import { Link as RouterLink } from "react-router-dom";
 
-const ClassCard = ({
-  classroom,
-  onDelete,
-}) => {
+const ClassCard = ({ classroom, onDelete }) => {
   return (
     <Card
       raised
       sx={{
         position: "relative",
         // overflow: "hidden",
-        maxWidth: 300,
+        width: "auto",
+        minWidth: 250,
         // aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
@@ -47,18 +47,30 @@ const ClassCard = ({
           End Date: {dayjs(classroom.end_date).format("M/D/YYYY")}
         </Typography>
       </CardContent>
-      <CardActions sx={{ padding: 0 }}>
-        <Link to={`/classroom/${classroom.id}`} state={{classroom}}>
-          <Button size="small">Open</Button>
-        </Link>
+      <CardActions>
+        <Button
+          size="small"
+          component={RouterLink}
+          to={`/classroom/${classroom.id}`}
+          state={{ classroom }}
+        >
+          Open
+        </Button>
         {typeof onDelete === "function" && (
-          <Button size="small" color="error" onClick={onDelete}>
-            Delete
-          </Button>
+          <ConfirmDelete
+            onSubmit={onDelete}
+            deleteTarget={{
+              type: "classroom",
+              name: classroom.class_name,
+              id: classroom.id,
+              path: "classrooms",
+              key: classroom.class_code,
+              keyName: "Class Code",
+            }}
+          />
         )}
       </CardActions>
     </Card>
   );
 };
-
 export default ClassCard;

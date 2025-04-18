@@ -6,8 +6,8 @@ import { Container, Box, Typography, TextField, Button } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
-import { AuthContext } from "../AuthContext";
-import api from "../api";
+import { AuthContext } from "../../AuthContext";
+import api from "../../api";
 
 const CreateClassroomForm = () => {
   const { user } = useContext(AuthContext);
@@ -49,11 +49,6 @@ const CreateClassroomForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // alert(`
-    //   class_name: ${formData.class_name}
-    //   start_date: ${formData.start_date}
-    //   end_date: ${formData.end_date}
-    //   `);
     try {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);

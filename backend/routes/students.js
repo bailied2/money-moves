@@ -9,7 +9,7 @@ const authenticateToken = require("../authMiddleware.js");
 
 // GET /students - Get all student records
 const getStudents = async (req, res) => {
-  const query = "SELECT * FROM students";
+  const query = "SELECT * FROM student";
   // db.query(query, (err, results) => {
   //   if (err) {
   //     console.error("Error fetching student records:", err);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 
 import InvestmentAccountCard from "./InvestmentAccountCard";
 
@@ -7,10 +7,9 @@ import AddInvestmentCard from "./AddInvestmentCard";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { grey } from "@mui/material/colors";
-import { Stack, Typography, Button } from "@mui/material";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-// import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
 const InvestmentAccountList = ({ classroom_id, header = true }) => {
@@ -21,7 +20,9 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await api.get(`/investment-accounts/classroom/${classroom_id}`);
+        const response = await api.get(
+          `/investment-accounts/classroom/${classroom_id}`
+        );
         console.log(response);
         setAccounts(response.data.investment_accounts);
         setError(null);
@@ -36,7 +37,8 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
   }, [classroom_id]);
 
   const addInvestmentAccount = (investment_account) => {
-    if (investment_account) setAccounts(investment_accounts.concat(investment_account));
+    if (investment_account)
+      setAccounts(investment_accounts.concat(investment_account));
   };
 
   if (loading) return <p>Loading...</p>;
@@ -45,6 +47,10 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
     <Stack
       sx={{
         margin: "0 auto",
+        borderRadius: 5,
+        boxShadow: 1,
+        bgcolor: "#174C66",
+        padding: 2,
       }}
     >
       <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
@@ -56,11 +62,7 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
-          borderRadius: 5,
-          boxShadow: 1,
-          bgcolor: grey[300],
           alignItems: "flex-start",
-          padding: 2,
         }}
       >
         {loading && (
@@ -74,7 +76,7 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
           investment_accounts.map((investment_account, index) => (
             <Grid
               key={index}
-              size={{ xs: 2, sm: 4, md: 4 }}
+              size={{ xs: 12, sm: 6, md: 6 }}
               display="flex"
               justifyContent="center"
             >
@@ -82,16 +84,19 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
                 id={investment_account.id}
                 title={investment_account.title}
                 description={investment_account.description}
-                share_value={investment_account.share_value}
+                yearly_values={investment_account.yearly_values}
               ></InvestmentAccountCard>
             </Grid>
           ))}
         <Grid
-          size={{ xs: 2, sm: 4, md: 4 }}
+          size={{ xs: 12, sm: 6, md: 6 }}
           display="flex"
           justifyContent="center"
         >
-          <AddInvestmentCard classroom_id={classroom_id} onSubmit={addInvestmentAccount} />
+          <AddInvestmentCard
+            classroom_id={classroom_id}
+            onSubmit={addInvestmentAccount}
+          />
         </Grid>
       </Grid>
     </Stack>

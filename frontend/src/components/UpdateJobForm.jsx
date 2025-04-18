@@ -1,56 +1,75 @@
 // import "./styles/CreateJobForm.css";
 
-import React, { useContext, useState } from "react";
+import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import {
-  Container,
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+// import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "../api";
 
-const CreateJobForm = ({ classroom_id }) => {
+// for updates, fetch all the data for that specific job,
+// (get request to the backend to get a job by id),
+// then set the fields to the form data
+//
+
+const UpdateJobForm = ({ job_id }) => {
   const current_date = dayjs().startOf("day");
 
   console.log("Creating job form.");
 
   const [formData, setFormData] = useState({
-    job_title: "",
-    job_description: "",
+    title: "",
+    description: "",
     wage: "",
     pay_frequency: "Weekly",
     pay_day: "",
     icon_class: "",
     is_trustee: false,
   });
-  const [startDate, setStartDate] = useState(current_date);
-  const [endDate, setEndDate] = useState(current_date.add(6, "M"));
+  // const [startDate, setStartDate] = useState(current_date);
+  // const [endDate, setEndDate] = useState(current_date.add(6, "M"));
+  console.log(job_id);
+  //fetching specific job
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const response = await api.get(`/jobs/${job_id}`);
+        // console.log("Got:", response.data)
+        return setFormData(response.data.data);
+      } catch (error) {
+        console.error("Failed to fetch job:", error);
+        return null;
+      }
+    };
 
-  const handleStartDateChange = (value) => {
-    setStartDate(dayjs(value));
+    fetchJob();
+  }, [job_id]);
 
-    setFormData({
-      ...formData,
-      start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-    });
-  };
+  // const handleStartDateChange = (value) => {
+  //   setStartDate(dayjs(value));
 
-  const handleEndDateChange = (value) => {
-    setEndDate(dayjs(value));
-    setFormData({
-      ...formData,
-      end_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-    });
-  };
+  //   setFormData({
+  //     ...formData,
+  //     start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+  //   });
+  // };
+
+  // const handleEndDateChange = (value) => {
+  //   setEndDate(dayjs(value));
+  //   setFormData({
+  //     ...formData,
+  //     end_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+  //   });
+  // };
 
   const handleSubmit = async (e) => {
     console.log("Attempting form submit");
@@ -58,17 +77,14 @@ const CreateJobForm = ({ classroom_id }) => {
     try {
       //debug
       console.log("Form data before submitting", formData);
-      const response = await api.post("/jobs", {
-        formData,
-        classroom_id: classroom_id,
-      });
-      console.log(response.data);
-      alert("Job added successfully!");
-      setStartDate(current_date);
-      setEndDate(current_date.add(6, "M"));
+      const response = await api.put(`/jobs/${job_id}`, { formData });
+      //   console.log(response.data);
+      alert("Job updated successfully!");
+      // setStartDate(current_date);
+      // setEndDate(current_date.add(6, "M"));
       setFormData({
-        job_title: "",
-        job_description: "",
+        title: "",
+        description: "",
         wage: "",
         pay_frequency: "Weekly",
         pay_day: "",
@@ -87,19 +103,19 @@ const CreateJobForm = ({ classroom_id }) => {
         sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}
       >
         <Typography variant="h5" gutterBottom>
-          Create Job
+          Update Job
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             required
             margin="normal"
-            id="job_title"
-            name="job_title"
-            value={formData.job_title}
+            id="title"
+            name="title"
+            value={formData.title}
             label="Job Title"
             variant="standard"
             onChange={(e) => {
-              setFormData({ ...formData, job_title: e.target.value });
+              setFormData({ ...formData, title: e.target.value });
             }}
             fullWidth
           />
@@ -107,13 +123,13 @@ const CreateJobForm = ({ classroom_id }) => {
           <TextField
             required
             margin="normal"
-            id="job_description"
-            name="job_description"
-            value={formData.job_description}
+            id="description"
+            name="description"
+            value={formData.description}
             label="Job Description"
             variant="standard"
             onChange={(e) => {
-              setFormData({ ...formData, job_description: e.target.value });
+              setFormData({ ...formData, description: e.target.value });
             }}
             fullWidth
           />
@@ -192,6 +208,7 @@ const CreateJobForm = ({ classroom_id }) => {
               id="is_trustee"
               value={formData.is_trustee}
               onChange={(e) => {
+                console.log(e.target.value);
                 setFormData({ ...formData, is_trustee: e.target.value });
               }}
               label="Is Trustee"
@@ -199,8 +216,8 @@ const CreateJobForm = ({ classroom_id }) => {
                 minWidth: "10rem",
               }}
             >
-              <MenuItem value={false}>No</MenuItem>
-              <MenuItem value={true}>Yes</MenuItem>
+              <MenuItem value={0}>No</MenuItem>
+              <MenuItem value={1}>Yes</MenuItem>
             </Select>
           </FormControl>
           <br />
@@ -218,4 +235,5 @@ const CreateJobForm = ({ classroom_id }) => {
     </Container>
   );
 };
-export default CreateJobForm;
+
+export default UpdateJobForm;

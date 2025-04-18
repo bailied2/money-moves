@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 
-import ClassCard from "./ClassCard";
+import ClassCard from "../ClassCard";
 import AddNewCard from "./AddNewCard";
 
 import { grey } from "@mui/material/colors";

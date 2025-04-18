@@ -16,7 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from '@mui/material/Backdrop';
+import Backdrop from "@mui/material/Backdrop";
 
 import dayjs from "dayjs";
 import api from "../api";
@@ -62,11 +62,6 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setWaiting(true);
-    // alert(`
-    //   class_name: ${formData.class_name}
-    //   start_date: ${formData.start_date}
-    //   end_date: ${formData.end_date}
-    //   `);
     try {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);
@@ -91,10 +86,14 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Create Classroom</DialogTitle>
       <DialogContent>
-        {waiting && (<Backdrop
-        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-        open={waiting}
-      ><CircularProgress /></Backdrop>)}
+        {waiting && (
+          <Backdrop
+            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+            open={waiting}
+          >
+            <CircularProgress />
+          </Backdrop>
+        )}
         <form onSubmit={handleSubmit} id="create_classroom_form">
           <TextField
             // autoFocus
@@ -110,6 +109,8 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
               setFormData({ ...formData, class_name: e.target.value });
             }}
           />
+          <br />
+          <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Start Date"
@@ -161,25 +162,12 @@ const ParentComponent = ({ onSubmit }) => {
     handleClose();
   };
 
-  // return (
-  // <>
-  //   <Fab onClick={handleOpen}>
-  //     <AddIcon />
-  //   </Fab>
-  //   <CustomFormDialog
-  //     open={open}
-  //     onClose={handleClose}
-  //     onSubmit={handleSubmit}
-  //   />
-  // </>
-
   return (
     <Card
       sx={{
         boxShadow: 0,
         position: "relative",
-        minHeight: 185,
-        maxWidth: 300,
+        minHeight: 200,
         aspectRatio: "3/2",
         padding: 1,
         border: "3px dashed lightgrey",

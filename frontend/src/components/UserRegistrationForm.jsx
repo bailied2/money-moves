@@ -1,8 +1,19 @@
-import React, { useState } from "react";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
-import axios from "axios";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+
+import api from "../api";
+
+import { AuthContext } from "../AuthContext";
 
 const UserRegistrationForm = () => {
+  const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -18,7 +29,7 @@ const UserRegistrationForm = () => {
     setFormData({ ...formData, [name]: value });
 
     // Check if passwords match
-    if (name === "confirmPassword") {
+    if (name === "confirm_password") {
       setPasswordError(value !== formData.password);
     }
   };
@@ -28,12 +39,12 @@ const UserRegistrationForm = () => {
     if (passwordError) return; // Prevent submission if passwords don't match
 
     try {
-      const response = await axios.post(
-        "http://localhost:5001/api/users",
-        formData
-      );
+      const response = await api.post("/users/register", formData);
       console.log(response.data);
-      alert("User added successfully!");
+      if (response.status === 200) {
+        setUser(response.data.user);
+        navigate("/dashboard");
+      }
       setFormData({
         first_name: "",
         last_name: "",
@@ -48,10 +59,8 @@ const UserRegistrationForm = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box
-        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}
-      >
-        <Typography variant="h5" gutterBottom>
+      <Paper sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}>
+        <Typography variant="h5" color="textPrimary" gutterBottom>
           User Registration
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -113,7 +122,7 @@ const UserRegistrationForm = () => {
             Submit
           </Button>
         </form>
-      </Box>
+      </Paper>
     </Container>
   );
 };

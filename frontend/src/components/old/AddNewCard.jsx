@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Typography, CardActions } from "@mui/material";
 
-import CreateClassroomDialog from "./CreateClassroomDialog";
+import CreateClassroomDialog from "../CreateClassroomDialog";
 
 const AddNewCard = ({ label, onClassroomAdded }) => {
   const handleSubmit = (data) => {

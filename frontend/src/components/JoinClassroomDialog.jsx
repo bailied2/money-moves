@@ -88,8 +88,7 @@ const ParentComponent = ({ onSubmit }) => {
       sx={{
         boxShadow: 0,
         position: "relative",
-        minHeight: 185,
-        maxWidth: 300,
+        minHeight: 200,
         aspectRatio: "3/2",
         padding: 1,
         border: "3px dashed lightgrey",

@@ -1,16 +1,14 @@
-import React, { useContext, useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
+import React, { useState, useEffect } from "react";
+import Grid from "@mui/material/Grid";
 
 import StudentCard from "./StudentCard";
 import AddStudentCard from "./AddStudentCard";
 
-import { grey } from "@mui/material/colors";
-import { Stack, Typography, Button } from "@mui/material";
+import { Stack, Typography, Paper, Button } from "@mui/material";
 
-import { ClassroomContext } from "../ClassroomContext";
 import api from "../api";
 
-const StudentList = ({ classroom, header = true }) => {
+const StudentList = ({ classroom }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,22 +38,33 @@ const StudentList = ({ classroom, header = true }) => {
 
   return (
     <Stack
+      component={Paper}
       sx={{
+        borderRadius: 5,
+        boxShadow: 1,
         margin: "0 auto",
+        padding: 2,
       }}
     >
-      {header && <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>Students</Typography>}
+      <Stack direction="row" justifyContent="space-between">
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ marginLeft: "1em", padding: 1 }}
+        >
+          Students
+        </Typography>
+        <Button variant="contained" sx={{ marginRight: "1em" }}>
+          Import
+        </Button>
+      </Stack>
       <Grid
         container
         rowSpacing={3}
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
-          borderRadius: 5,
-          boxShadow: 1,
-          bgcolor: grey[300],
           alignItems: "flex-start",
-          padding: 2,
         }}
       >
         {error && <p style={{ color: "red" }}>{error}</p>}

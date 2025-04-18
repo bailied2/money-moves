@@ -18,7 +18,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import api from "../api";
 
-const CreatePropertyDialog = ({ open, onClose, fk_classroom_id, onSubmit }) => {
+const CreatePropertyDialogue = ({ open, onClose, fk_classroom_id, onSubmit }) => {
   const current_date = dayjs().startOf("day");
   const [waiting, setWaiting] = useState(false);
 
@@ -73,7 +73,7 @@ const CreatePropertyDialog = ({ open, onClose, fk_classroom_id, onSubmit }) => {
         classroom_id: fk_classroom_id,
       });
       console.log("Created:", response.data);
-      onSubmit(response.data); // pass back to parent
+      onSubmit(response.data);
       alert("Property created successfully!");
       setStartDate(current_date);
       setEndDate(current_date.add(6, "M"));
@@ -215,4 +215,4 @@ const CreatePropertyDialog = ({ open, onClose, fk_classroom_id, onSubmit }) => {
   );
 };
 
-export default CreatePropertyDialog;
+export default CreatePropertyDialogue;

@@ -2,24 +2,38 @@ import "./styles/CreatePropertyForm.css";
 
 import React, { useContext, useState } from "react";
 import dayjs from "dayjs";
-import { Container, Box, Typography, TextField, Button, Grid, MenuItem, Select, FormControl, InputLabel, Paper } from "@mui/material";
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Paper,
+} from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import api from "../api"; 
+import api from "../api";
 
-const CreatePropertyForm = ({ fk_classroom_id }) => {
+const CreatePropertyForm = ({ classroom_id }) => {
   const current_date = dayjs().startOf("day");
 
+  console.log("creating property form");
+
   const [formData, setFormData] = useState({
-    classroom_id: fk_classroom_id,
     title: "",
     description: "",
     value: "",
     rent: "",
     maintenance: "",
-    pay_frequency: "Weekly", 
-    pay_day: "Monday", 
+    pay_frequency: "Weekly",
+    pay_day: "Monday",
     icon_class: "",
+
     start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
     end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
   });
@@ -46,17 +60,19 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        // debugging
-        console.log("Form Data before submit:", formData);  
-     
-        //on submit, send post request to backend properties route 
-      const response = await api.post("/properties/properties", {...formData, classroom_id: fk_classroom_id});
+      // debugging
+      console.log("Form Data before submit:", formData);
+
+      //on submit, send post request to backend properties route
+      const response = await api.post("/properties", {
+        formData,
+        classroom_id: classroom_id,
+      });
       console.log(response.data);
       alert("Property created successfully!");
-      setStartDate(current_date); 
-      setEndDate(current_date.add(6, "M")); 
+      setStartDate(current_date);
+      setEndDate(current_date.add(6, "M"));
       setFormData({
-        classroom_id: fk_classroom_id,
         title: "",
         description: "",
         value: "",
@@ -67,10 +83,10 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
         icon_class: "",
         start_date: current_date.format("YYYY-MM-DD HH:mm:ss"),
         end_date: current_date.add(6, "M").format("YYYY-MM-DD HH:mm:ss"),
-      }); 
+      });
       console.log("Form Data before submit:", formData);
 
-    //   formData.fk_classroom_id = formData.currentClassroomId;
+      //   formData.fk_classroom_id = formData.currentClassroomId;
     } catch (error) {
       console.error("Error creating property:", error);
     }
@@ -78,7 +94,10 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
+      <Box
+        component={Paper}
+        sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2 }}
+      >
         <Typography variant="h5" gutterBottom>
           Create Property
         </Typography>
@@ -92,7 +111,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             value={formData.title}
             label="Property Title"
             variant="standard"
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
             fullWidth
           />
           <br />
@@ -107,7 +128,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             value={formData.description}
             label="Property Description"
             variant="standard"
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
             fullWidth
           />
           <br />
@@ -123,7 +146,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             value={formData.value}
             label="Property Value"
             variant="standard"
-            onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, value: e.target.value })
+            }
             fullWidth
           />
           <br />
@@ -155,7 +180,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             value={formData.maintenance}
             label="Maintenance Cost"
             variant="standard"
-            onChange={(e) => setFormData({ ...formData, maintenance: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, maintenance: e.target.value })
+            }
             fullWidth
           />
           <br />
@@ -167,7 +194,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             <Select
               name="pay_frequency"
               value={formData.pay_frequency}
-              onChange={(e) => setFormData({ ...formData, pay_frequency: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, pay_frequency: e.target.value })
+              }
             >
               <MenuItem value="Daily">Daily</MenuItem>
               <MenuItem value="Weekly">Weekly</MenuItem>
@@ -184,7 +213,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
               <Select
                 name="pay_day"
                 value={formData.pay_day}
-                onChange={(e) => setFormData({ ...formData, pay_day: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, pay_day: e.target.value })
+                }
               >
                 <MenuItem value="Monday">Monday</MenuItem>
                 <MenuItem value="Tuesday">Tuesday</MenuItem>
@@ -207,7 +238,9 @@ const CreatePropertyForm = ({ fk_classroom_id }) => {
             value={formData.icon_class}
             label="Icon Class (Optional)"
             variant="standard"
-            onChange={(e) => setFormData({ ...formData, icon_class: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, icon_class: e.target.value })
+            }
             fullWidth
           />
           <br />

@@ -1,25 +1,25 @@
 import "./styles/CardList.css";
 
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 
 import ClassCard from "./ClassCard";
-import AddNewCard from "./AddNewCard";
+
 import CreateClassroomDialog from "./CreateClassroomDialog";
 import JoinClassroomDialog from "./JoinClassroomDialog";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { grey } from "@mui/material/colors";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Paper } from "@mui/material";
 
-import dayjs from "dayjs";
 import api from "../api";
 
 const ClassroomList = ({ header = true, teacher = false }) => {
   const [classrooms, setClassrooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     const fetchClassrooms = async () => {
@@ -49,6 +49,7 @@ const ClassroomList = ({ header = true, teacher = false }) => {
       const response = await api.delete(`/classrooms/${classroom_id}`);
       console.log(response);
       setClassrooms(classrooms.filter((c) => c.id !== classroom_id));
+      setAlertMessage("Classroom deleted successfully!");
     } catch (err) {
       alert("Error deleting classroom");
     }
@@ -56,18 +57,22 @@ const ClassroomList = ({ header = true, teacher = false }) => {
 
   return (
     <Stack
+      component={Paper}
       sx={{
         maxWidth: "80%",
         margin: "0 auto",
         marginBottom: 2,
         borderRadius: 5,
         boxShadow: 1,
-        bgcolor: "#174C66",
         padding: 2,
       }}
     >
       {header && (
-        <Typography variant="h5" sx={{ marginLeft: "1em", padding: 1 }}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ marginLeft: "1em", padding: 1 }}
+        >
           My Classrooms - {teacher ? "Teacher" : "Student"}
         </Typography>
       )}
@@ -104,7 +109,9 @@ const ClassroomList = ({ header = true, teacher = false }) => {
                 // end_date={dayjs(classroom.end_date).format("M/D/YYYY")}
                 // id={classroom.id}
                 classroom={classroom}
-                onDelete={deleteClassroom.bind(null, classroom.id)}
+                onDelete={
+                  teacher ? deleteClassroom.bind(null, classroom.id) : null
+                }
               ></ClassCard>
             </Grid>
           ))}
@@ -113,10 +120,6 @@ const ClassroomList = ({ header = true, teacher = false }) => {
           display="flex"
           justifyContent="center"
         >
-          {/* {<AddNewCard
-            label="Create New Classroom"
-            onClassroomAdded={addClassroom}
-          />} */}
           {!loading &&
             (teacher ? (
               <CreateClassroomDialog onSubmit={addClassroom} />
