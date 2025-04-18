@@ -45,11 +45,13 @@ const InvestmentAccountCard = ({ title, description, yearly_values }) => {
     <Card
       raised
       sx={{
+        bgcolor:"#FA7921",
         position: "relative",
         overflow: "visible",
         minHeight: 185,
         minWidth: 360,
         // aspectRatio: "3/2",
+       
         padding: 1,
         borderRadius: 2,
         display: "flex",

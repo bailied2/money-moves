@@ -29,6 +29,7 @@ const PropertyCard = ({
     <Card
       raised
       sx={{
+        bgcolor:"#FA7921",
         position: "relative",
         minHeight: 250,
         maxWidth: 300,

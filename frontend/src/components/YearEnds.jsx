@@ -5,9 +5,11 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionActions from "@mui/material/AccordionActions";
 import Divider from "@mui/material/Divider";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,12 +20,15 @@ import TableRow from "@mui/material/TableRow";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AddIcon from "@mui/icons-material/Add";
+
+import ShapesLoader from "./ShapesLoader";
 
 import dayjs from "dayjs";
 
 import api from "../api";
 
-const YearEnds = ({ classroom_id, header = true }) => {
+const YearEnds = ({ classroom_id }) => {
   const [year_ends, setYearEnds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,11 +50,27 @@ const YearEnds = ({ classroom_id, header = true }) => {
     fetchYearEnds();
   }, [classroom_id]);
 
-  const addYearEnd = (year_end) => {
-    if (year_end) setYearEnds(year_ends.concat(year_end));
+  const addYearEnd = async () => {
+    try {
+      const nextWeek = dayjs(
+        year_ends.length > 1 ? year_ends.at(-1).end_date : Date.now()
+      )
+        .startOf("day")
+        .add(1, "week")
+        .format("YYYY-MM-DD HH:mm:ss");
+      const response = await api.post(`/year-ends`, {
+        classroom_id,
+        end_date: nextWeek,
+        savings_apr:
+          year_ends.length > 1 ? year_ends.at(-1).savings_apr : "0.05",
+        previous_investment_values: year_ends.at(-1).investment_values,
+      });
+      if (response.data.year_end)
+        setYearEnds(year_ends.concat(response.data.year_end));
+    } catch (error) {
+      console.log("Error adding year end:", error);
+    }
   };
-
-  if (loading) return <p>Loading...</p>;
 
   return (
     <Stack
@@ -62,12 +83,20 @@ const YearEnds = ({ classroom_id, header = true }) => {
       }}
     >
       <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
-        {header && <Typography variant="h5">Year Ends</Typography>}
+        <Typography variant="h5">Year Ends</Typography>
       </Stack>
-      {loading && <CircularProgress sx={{ margin: "auto" }} />}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading &&
-        !error &&
+
+      <CircularProgress sx={{ margin: "auto" }} />
+      <ShapesLoader sx={{ margin: "1rem auto" }} />
+
+      {loading ? (
+        <>
+          <CircularProgress sx={{ margin: "auto" }} />
+          {/* <IconShapes style={{ width: 48, height: 48, margin: "auto" }} /> */}
+        </>
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
+      ) : (
         year_ends.toSpliced(0, 1).map((year, index) => (
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -76,19 +105,22 @@ const YearEnds = ({ classroom_id, header = true }) => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box>
+              {/* <Box>
                 <Typography variant="body2" color="text.secondary">
                   End Date: {dayjs(year.end_date).format("M/D/YY")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Savings APR: {year.savings_apr}%
                 </Typography>
-              </Box>
-              <TableContainer component={Paper} sx={{ bgcolor: "grey" }}>
+              </Box> */}
+              <TableContainer component={Paper}>
                 <Table>
                   <TableRow>
                     <TableCell>End Date</TableCell>
                     <TableCell>
+                      <form>
+                        
+                      </form>
                       {dayjs(year.end_date).format("M/D/YY")}
                     </TableCell>
                   </TableRow>
@@ -104,66 +136,20 @@ const YearEnds = ({ classroom_id, header = true }) => {
                   ))}
                 </Table>
               </TableContainer>
-
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Dessert (100g serving)</TableCell>
-                      <TableCell align="right">Calories</TableCell>
-                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                      <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                      <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {/* {rows.map((row) => (
-                            <TableRow
-                              key={row.name}
-                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                              <TableCell component="th" scope="row">
-                                {row.name}
-                              </TableCell>
-                              <TableCell align="right">{row.calories}</TableCell>
-                              <TableCell align="right">{row.fat}</TableCell>
-                              <TableCell align="right">{row.carbs}</TableCell>
-                              <TableCell align="right">{row.protein}</TableCell>
-                            </TableRow>
-                          ))} */}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-              {/* <Stack direction="row" sx={{justifyContent: "space-around", alignItems: "center"}}>
-                      <Typography variant="body2" color="text.secondary">
-                        End Date:
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {dayjs(year.end_date).format("M/D/YY")}
-                      </Typography>
-                    </Stack>
-                    <Stack direction="row" sx={{justifyContent: "space-around", alignItems: "center"}}>
-                      <Typography variant="body2" color="text.secondary">
-                        Savings APR:
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {year.savings_apr}%
-                      </Typography>
-                    </Stack>
-                    {year.investment_values.map((account) => {
-                      <Stack direction="row" sx={{justifyContent: "space-around", alignItems: "center"}}>
-                        <Typography variant="body2" color="text.secondary">
-                          Value
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          ${year.value}
-                        </Typography>
-                      </Stack>
-                    })} */}
             </AccordionDetails>
+            <AccordionActions>
+              <Button>
+                Edit
+              </Button>
+            </AccordionActions>
           </Accordion>
-        ))}
+        ))
+      )}
+      <Divider sx={{ mt: 2 }}>
+        <Fab onClick={addYearEnd}>
+          <AddIcon />
+        </Fab>
+      </Divider>
     </Stack>
   );
 };
