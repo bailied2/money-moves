@@ -31,8 +31,23 @@ export default function UserAccountMenu() {
     await api.post("/users/logout");
     localStorage.removeItem("token");
     setUser(null);
-    // window.location.href = "/login"; // force navigation + reload
     navigate("/logout");
+  };
+
+  const nameToThemeColor = (first_name, last_name, theme) => {
+    const paletteKeys = ["cinnabar", "ember", "dandelion", "breeze"];
+
+    const name = first_name + " " + last_name;
+
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const index = Math.abs(hash) % paletteKeys.length;
+    const key = paletteKeys[index];
+
+    return theme.palette.core.secondary[key].main;
   };
 
   return (
@@ -46,7 +61,14 @@ export default function UserAccountMenu() {
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
         >
-          <Avatar sx={{ width: 32, height: 32 }}>
+          <Avatar
+            sx={(theme) => ({
+              width: 32,
+              height: 32,
+              fontSize: "1em",
+              bgcolor: nameToThemeColor(user.first_name, user.last_name, theme),
+            })}
+          >
             {user ? user.first_name[0] : "?"}
           </Avatar>
         </IconButton>

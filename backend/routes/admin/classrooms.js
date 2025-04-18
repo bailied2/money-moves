@@ -131,34 +131,34 @@ const createClassroom = async (req, res) => {
     console.log(`    class_code: ${class_code}`);
     const insertClassroomQuery =
       "INSERT INTO classroom (class_name, fk_teacher_id, start_date, end_date, class_code) VALUES (?, ?, ?, ?, ?)";
-    const insertYearEndQuery = 
+    const insertYearEndQuery =
       "INSERT INTO year_end (fk_classroom_id, end_date, savings_apr) VALUES (?, TIMESTAMP'1970-01-01 00:00:00', 0)";
     try {
       const connection = await db.getConnection();
       // Begin the database transaction (so changes are only saved if all are successful)
       await connection.beginTransaction();
       try {
-        const [insertedClassroom] = await connection.execute(insertClassroomQuery, [
-          class_name,
-          teacher_id,
-          start_date,
-          end_date,
-          class_code,
-        ]);
+        const [insertedClassroom] = await connection.execute(
+          insertClassroomQuery,
+          [class_name, teacher_id, start_date, end_date, class_code]
+        );
         console.log(insertedClassroom.insertId);
         const classroom = {
           id: insertedClassroom.insertId,
+          fk_teacher_id: teacher_id,
           class_name,
           start_date,
           end_date,
           class_code,
           num_students: 0,
         };
-        const [insertedYearEnd] = await connection.execute(insertYearEndQuery, [classroom.id]);
+        const [insertedYearEnd] = await connection.execute(insertYearEndQuery, [
+          classroom.id,
+        ]);
         await connection.commit(); // Commit database transaction
         connection.release(); // Release the connection back to the pool
         res.json({
-          message:`Classroom created successfully with ID ${insertedClassroom.insertId}`,
+          message: `Classroom ${class_name} created successfully!`,
           classroom,
         });
       } catch (error) {
