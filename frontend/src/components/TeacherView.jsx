@@ -14,12 +14,14 @@ import CreatePropertyForm from "./CreatePropertyForm";
 // import PropertyCard from "../components/PropertyCard"; // Import PropertyCard
 import UpdatePropertyForm from "../components/UpdatePropertyForm"; // Import UpdatePropertyForm
 import UpdateJobForm from "../components/UpdateJobForm"; // Import UpdatePropertyForm
+import CreateFeesBonusesForm from "./CreateFeesBonusesForm";
 
 import StudentList from "../components/StudentList";
 import InvestmentAccountList from "./InvestmentAccountList";
 import YearEnds from "./YearEnds";
 
 import Tabs from "@mui/material/Tabs";
+import UpdateFeesBonusesForm from "./UpdateFeesBonusesForm";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -70,8 +72,11 @@ const TeacherView = ({ classroom }) => {
       </CustomTabPanel>
 
       {/* Fees/Bonuses Tab */}
-      <CustomTabPanel id="fees_bonuses_tab_panel" value={value} index={1}>
-        Fees/Bonuses
+      <CustomTabPanel id="feesbonuses_tab_panel" value={value} index={1}>
+      <CreateFeesBonusesForm classroom_id={classroom.id} />
+      <UpdateFeesBonusesForm property_id={2} />
+
+
       </CustomTabPanel>
 
       {/* Jobs Tab */}
