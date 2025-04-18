@@ -39,11 +39,6 @@ const Navbar = () => {
           </Button>
 
 
-          <IconShapes style={{ width: 32, height: 32, marginRight: 8 }} />
-
-          <Link id="home" component={Button} underline="none" href="/" sx={{ color: "#EADCD7", textTransform: "none", fontWeight: 'bold' }}>
-            Money Moves Academy
-          </Link>
 
           <Box sx={{ flexGrow: 1 }}></Box>
 
