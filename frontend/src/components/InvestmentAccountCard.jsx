@@ -51,7 +51,7 @@ const InvestmentAccountCard = ({ title, description, yearly_values }) => {
         minHeight: 185,
         minWidth: 360,
         // aspectRatio: "3/2",
-        margin: 1,
+       
         padding: 1,
         borderRadius: 2,
         display: "flex",

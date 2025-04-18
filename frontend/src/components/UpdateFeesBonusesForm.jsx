@@ -97,7 +97,7 @@ const UpdateFeesBonusesForm = ({feesbonuses_id }) => {
 
 
     <Container maxWidth="sm">
-          <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
+          <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "#174C66" }}>
             <Typography variant="h5" gutterBottom>
               Update Fees and Bonuses
             </Typography>
