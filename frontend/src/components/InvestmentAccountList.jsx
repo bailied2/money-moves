@@ -46,6 +46,7 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
   return (
     <Stack
       sx={{
+        bgcolor:"#FA7921",
         margin: "0 auto",
         borderRadius: 5,
         boxShadow: 1,

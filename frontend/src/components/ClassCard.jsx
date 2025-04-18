@@ -20,11 +20,13 @@ const ClassCard = ({ classroom, onDelete }) => {
     <Card
       raised
       sx={{
+        bgcolor:"#FA7921",
         position: "relative",
         // overflow: "hidden",
         width: "auto",
         minWidth: 250,
         // aspectRatio: "3/2",
+        margin: 2,
         padding: 1,
         borderRadius: 2,
         display: "flex",

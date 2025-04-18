@@ -19,6 +19,7 @@ const AccountCard = ({
     <Card
       raised
       sx={{
+        bgcolor:"#FA7921",
         position: "relative",
         overflow: "visible",
         minHeight: 185,

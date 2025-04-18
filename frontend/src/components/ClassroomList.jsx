@@ -83,6 +83,7 @@ const ClassroomList = ({ teacher = false }) => {
     <Stack
       component={Paper}
       sx={{
+        
         maxWidth: "80%",
         margin: "0 auto",
         marginBottom: 2,
