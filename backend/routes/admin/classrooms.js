@@ -34,7 +34,14 @@ const getClassroomsByTeacher = async (req, res) => {
   // Get user_id from info attached by middleware
   const user_id = req.user.id;
 
-  const query = "SELECT * FROM classroom WHERE fk_teacher_id = ?";
+  const query =
+  `SELECT classroom.*, COUNT(student.id) AS num_students 
+  FROM student
+  RIGHT JOIN classroom
+  ON student.fk_classroom_id = classroom.id 
+  WHERE classroom.fk_teacher_id = ? 
+  GROUP BY classroom.id`;
+
 
   try {
     const [results] = await db.execute(query, [user_id]);
@@ -58,8 +65,14 @@ const getClassroomsByStudent = async (req, res) => {
   // Get user_id from info attached by middleware
   const user_id = req.user.id;
 
+
   const query =
-    "SELECT classroom.*, COUNT(student.id) AS num_students FROM student INNER JOIN classroom ON student.fk_classroom_id = classroom.id WHERE student.fk_user_id = ? GROUP BY student.fk_classroom_id";
+  `SELECT classroom.*, COUNT(student.id) AS num_students 
+  FROM student
+  LEFT JOIN classroom
+  ON student.fk_classroom_id = classroom.id 
+  WHERE student.fk_user_id = ? 
+  GROUP BY classroom.id`;
 
   try {
     const [results] = await db.execute(query, [user_id]);
