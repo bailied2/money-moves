@@ -10,7 +10,7 @@ const AddNewCard = ({ label, onClassroomAdded }) => {
 
   return (
     <>
-      <Card
+      <Card 
         sx={{
           boxShadow: 0,
           position: "relative",

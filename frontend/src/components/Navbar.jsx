@@ -13,7 +13,7 @@ import UserAccountMenu from "./UserAccountMenu";
 
 import { AuthContext } from "../AuthContext";
 
-import { IconShapes } from "./IconShapes";
+import IconShapes from './IconShapes';
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
@@ -37,6 +37,8 @@ const Navbar = () => {
           >
             Money Moves Academy
           </Button>
+
+
 
           <Box sx={{ flexGrow: 1 }}></Box>
 

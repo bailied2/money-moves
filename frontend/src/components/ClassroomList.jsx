@@ -88,7 +88,8 @@ const ClassroomList = ({ teacher = false }) => {
         marginBottom: 2,
         borderRadius: 5,
         boxShadow: 1,
-        padding: 2,
+        bgcolor: "#174C66",
+        padding: 3,
       }}
     >
       {/* Classroom List Header */}

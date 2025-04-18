@@ -66,6 +66,9 @@ const AccountList = ({ classroom_id, header = true }) => {
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
+          borderRadius: 5,
+          boxShadow: 1,
+           bgcolor: "#174C66",
           alignItems: "flex-start",
         }}
       >

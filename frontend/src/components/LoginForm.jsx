@@ -15,7 +15,7 @@ import api from "../api";
 
 import { AuthContext } from "../AuthContext";
 
-const LoginForm = () => {
+const LoginForm = () => { 
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
