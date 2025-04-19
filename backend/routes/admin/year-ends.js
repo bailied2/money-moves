@@ -36,7 +36,11 @@ const getYearEndsByClass = async (req, res) => {
   const selectYearEndsQuery =
     "SELECT * FROM year_end WHERE fk_classroom_id = ?";
 
-  const selectInvestmentValuesQuery = `SELECT investment_values.fk_year_end_id AS fk_year_end_id, investment_account.title as title, investment_values.share_value AS value 
+  const selectInvestmentValuesQuery = `SELECT 
+    investment_values.fk_year_end_id AS fk_year_end_id, 
+    investment_values.fk_account_id AS fk_account_id,
+    investment_account.title as title, 
+    investment_values.share_value AS value
     FROM investment_values
     RIGHT JOIN investment_account
     ON investment_values.fk_account_id = investment_account.id
@@ -188,39 +192,77 @@ const createYearEnd = async (req, res) => {
   }
 };
 
-// PUT /year-ends/:id - Update a specific year-end record by ID
+// PUT /year-ends/ - Update a specific year-end record and corresponding investment values
 const updateYearEnd = async (req, res) => {
-  const { id } = req.params;
-  const { year, total_income, total_expenses, net_profit } = req.body;
-  const query =
-    "UPDATE year_end SET year = ?, total_income = ?, total_expenses = ?, net_profit = ? WHERE id = ?";
-  // db.query(
-  //   query,
-  //   [year, total_income, total_expenses, net_profit, id],
-  //   (err, result) => {
-  //     if (err) {
-  //       console.error("Error updating year-end record:", err);
-  //       return res
-  //         .status(500)
-  //         .send({ error: "Failed to update year-end record" });
-  //     }
-  //     if (result.affectedRows === 0) {
-  //       return res.status(404).send({ error: "Year-end record not found" });
-  //     }
-  //     res.send({ data: `Year-end record with ID ${id} updated successfully` });
+  const { id, end_date, savings_apr, investment_values } = req.body;
+
+  // Debug logs
+  console.log("\n*** updateYearEnd ***");
+  console.log(`  received data:
+    id: ${id}
+    end_date: ${end_date}
+    savings_apr: ${savings_apr}
+    investment_values: ${investment_values.toString()}`);
+
+  // Prepared Statements
+  const updateYearEndQuery =
+    "UPDATE year_end SET end_date = ?, savings_apr = ? WHERE id = ?";
+  const updateInvestmentValueQuery = 
+    "UPDATE investment_values SET share_value = ? WHERE fk_account_id = ? AND fk_year_end_id = ?";
+
+  // try {
+  //   const [results] = await db.execute(
+  //     query[(year, total_income, total_expenses, net_profit, id)]
+  //   );
+  //   if (results.affectedRows === 0) {
+  //     return res.status(404).json({ error: "Year-end record not found" });
   //   }
-  // );
+  //   res.json({ data: `Year-end record with ID ${id} updated successfully` });
+  // } catch (error) {
+  //   console.error("Error updating year-end record:", error);
+  //   res.status(500).json({ error: "Failed to update year-end record" });
+  // }
+
   try {
-    const [results] = await db.execute(
-      query[(year, total_income, total_expenses, net_profit, id)]
-    );
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ error: "Year-end record not found" });
+    const connection = await db.getConnection();
+    // Begin the database transaction (so changes are only saved if all are successful)
+    await connection.beginTransaction();
+    try {
+      // Update year end
+      const [updateResults] = await connection.execute(updateYearEndQuery, [
+        end_date,
+        savings_apr,
+        id,
+      ]);
+
+      // Update investment_values
+      for (const investment_account of investment_values) {
+        // For each investment_account, update the corresponding value
+        const [updateResults] = await connection.execute(updateInvestmentValueQuery, [
+          investment_account.value,
+          investment_account.fk_account_id,
+          investment_account.fk_year_end_id,
+        ]);
+      }
+
+      // All changes have been made.
+      await connection.commit(); // Commit transaction changes
+      connection.release();
+
+      // Send response
+      res.json({
+        message: `Updated year end with ID ${id}`,
+      });
+    } catch (error) {
+      console.error("Error updating year end:", error);
+      // Rollback changes since start of transaction
+      await connection.rollback();
+      connection.release(); // Release the connection back to the pool
+      return res.status(500).json({ error: "Failed to update year end" });
     }
-    res.json({ data: `Year-end record with ID ${id} updated successfully` });
   } catch (error) {
-    console.error("Error updating year-end record:", error);
-    res.status(500).json({ error: "Failed to update year-end record" });
+    console.error("Error updating year end:", error);
+    return res.status(500).json({ error: "Failed to update year end" });
   }
 };
 
@@ -257,7 +299,7 @@ router.get("/", getYearEnds); // Get all year-end records
 router.get("/classroom/:id", getYearEndsByClass); // Get all year ends for a particular class
 router.get("/:id", getYearEndById); // Get a year-end record by ID
 router.post("/", createYearEnd); // Create a new year-end record
-router.put("/:id", updateYearEnd); // Update a year-end record by ID
+router.put("/", updateYearEnd); // Update a year-end record
 router.delete("/:id", deleteYearEnd); // Delete a year-end record by ID
 
 module.exports = router;

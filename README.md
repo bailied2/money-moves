@@ -22,7 +22,6 @@ Repository for DIFD 451 Group Project
     - Transfer funds (checking to/from savings)
     - Buy shares of investment account
 
-
 ## Notes
 
 Amazon S3 - for frontend during development

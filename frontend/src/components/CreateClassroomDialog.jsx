@@ -118,7 +118,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
               value={startDate}
               onChange={handleStartDateChange}
               minDate={dayjs().startOf("day")}
-            ></DatePicker>
+            />
             <br />
             <br />
             <DatePicker
@@ -128,7 +128,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
               value={endDate}
               minDate={startDate.add(1, "day")}
               onChange={handleEndDateChange}
-            ></DatePicker>
+            />
           </LocalizationProvider>
         </form>
       </DialogContent>

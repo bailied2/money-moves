@@ -18,6 +18,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import YearEndAccordion from "./YearEndAccordion";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
@@ -58,7 +60,7 @@ const YearEnds = ({ classroom_id }) => {
         .startOf("day")
         .add(1, "week")
         .format("YYYY-MM-DD HH:mm:ss");
-      const response = await api.post(`/year-ends`, {
+      const response = await api.post('/year-ends', {
         classroom_id,
         end_date: nextWeek,
         savings_apr:
@@ -71,6 +73,15 @@ const YearEnds = ({ classroom_id }) => {
       console.log("Error adding year end:", error);
     }
   };
+
+  const handleUpdate = async (updated_year, index) => {
+    try {
+      const response = await api.put('/year-ends/', updated_year);
+      setYearEnds(year_ends.toSpliced(index, 1, updated_year));
+    } catch (error) {
+      console.log("Error updating year end:", error);
+    }
+  }
 
   return (
     <Stack
@@ -85,9 +96,9 @@ const YearEnds = ({ classroom_id }) => {
       <Stack direction="row" sx={{ marginLeft: "1em", padding: 1 }}>
         <Typography variant="h5">Year Ends</Typography>
       </Stack>
-
+{/* 
       <CircularProgress sx={{ margin: "auto" }} />
-      <ShapesLoader sx={{ margin: "1rem auto" }} />
+      <ShapesLoader sx={{ margin: "1rem auto" }} /> */}
 
       {loading ? (
         <>
@@ -98,51 +109,16 @@ const YearEnds = ({ classroom_id }) => {
         <Typography color="error">{error}</Typography>
       ) : (
         year_ends.toSpliced(0, 1).map((year, index) => (
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="body2" color="text.secondary">
-                Year {index + 1}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              {/* <Box>
-                <Typography variant="body2" color="text.secondary">
-                  End Date: {dayjs(year.end_date).format("M/D/YY")}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Savings APR: {year.savings_apr}%
-                </Typography>
-              </Box> */}
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableRow>
-                    <TableCell>End Date</TableCell>
-                    <TableCell>
-                      <form>
-                        
-                      </form>
-                      {dayjs(year.end_date).format("M/D/YY")}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Savings APR</TableCell>
-                    <TableCell>{year.savings_apr}%</TableCell>
-                  </TableRow>
-                  {year.investment_values.map((account) => (
-                    <TableRow>
-                      <TableCell>{account.title}</TableCell>
-                      <TableCell>${account.value}</TableCell>
-                    </TableRow>
-                  ))}
-                </Table>
-              </TableContainer>
-            </AccordionDetails>
-            <AccordionActions>
-              <Button>
-                Edit
-              </Button>
-            </AccordionActions>
-          </Accordion>
+          <YearEndAccordion 
+            year={year}
+            index={index}
+            prev_end_date={year_ends[index].end_date}
+            next_end_date={index + 2 < year_ends.length ? 
+              year_ends[index + 2].end_date
+              : undefined
+            }
+            onUpdate={handleUpdate}
+          />
         ))
       )}
       <Divider sx={{ mt: 2 }}>

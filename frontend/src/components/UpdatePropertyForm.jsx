@@ -15,7 +15,7 @@ import api from "../api";
 
 
 
-const UpdatePropertyForm = ({ property_id = null }) => {
+const UpdatePropertyForm = ({ property_id }) => {
 
   const current_date = dayjs().startOf("day");
 
@@ -106,7 +106,7 @@ console.log(property_id);
 
 
     <Container maxWidth="sm">
-          <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "#174C66" }}>
+          <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
             <Typography variant="h5" gutterBottom>
               Update Property
             </Typography>
