@@ -21,6 +21,8 @@ import PropertyList from "./PropertyList";
 import InvestmentAccountList from "./InvestmentAccountList";
 import YearEnds from "./YearEnds";
 
+
+import JobList from "./JobList.jsx";
 import Tabs from "@mui/material/Tabs";
 import UpdateFeesBonusesForm from "./UpdateFeesBonusesForm.jsx";
 
@@ -75,22 +77,18 @@ const TeacherView = ({ classroom }) => {
       {/* Fees/Bonuses Tab */}
       <CustomTabPanel id="feesbonuses_tab_panel" value={value} index={1}>
         <CreateFeesBonusesForm classroom_id={classroom.id} />
-<<<<<<< HEAD
         <UpdateFeesBonusesForm feesbonuses_id={3} />
-=======
-        <UpdateFeesBonusesForm property_id={2} />
-
-
->>>>>>> 406fb19c8a0721f6f9851b004e8368dae64b09b2
       </CustomTabPanel>
 
       {/* Jobs Tab */}
       <CustomTabPanel id="jobs_tab_panel" value={value} index={2}>
         {/* Jobs tab- Display Create Jobs Form*/}
-        <CreateJobForm classroom_id={classroom.id} />
+        {/* <CreateJobForm classroom_id={classroom.id} /> */}
+        <JobList classroomId={classroom.id} />
+
 
         {/* Jobs tab- Display Update Jobs Form*/}
-        <UpdateJobForm job_id={2} />
+        {/* <UpdateJobForm job_id={2} /> */}
       </CustomTabPanel>
 
       {/* Properties Tab */}

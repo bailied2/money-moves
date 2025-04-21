@@ -7,7 +7,8 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
-import AddNewCard from "./old/AddNewCard";
+// import AddNewCard from "./old/AddNewCard";
+import AddPropertyCard from "./AddPropertyCard";
 import PropertyCard from "./PropertyCard";
 import CreatePropertyDialog from "./CreatePropertyDialogue";
 import dayjs from "dayjs";
@@ -122,12 +123,12 @@ const PropertyList = ({ classroomId }) => {
           size={{ xs: 2, sm: 3, md: 3 }}
           display="flex"
           justifyContent="center"
-        >
-          <AddNewCard label="Create New Property" onClassroomAdded={addProperty} />
-          {!loading && (
+        > 
+          <AddPropertyCard classroom={classroomId} onSubmit={addProperty} />
+              {!loading && (
             <CreatePropertyDialog
               classroomId={classroomId}
-              onSubmit={addProperty}
+              onSubmit={AddPropertyCard}
             />
           )}
         </Grid>

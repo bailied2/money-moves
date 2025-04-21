@@ -4,16 +4,27 @@ const db = require("../../sample_database");
 
 // GET /jobs - Get all jobs in a specific classroom
 const getJobs = async (req, res) => {
-  const query = "SELECT * FROM job WHERE fk_classroom_id = ?";
- 
+  const { id } = req.params;
+  console.log("Request Body:", req.body);
+
+
   try {
-    const [results] = await db.execute(query);
-    res.json({ data: results });
+    const query = "SELECT * FROM job WHERE fk_classroom_id = ?";
+    const [results] = await db.execute(query, [id]);
+
+    console.log("Query results:", results);
+
+    if (results.length === 0) {
+      console.log("No jobs found.");
+    }
+
+    res.json({ jobs: results });
   } catch (error) {
     console.error("Error fetching jobs:", error);
     return res.status(500).json({ error: "Failed to fetch jobs" });
   }
 };
+
 
 const getJobById = async (req,res) => {
   const { id } = req.params;
@@ -34,7 +45,7 @@ const getJobById = async (req,res) => {
 
 // POST /jobs - Create a new job
 const createJob = async (req, res) => {
-  const { job_title, wage, job_description, pay_frequency, pay_day, icon_class, is_trustee } = req.body.formData;
+  const { title, wage, description, pay_frequency, pay_day, icon_class, is_trustee } = req.body.formData;
   const {classroom_id}= req.body;
   // Extracting data from request body
   console.log("Request Body:", req.body);
@@ -44,9 +55,9 @@ const createJob = async (req, res) => {
   try {
     const result = await db.execute(query, [
       classroom_id, 
-      job_title, 
+      title, 
       wage, 
-      job_description, 
+      description, 
       pay_frequency, 
       pay_day, 
       icon_class, 
@@ -91,7 +102,7 @@ const updateJob = async (req, res) => {
 
 // DELETE /jobs - Delete all jobs
 const deleteJob = async (req, res) => {
-  const query = "DELETE FROM jobs";
+  const query = "DELETE FROM job";
   db.query(query, (err, result) => {
     if (err) {
       console.error("Error deleting jobs:", err);
@@ -116,7 +127,7 @@ const assignJob = async (req, res) => {
 
 
 // Routes definition using the functions above
-router.get("/classroom/:id/jobs", getJobs); // Get all jobs
+router.get("/classroom/:id", getJobs); // Get all jobs
 router.get("/:id", getJobById); // Get a job by ID
 router.post("/", createJob); // Create a new job
 router.put("/:id", updateJob); // Update job details
