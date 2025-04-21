@@ -15,21 +15,38 @@ const getFeesBonuses = async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch fees and bonuses" });
   }
 };
+const getFeesBonusesById = async (req,res) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM fees_bonuses WHERE id = ?";
+  console.log("Request Body:", req.body);
+  try {
+    const [results] = await db.execute(query, [id]);
+    if (results.length === 0) {
+      return res.status(404).json({ error: "fee/bonus not found" });
+    }
+    res.json({ data: results[0] });
+  } catch (error) {
+    console.error("Error fetching job by ID:", error);
+    return res.status(500).json({ error: "Failed to fetch fee/bonus" });
+  }
+
+};
 
 // POST /fees-bonuses - Create a new fee/bonus
-const createFeeBonus = async (req, res) => {
-  const { fk_classroom_id, title, description, amount, icon_class } = req.body; 
-  console.log("Request Body:", req.body);
+const createFeesBonuses = async (req, res) => {
+  const { title, description, amount, icon_class } = req.body.formData; 
+  const {classroom_id}= req.body;
+  console.log("Request Body:", req.body.formData);
   const query =
-    "INSERT INTO fees_bonuses (fk_classroom_id, title, description, amount, icon_class) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO fees_bonuses ( title, description, amount, icon_class, fk_classroom_id) VALUES (?, ?, ?, ?, ?)";
  
   try {
     const result = await db.execute(query, [
-      fk_classroom_id,
       title,
+      description,
       amount,
       icon_class,
-      description,
+      classroom_id,
     ]);
     res.json({
       data: `Fee/bonus created successfully with ID  ${result.insertId}`,
@@ -42,18 +59,19 @@ const createFeeBonus = async (req, res) => {
 
 // PUT /fees-bonuses - Update all fees and bonuses
 const updateFeeBonus = async (req, res) => {
-  const { fk_classroom_id, title, amount, description, icon_class } = req.body; 
+  const {  title, amount, description, icon_class } = req.body.formData; 
+  const id = req.params.id;
   const query =
-    "UPDATE fees_bonuses SET title = ?, amount = ?, description = ?, icon_class = ? WHERE fk_classroom_id = ?, id = ?";
+    "UPDATE fees_bonuses SET title = ?, description = ?, amount = ?, icon_class = ? WHERE id = ?";
     console.log("Request Body:", req.body);
 
     try {
     const [results] = await db.execute(query, [
-      fk_classroom_id,
       title,
       description,
       amount,
       icon_class,
+      id
     ]);
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: "Fee/bonus not found" });
@@ -65,9 +83,9 @@ const updateFeeBonus = async (req, res) => {
   }
 };
 
-// DELETE /fees-bonuses - Delete all fees and bonuses
+// DELETE /fees-bonuses - Delete fee/bonus from a specific classroom
 const deleteFeeBonus = async (req, res) => {
-  const query = "DELETE FROM fees_bonuses WHERE fk_classroom_id = ?, id = ?";
+  const query = "DELETE FROM fees_bonuses WHERE id = ?";
   db.query(query, (err, result) => {
     if (err) {
       console.error("Error deleting fees and bonuses:", err);
@@ -75,15 +93,18 @@ const deleteFeeBonus = async (req, res) => {
         .status(500)
         .send({ error: "Failed to delete fees and bonuses" });
     }
-    res.send({ data: "All fees/bonuses deleted successfully" });
+    res.send({ data: " fees/bonuses deleted successfully" });
   });
   
 };
 
 // Routes definition using the functions above
-router.get("/fees-bonuses/:id/fees-bonuses", getFeesBonuses); // Get all fees and bonuses
-router.post("/fees-bonuses", createFeeBonus); // Create a new fee/bonus
-router.put("/fees-bonuses", updateFeeBonus); // Update all fees/bonuses
-router.delete("/fees-bonuses", deleteFeeBonus); // Delete all fees/bonuses
+router.get("/:id/fees-bonuses", getFeesBonuses); // Get all fees and bonuses
+router.get("/:id", getFeesBonusesById); // Get a fee/bonus by ID
+router.post("/", createFeesBonuses); // Create a new fee/bonus
+router.put("/", updateFeeBonus); // Update all fees/bonuses
+router.delete("/", deleteFeeBonus); // Delete  fees/bonuses from a class
+// router.post("/:id", assignFee); //Assign a fee/bonus
+
 
 module.exports = router;

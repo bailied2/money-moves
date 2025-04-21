@@ -27,10 +27,10 @@ const UpdateFeesBonusesForm = ({feesbonuses_id }) => {
     amount: "",
     icon_class: ""
   });
-  const [startDate, setStartDate] = useState(current_date);
-  const [endDate, setEndDate] = useState(current_date.add(6, "M"));
-console.log(property_id);
-  //fetching specific job
+  // const [startDate, setStartDate] = useState(current_date);
+  // const [endDate, setEndDate] = useState(current_date.add(6, "M"));
+console.log(feesbonuses_id);
+  //fetching specific fee/bonus
   useEffect(() => {
   const fetchFeesBonuses = async () => {
     try {
@@ -45,30 +45,30 @@ console.log(property_id);
     };
 
     fetchFeesBonuses();
-}, []);
+}, [feesbonuses_id]);
   
   
-  const handleStartDateChange = (value) => {
-    setStartDate(dayjs(value));
+  // const handleStartDateChange = (value) => {
+  //   setStartDate(dayjs(value));
 
-      setFormData({
-        ...formData,
-        start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-      });
-  }
-
-
+  //     setFormData({
+  //       ...formData,
+  //       start_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+  //     });
+  // }
 
 
 
 
-  const handleEndDateChange = (value) => {
-    setEndDate(dayjs(value));
-    setFormData({
-      ...formData,
-      end_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
-    });
-  };
+
+
+  // const handleEndDateChange = (value) => {
+  //   setEndDate(dayjs(value));
+  //   setFormData({
+  //     ...formData,
+  //     end_date: dayjs(value).format("YYYY-MM-DD HH:mm:ss"),
+  //   });
+  // };
 
   const handleSubmit = async (e) => {
     console.log("Attempting form submit");
@@ -79,8 +79,8 @@ console.log(property_id);
        const response = await api.put(`/fees-bonuses/${feesbonuses_id}`, {formData});
     //   console.log(response.data);
       alert("fee/bonus updated successfully!");
-      setStartDate(current_date); 
-      setEndDate(current_date.add(6, "M")); 
+      // setStartDate(current_date); 
+      // setEndDate(current_date.add(6, "M")); 
       setFormData({
         title: "",
         description: "",
@@ -89,7 +89,7 @@ console.log(property_id);
        
       }); // Reset form data
     } catch (error) {
-      console.error("Error creating job:", error);
+      console.error("Error updating fee/bonus:", error);
     }
     
   };
@@ -112,8 +112,11 @@ console.log(property_id);
                 value={formData.title}
                 label="feesbonuses Title"
                 variant="standard"
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                fullWidth
+                onChange={(e) => {
+                  setFormData({ ...formData, title: e.target.value })}
+                }
+                  fullWidth
+
               />
               <br />
               <br />
@@ -155,7 +158,7 @@ console.log(property_id);
                 margin="normal"
                 id="icon_class"
                 name="icon_class"
-                type="number"
+                type="text"
                 value={formData.icon_class}
                 label="Icon Class"
                 variant="standard"

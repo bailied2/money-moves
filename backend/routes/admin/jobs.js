@@ -102,12 +102,27 @@ const deleteJob = async (req, res) => {
  
 };
 
+const assignJob = async (req, res) => {
+  const query = "INSERT INTO student_jobs (fk_student_id, fk_property_id) VALUES (?, ?)";
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error("Error assigning jobs:", err);
+      return res.status(500).send({ error: "Failed to assign jobs" });
+    }
+    res.send({ data: "All jobs assigned successfully" });
+  });
+ 
+};
+
+
 // Routes definition using the functions above
 router.get("/classroom/:id/jobs", getJobs); // Get all jobs
 router.get("/:id", getJobById); // Get a job by ID
 router.post("/", createJob); // Create a new job
 router.put("/:id", updateJob); // Update job details
 router.delete("/:id", deleteJob); //Delete a job
+router.post("/:id", assignJob); //Assign a job
+
 
 
 
