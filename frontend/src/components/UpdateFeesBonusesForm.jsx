@@ -27,10 +27,16 @@ const UpdateFeesBonusesForm = ({feesbonuses_id }) => {
     amount: "",
     icon_class: ""
   });
+<<<<<<< HEAD
   // const [startDate, setStartDate] = useState(current_date);
   // const [endDate, setEndDate] = useState(current_date.add(6, "M"));
 console.log(feesbonuses_id);
   //fetching specific fee/bonus
+=======
+  const [startDate, setStartDate] = useState(current_date);
+  const [endDate, setEndDate] = useState(current_date.add(6, "M"));
+  //fetching specific job
+>>>>>>> 406fb19c8a0721f6f9851b004e8368dae64b09b2
   useEffect(() => {
   const fetchFeesBonuses = async () => {
     try {
@@ -98,7 +104,7 @@ console.log(feesbonuses_id);
 
 
     <Container maxWidth="sm">
-          <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "white" }}>
+          <Box sx={{ mt: 4, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: "#174C66" }}>
             <Typography variant="h5" gutterBottom>
               Update Fees and Bonuses
             </Typography>

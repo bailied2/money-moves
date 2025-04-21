@@ -66,8 +66,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
       const response = await api.post("/classrooms", formData);
       console.log(response.data);
       const newClassroom = response.data.classroom;
-      onSubmit(newClassroom);
-      alert(response.data.message);
+      onSubmit(newClassroom, response.data.message);
       setStartDate(current_date); // Reset start date
       setEndDate(current_date.add(6, "M")); // Reset end date
       setFormData({
@@ -119,7 +118,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
               value={startDate}
               onChange={handleStartDateChange}
               minDate={dayjs().startOf("day")}
-            ></DatePicker>
+            />
             <br />
             <br />
             <DatePicker
@@ -129,7 +128,7 @@ const CreateClassroomDialog = ({ open, onClose, onSubmit }) => {
               value={endDate}
               minDate={startDate.add(1, "day")}
               onChange={handleEndDateChange}
-            ></DatePicker>
+            />
           </LocalizationProvider>
         </form>
       </DialogContent>
@@ -156,9 +155,14 @@ const ParentComponent = ({ onSubmit }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSubmit = (data) => {
-    console.log("Form submitted:", data);
-    if (typeof onSubmit === "function") onSubmit(data);
+  const handleSubmit = (classroom, message) => {
+    console.log(
+      "Form submitted.\nClassroom:",
+      classroom,
+      "\nMessage: ",
+      message
+    );
+    if (typeof onSubmit === "function") onSubmit(classroom, message);
     handleClose();
   };
 

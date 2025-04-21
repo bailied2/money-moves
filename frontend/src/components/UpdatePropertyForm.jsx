@@ -15,7 +15,7 @@ import api from "../api";
 
 
 
-const UpdatePropertyForm = ({property_id }) => {
+const UpdatePropertyForm = ({ property_id }) => {
 
   const current_date = dayjs().startOf("day");
 

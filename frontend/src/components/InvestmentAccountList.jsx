@@ -46,6 +46,7 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
   return (
     <Stack
       sx={{
+        bgcolor:"#FA7921",
         margin: "0 auto",
         borderRadius: 5,
         boxShadow: 1,
@@ -62,9 +63,6 @@ const InvestmentAccountList = ({ classroom_id, header = true }) => {
         columnSpacing={2}
         columns={{ xs: 4, sm: 8, md: 12 }}
         sx={{
-          borderRadius: 5,
-          boxShadow: 1,
-          bgcolor: "#174C66",
           alignItems: "flex-start",
         }}
       >

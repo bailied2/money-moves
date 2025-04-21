@@ -14,6 +14,8 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
     <Card
       raised
       sx={{
+        bgcolor:"#FA7921",
+        margin: 2,
         position: "relative",
         minHeight: 185,
         maxWidth: 300,
