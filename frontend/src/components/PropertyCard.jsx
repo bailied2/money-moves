@@ -6,7 +6,6 @@ import {
   CardActions,
   Button,
   Stack,
-  // TextField,
   MenuItem,
   Select,
   InputLabel,
@@ -21,8 +20,8 @@ const PropertyCard = ({
   maintenance,
   pay_frequency,
   pay_day,
-  icon_class,
-  onCreate,
+  onEdit,
+  onAssign,
   onDelete,
 }) => {
   return (
@@ -31,9 +30,8 @@ const PropertyCard = ({
       sx={{
         bgcolor:"#FA7921",
         position: "relative",
-        minHeight: 250,
+        height: "100%",
         maxWidth: 300,
-        aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
         display: "flex",
@@ -41,31 +39,19 @@ const PropertyCard = ({
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
-        <Stack direction="row">
-          <Typography variant="h5" component="div">
-            {title || "Property Title"}
-          </Typography>
-        </Stack>
-        <Typography variant="body2" color="text.secondary">
+        
+        <Typography variant="body2" color="text.secondary" gutterBottom>
           {description || "Property description goes here."}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Value: ${value || "0.00"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Rent: ${rent || "0.00"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2">Value: ${value || "0.00"}</Typography>
+        <Typography variant="body2">Rent: ${rent || "0.00"}</Typography>
+        <Typography variant="body2">
           Maintenance: ${maintenance || "0.00"}
         </Typography>
 
-        <FormControl fullWidth sx={{ marginTop: 1 }}>
+        <FormControl fullWidth size="small" sx={{ marginTop: 1 }}>
           <InputLabel>Pay Frequency</InputLabel>
-          <Select
-            value={pay_frequency || "Monthly"}
-            label="Pay Frequency"
-            disabled
-          >
+          <Select value={pay_frequency || "Monthly"} label="Pay Frequency" disabled>
             <MenuItem value="Daily">Daily</MenuItem>
             <MenuItem value="Weekly">Weekly</MenuItem>
             <MenuItem value="Monthly">Monthly</MenuItem>
@@ -73,22 +59,21 @@ const PropertyCard = ({
         </FormControl>
 
         {pay_day && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ mt: 1 }}>
             Pay Day: {pay_day}
           </Typography>
         )}
       </CardContent>
-      <CardActions sx={{ padding: 0 }}>
-        <Button
-          size="small"
-          onClick={onCreate}
-          variant="contained"
-          color="primary"
-        >
-          Create Property
+
+      <CardActions sx={{ padding :0  }}>
+        <Button size="small" onClick={onEdit}>
+          Edit
         </Button>
-        <Button size="small" onClick={onDelete} color="error">
-          Delete Property
+        <Button size="small" onClick={onAssign}>
+          Assign
+        </Button>
+        <Button size="small" color="error" onClick={onDelete}>
+          Delete
         </Button>
       </CardActions>
     </Card>

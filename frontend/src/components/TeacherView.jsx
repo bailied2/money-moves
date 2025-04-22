@@ -17,9 +17,12 @@ import UpdateJobForm from "../components/UpdateJobForm"; // Import UpdatePropert
 import CreateFeesBonusesForm from "./CreateFeesBonusesForm";
 
 import StudentList from "../components/StudentList";
+import PropertyList from "./PropertyList";
 import InvestmentAccountList from "./InvestmentAccountList";
 import YearEnds from "./YearEnds";
 
+
+import JobList from "./JobList.jsx";
 import Tabs from "@mui/material/Tabs";
 import UpdateFeesBonusesForm from "./UpdateFeesBonusesForm.jsx";
 
@@ -74,32 +77,29 @@ const TeacherView = ({ classroom }) => {
       {/* Fees/Bonuses Tab */}
       <CustomTabPanel id="feesbonuses_tab_panel" value={value} index={1}>
         <CreateFeesBonusesForm classroom_id={classroom.id} />
-        <UpdateFeesBonusesForm property_id={2} />
-
-
+        <UpdateFeesBonusesForm feesbonuses_id={3} />
       </CustomTabPanel>
 
       {/* Jobs Tab */}
       <CustomTabPanel id="jobs_tab_panel" value={value} index={2}>
         {/* Jobs tab- Display Create Jobs Form*/}
-        <CreateJobForm classroom_id={classroom.id} />
+        {/* <CreateJobForm classroom_id={classroom.id} /> */}
+        <JobList classroomId={classroom.id} />
+
 
         {/* Jobs tab- Display Update Jobs Form*/}
-        <UpdateJobForm job_id={2} />
+        {/* <UpdateJobForm job_id={2} /> */}
       </CustomTabPanel>
 
       {/* Properties Tab */}
       <CustomTabPanel id="properties_tab_panel" value={value} index={3}>
         {/* <PropertyList classroom={classroom} />  */}
-        <CreatePropertyForm classroom_id={classroom.id} />
-        <UpdatePropertyForm property_id={2} />
+        {/* <CreatePropertyForm classroom_id={classroom.id} />
+        <UpdatePropertyForm property_id={2} /> */}
+        <PropertyList classroomId={classroom.id} />
 
         {/* Buttons to Switch View Modes */}
-        <Box sx={{ marginTop: 2 }}>
-          <Button>View Properties</Button>
-          <Button>Create Property</Button>
-          <Button>Update Property</Button>
-        </Box>
+        
       </CustomTabPanel>
 
       {/* Investment Accounts Tab */}

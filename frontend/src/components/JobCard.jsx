@@ -6,49 +6,90 @@ import {
   CardActions,
   Button,
   Stack,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 
-const JobCard = ({ title, description, wage, pay_frequency, pay_day, icon_class, is_trustee }) => {
+const JobCard = ({
+  title,
+  description,
+  wage,
+  pay_frequency,
+  pay_day,
+  icon_class,
+  is_trustee,
+  onEdit,
+  onAssign,
+  onDelete,
+}) => {
   return (
     <Card
       raised
       sx={{
+        bgcolor: "#FA7921", // Adjusted background color for consistency
         position: "relative",
-        minHeight: 185,
+        height: "auto", // Set to 'auto' so the card can adjust based on content
         maxWidth: 300,
-        aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
+        overflow: "auto", // Enable scrolling if content overflows
+        marginBottom: "16px", // Add space between cards
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
-        <Stack direction="row">
-          <Typography variant="h5" component="div">
-            {title}
-          </Typography>
-        </Stack>
-        <Typography variant="body2" color="text.secondary">
-          {description}
+        <Typography variant="h6" color="text.primary" gutterBottom>
+          {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Wage: ${wage || "0.00"}
+        
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          {description || "Job description goes here."}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Pay Frequency: {pay_frequency}
-        </Typography>
+        <Typography variant="body2">Wage: ${wage || "0.00"}</Typography>
+
+        <FormControl fullWidth size="small" sx={{ marginTop: 1 }}>
+          <InputLabel>Pay Frequency</InputLabel>
+          <Select value={pay_frequency || "Monthly"} label="Pay Frequency" disabled>
+            <MenuItem value="Daily">Daily</MenuItem>
+            <MenuItem value="Weekly">Weekly</MenuItem>
+            <MenuItem value="Monthly">Monthly</MenuItem>
+          </Select>
+        </FormControl>
+
         {pay_day && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ mt: 1 }}>
             Pay Day: {pay_day}
           </Typography>
         )}
       </CardContent>
+
       <CardActions sx={{ padding: 0 }}>
-        <Button size="small">Open</Button>
-        <Button size="small" color="error">
+        <Button
+          size="small"
+          onClick={onEdit}
+          sx={{ marginRight: 1 }}
+        >
+          Edit
+        </Button>
+
+        <Button
+          size="small"
+          onClick={onAssign}
+          sx={{ marginRight: 1 }}
+        >
+          Assign
+        </Button>
+
+        <Button
+          size="small"
+          color="error"
+          onClick={onDelete}
+        >
           Delete
-        </Button>{" "}
+        </Button>
       </CardActions>
     </Card>
   );

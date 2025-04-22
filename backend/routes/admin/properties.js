@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
+const { assign } = require("nodemailer/lib/shared");
 
 
 
@@ -105,7 +106,7 @@ const getProperties = async (req, res) => {
 
   try {
     const query = "SELECT * FROM property WHERE fk_classroom_id = ?";
-    const [results] = await db.query(query, [id]);
+    const [results] = await db.execute(query, [id]);
 
     console.log("Query results:", results);
 
@@ -113,7 +114,7 @@ const getProperties = async (req, res) => {
       console.log("No properties found.");
     }
 
-    res.json({ data: results }); // Make sure this matches your frontend expectation
+    res.json({ properties: results }); // Make sure this matches your frontend expectation
   } catch (error) {
     console.error("Error fetching properties:", error);
     return res.status(500).json({ error: "Failed to fetch properties" });
@@ -129,7 +130,7 @@ const getProperties = async (req, res) => {
 const deleteProperty = async (req, res) => {
   const { id } = req.params;
   console.log("Request Body:", req.body);
-  const query = "DELETE FROM property WHERE fk_classroom_id = ?, id = ?";
+  const query = "DELETE FROM property WHERE id = ?";
   
   try {
     const [results] = await db.execute(query, [id]);
@@ -143,12 +144,31 @@ const deleteProperty = async (req, res) => {
   }
 };
 
+const assignProperty = async (req, res) => {
+  const query = "INSERT INTO student_properties (fk_student_id, fk_property_id, is_owner) VALUES (?, ?, ?)";
+  
+  try {
+    const result = await db.execute(query, [
+      fk_student_id, 
+      fk_property_id, 
+      is_owner,
+    ]);
+    res.json({
+      data: `New job assigned successfully `,
+    });
+  } catch (error) {
+    console.error("Error assigning job:", error);
+    return res.status(500).json({ error: "Failed to assign job" });
+  }
+};
+
 // Routes definition using the functions above
-router.get("/classroom/:id/properties", getProperties); // Get all properties in a classroom
+router.get("/classroom/:id", getProperties); // Get all properties in a classroom
 router.get("/:id", getPropertyById); // Get a property by ID
 router.post("/", createProperty); // Create a new property
 router.put("/:id", updateProperty); // Update a property by ID
 router.delete("/:id", deleteProperty); // Delete a property by ID
+router.post("/:id", assignProperty); // assign a property to a student
 
 
 

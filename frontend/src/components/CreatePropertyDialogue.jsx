@@ -68,8 +68,8 @@ const CreatePropertyDialogue = ({ open, onClose, fk_classroom_id, onSubmit }) =>
     e.preventDefault();
     setWaiting(true);
     try {
-      const response = await api.post("/properties/properties", {
-        ...formData,
+      const response = await api.post("/properties", {
+        formData: formData,
         classroom_id: fk_classroom_id,
       });
       console.log("Created:", response.data);
@@ -96,7 +96,7 @@ const CreatePropertyDialogue = ({ open, onClose, fk_classroom_id, onSubmit }) =>
       setWaiting(false);
     }
   };
-
+  
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Create Property</DialogTitle>

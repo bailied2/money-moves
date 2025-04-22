@@ -6,10 +6,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import AddNewCard from "./old/AddNewCard";
 
+// import AddNewCard from "./old/AddNewCard";
+import AddPropertyCard from "./AddPropertyCard";
 import PropertyCard from "./PropertyCard";
-import CreatePropertyDialog from "./CreatePropertyDialogue"; // Optional dialog for creating new properties
+import CreatePropertyDialog from "./CreatePropertyDialogue";
 import dayjs from "dayjs";
 import api from "../api";
 
@@ -46,6 +47,24 @@ const PropertyList = ({ classroomId }) => {
     } catch (err) {
       alert("Error deleting property");
     }
+  };
+
+  const updateProperty = async (propertyId) => {
+    try{
+    const response = await api.put(`/properties/${propertyId}`);
+    setProperties((prev) => prev.filter((p) => p.id !== propertyId));
+  }catch (err) {
+    alert("Error updating property");
+  }
+  };
+
+
+
+
+
+  const assignProperty = (propertyId) => { 
+
+    console.log("Assign clicked for property:", propertyId);
   };
 
   return (
@@ -89,9 +108,13 @@ const PropertyList = ({ classroomId }) => {
               <PropertyCard
                 title={property.name}
                 description={property.description}
-                start_date={dayjs(property.start_date).format("M/D/YYYY")}
-                end_date={dayjs(property.end_date).format("M/D/YYYY")}
-                id={property.id}
+                value={property.value}
+                rent={property.rent}
+                maintenance={property.maintenance}
+                pay_frequency={property.pay_frequency}
+                pay_day={property.pay_day}
+                onEdit={() => updateProperty(property.id)}
+                onAssign={() => assignProperty(property.id)}
                 onDelete={() => deleteProperty(property.id)}
               />
             </Grid>
@@ -100,17 +123,12 @@ const PropertyList = ({ classroomId }) => {
           size={{ xs: 2, sm: 3, md: 3 }}
           display="flex"
           justifyContent="center"
-        >
-          {
-            <AddNewCard
-              label="Create New Property"
-              onClassroomAdded={addProperty}
-            />
-          }
-          {!loading && (
+        > 
+          <AddPropertyCard classroom={classroomId} onSubmit={addProperty} />
+              {!loading && (
             <CreatePropertyDialog
               classroomId={classroomId}
-              onSubmit={addProperty}
+              onSubmit={AddPropertyCard}
             />
           )}
         </Grid>
