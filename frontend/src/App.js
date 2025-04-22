@@ -45,7 +45,15 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<UserRegistrationForm />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/test" element={<Test />} />
+        {/* Testing page, should be removed in production */}
+        <Route
+          path="/test"
+          element={
+            <ProtectedRoute route="/test">
+              <Test />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} /> {/* 404 Route */}
       </Routes>
     </Router>

@@ -35,7 +35,13 @@ import dayjs from "dayjs";
 
 import api from "../api";
 
-const YearEndAccordion = ({ year, index, prev_end_date, next_end_date, onUpdate }) => {
+const YearEndAccordion = ({
+  year,
+  index,
+  prev_end_date,
+  next_end_date,
+  onUpdate,
+}) => {
   const [data, setData] = useState(year);
   const [editing, setEditing] = useState(false);
   const [endDate, setEndDate] = useState(dayjs(year.end_date));
@@ -56,11 +62,12 @@ const YearEndAccordion = ({ year, index, prev_end_date, next_end_date, onUpdate 
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
     console.log("Update year end form submitted");
     onUpdate(formData, index);
-    setData(formData)
+    setData(formData);
     setEditing(false);
-  }
+  };
 
   return (
     <Accordion>
@@ -70,7 +77,7 @@ const YearEndAccordion = ({ year, index, prev_end_date, next_end_date, onUpdate 
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <form id={`update_form_${year.id}`} onSubmit={handleUpdate}>
+        <form id={`update_year_form_${year.id}`} onSubmit={handleUpdate}>
           <TableContainer>
             <Table>
               <TableRow>
@@ -82,46 +89,62 @@ const YearEndAccordion = ({ year, index, prev_end_date, next_end_date, onUpdate 
                         id="end_date"
                         name="end_date"
                         value={endDate}
+                        required
                         disablePast
-                        minDate={dayjs(prev_end_date).isBefore(tomorrow) ? tomorrow : dayjs(prev_end_date)}
-                        maxDate={next_end_date ? dayjs(next_end_date) : undefined}
+                        minDate={
+                          dayjs(prev_end_date).isBefore(tomorrow)
+                            ? tomorrow
+                            : dayjs(prev_end_date)
+                        }
+                        maxDate={
+                          next_end_date ? dayjs(next_end_date) : undefined
+                        }
                         onChange={handleEndDateChange}
                         slotProps={{
                           textField: {
-                            size:"small"
-                          }
+                            size: "small",
+                          },
                         }}
                       />
                     </LocalizationProvider>
-                  ) : 
+                  ) : (
                     dayjs(data.end_date).format("M/D/YY")
-                  }
+                  )}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Savings APR</TableCell>
                 <TableCell>
                   {editing ? (
-                      <TextField
-                        id="savings_apr"
-                        name="savings_apr"
-                        value={formData.savings_apr}
-                        size="small"
-                        onChange={(e) => {
+                    <TextField
+                      id="savings_apr"
+                      name="savings_apr"
+                      type="number"
+                      value={formData.savings_apr}
+                      size="small"
+                      required
+                      onChange={(e) => {
+                        const isValidDecimal = /^\d+(\.\d{1,2})?$/.test(
+                          e.target.value
+                        );
+                        if (isValidDecimal)
                           setFormData({
                             ...formData,
-                            savings_apr: e.target.value,
+                            savings_apr: parseFloat(e.target.value) || "",
                           });
-                        }}
-                        slotProps={{
-                          input: {
-                            endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                          },
-                        }}
-                      />
-                  ) : 
-                    data.savings_apr+"%"
-                  }
+                      }}
+                      slotProps={{
+                        input: {
+                          step: "0.01",
+                          endAdornment: (
+                            <InputAdornment position="end">%</InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  ) : (
+                    data.savings_apr + "%"
+                  )}
                 </TableCell>
               </TableRow>
               {data.investment_values.map((account, index) => (
@@ -129,29 +152,41 @@ const YearEndAccordion = ({ year, index, prev_end_date, next_end_date, onUpdate 
                   <TableCell>{account.title}</TableCell>
                   <TableCell>
                     {editing ? (
-                        <TextField
-                          id={`${account.title}_share_value`}
-                          name={`${account.title}_share_value`}
-                          value={formData.investment_values[index].value}
-                          size="small"
-                          onChange={(e) => {
+                      <TextField
+                        id={`${account.title}_share_value`}
+                        name={`${account.title}_share_value`}
+                        type="number"
+                        value={formData.investment_values[index].value}
+                        size="small"
+                        required
+                        onChange={(e) => {
+                          const isValidDecimal = /^\d+(\.\d{1,2})?$/.test(
+                            e.target.value
+                          );
+                          if (isValidDecimal)
                             setFormData({
                               ...formData,
-                              investment_values: formData.investment_values.toSpliced(index, 1, {
-                                ...data.investment_values[index],
-                                value: e.target.value,
-                              })
+                              investment_values:
+                                formData.investment_values.toSpliced(index, 1, {
+                                  ...data.investment_values[index],
+                                  value: parseFloat(e.target.value) || "",
+                                }),
                             });
-                          }}
-                          slotProps={{
-                            input: {
-                              startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                            },
-                          }}
-                        />
-                    ) : 
-                      "$"+account.value
-                    }
+                        }}
+                        slotProps={{
+                          input: {
+                            step: "0.01",
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                    ) : (
+                      "$" + account.value
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -165,22 +200,29 @@ const YearEndAccordion = ({ year, index, prev_end_date, next_end_date, onUpdate 
             <Button color="error" onClick={() => setEditing(false)}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" type="submit" form={`update_form_${year.id}`}>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              form={`update_year_form_${year.id}`}
+            >
               Confirm
             </Button>
           </>
-        ) : canEdit && (
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={() => setEditing(true)}
-          >
-            Edit
-          </Button>
+        ) : (
+          canEdit && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setEditing(true)}
+            >
+              Edit
+            </Button>
+          )
         )}
       </AccordionActions>
     </Accordion>
-  )
+  );
 };
 
 export default YearEndAccordion;
