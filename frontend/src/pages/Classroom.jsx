@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router";
 
 import { AuthContext } from "../AuthContext";
 
-import StudentAccounts from "../components/StudentAccounts";
+import StudentView from "../components/StudentView";
 import ClassroomHeader from "../components/ClassroomHeader";
 import ClassroomFooter from "../components/ClassroomFooter";
 import TeacherView from "../components/TeacherView";
@@ -43,7 +43,7 @@ const Classroom = () => {
           {user.id === classroom.fk_teacher_id ? (
             <TeacherView classroom={classroom} />
           ) : (
-            <StudentAccounts classroom_id={classroom.id} />
+            <StudentView classroom={classroom} />
           )}
         </Grid>
       </Grid>

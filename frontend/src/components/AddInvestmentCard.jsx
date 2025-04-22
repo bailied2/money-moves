@@ -33,6 +33,15 @@ const AddInvestmentCard = ({ classroom_id, onSubmit }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleDecimalChange = (e) => {
+    const isValidDecimal = /^\d+(\.\d{1,2})?$/.test(e.target.value);
+    if (isValidDecimal)
+      setFormData({
+        ...formData,
+        [e.target.name]: parseFloat(e.target.value) || "",
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!classroom_id) {
@@ -76,9 +85,7 @@ const AddInvestmentCard = ({ classroom_id, onSubmit }) => {
       >
         <CardContent>
           <form onSubmit={handleSubmit} id="add_investment_account_form">
-            <Typography variant="h5">
-              Add Investment Account
-            </Typography>
+            <Typography variant="h5">Add Investment Account</Typography>
             <TextField
               size="small"
               variant="standard"
@@ -104,17 +111,21 @@ const AddInvestmentCard = ({ classroom_id, onSubmit }) => {
             <TextField
               size="small"
               variant="standard"
+              type="number"
               label="Initial Value"
               name="initial_value"
               value={formData.initial_value}
-              onChange={handleChange}
+              onChange={handleDecimalChange}
               fullWidth
               margin="dense"
               required
               slotProps={{
                 input: {
-                  startAdornment:<InputAdornment position="start">$</InputAdornment>
-                }
+                  step: "0.01",
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                },
               }}
             />
           </form>

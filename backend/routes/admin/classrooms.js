@@ -8,7 +8,11 @@ const authenticateToken = require("../../authMiddleware.js");
 
 // GET / - Get all classrooms
 const getClassrooms = async (req, res) => {
-  const query = "SELECT * FROM classroom";
+  const query = `SELECT classroom.*, COUNT(student.id) AS num_students 
+  FROM student
+  RIGHT JOIN classroom
+  ON student.fk_classroom_id = classroom.id 
+  GROUP BY classroom.id`;
   // db.query(query, (err, results) => {
   //   if (err) {
   //     console.error("Error fetching classrooms:", err);
@@ -17,8 +21,8 @@ const getClassrooms = async (req, res) => {
   //   res.send({ data: results });
   // });
   try {
-    const [results] = await db.execute(query);
-    res.json({ data: results });
+    const [classrooms] = await db.execute(query);
+    res.json({ classrooms });
   } catch (error) {
     console.error("Error fetching classrooms:", error);
     return res.status(500).json({ error: "Failed to fetch classrooms" });
@@ -34,14 +38,12 @@ const getClassroomsByTeacher = async (req, res) => {
   // Get user_id from info attached by middleware
   const user_id = req.user.id;
 
-  const query =
-  `SELECT classroom.*, COUNT(student.id) AS num_students 
+  const query = `SELECT classroom.*, COUNT(student.id) AS num_students 
   FROM student
   RIGHT JOIN classroom
   ON student.fk_classroom_id = classroom.id 
   WHERE classroom.fk_teacher_id = ? 
   GROUP BY classroom.id`;
-
 
   try {
     const [results] = await db.execute(query, [user_id]);
@@ -65,9 +67,7 @@ const getClassroomsByStudent = async (req, res) => {
   // Get user_id from info attached by middleware
   const user_id = req.user.id;
 
-
-  const query =
-  `SELECT classroom.*, COUNT(student.id) AS num_students 
+  const query = `SELECT classroom.*, COUNT(student.id) AS num_students 
   FROM student
   LEFT JOIN classroom
   ON student.fk_classroom_id = classroom.id 
@@ -199,7 +199,6 @@ const joinClassroomByCode = async (req, res) => {
   try {
     console.log(" Searching for classroom... ");
     const [classroomResults] = await db.execute(selectClassroomQuery, [
-      user_id,
       class_code,
     ]);
     if (classroomResults.length === 0) {
@@ -211,7 +210,8 @@ const joinClassroomByCode = async (req, res) => {
     console.log(" classroom_id: ", classroom.id);
 
     const insertedStudent = await db.execute(insertStudentQuery, [
-      [user_id, classroom.id],
+      user_id,
+      classroom.id,
     ]);
     console.log(` User {${user_id}} joined classroom {${classroom.id}}`);
     console.log(` with student_id {${insertedStudent.insertId}}`);

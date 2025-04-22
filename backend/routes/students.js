@@ -246,7 +246,7 @@ const addStudentsToClassroom = async (req, res) => {
         await connection.commit(); // Commit database transaction
         connection.release(); // Release the connection back to the pool
       }
-      res.json({ message:`Students added successfully` });
+      res.json({ message: `Students added successfully` });
     } catch (error) {
       console.error("Error adding students to classroom:", error);
       // Rollback changes since start of transaction

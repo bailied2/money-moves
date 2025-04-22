@@ -93,8 +93,8 @@ const getUsers = async (req, res) => {
   const sql = "SELECT id, first_name, last_name, email FROM user"; // Query to retrieve all users
 
   try {
-    const [results] = await db.execute(sql);
-    res.json({ data: results }); // Return the list of users
+    const [users] = await db.execute(sql);
+    res.json({ users }); // Return the list of users
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,7 +1,7 @@
 import "./styles/CardList.css";
 
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";

@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #d1e3f5;
+  /* background-color: #d1e3f5; */
 }
 
 code {
@@ -20,4 +20,13 @@ form {
 
 .MuiCard-root {
   width: 250px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: "textfield";
 }
