@@ -132,7 +132,7 @@ const createYearEnd = async (req, res) => {
     await connection.beginTransaction();
     try {
       // Insert new year end
-      const [insertedYearEnd] = await db.execute(insertYearEndQuery, [
+      const [insertedYearEnd] = await connection.execute(insertYearEndQuery, [
         classroom_id,
         end_date,
         savings_apr,
@@ -156,7 +156,7 @@ const createYearEnd = async (req, res) => {
       for (const investment_account of investment_accounts) {
         const previous_value = previous_investment_values.find(
           (prev) => prev.title === investment_account.title
-        );
+        ).value;
 
         // For each investment_account, insert a corresponding investment value for the new year end
         const [insertedInvestmentValue] = await connection.execute(
@@ -207,7 +207,7 @@ const updateYearEnd = async (req, res) => {
   // Prepared Statements
   const updateYearEndQuery =
     "UPDATE year_end SET end_date = ?, savings_apr = ? WHERE id = ?";
-  const updateInvestmentValueQuery = 
+  const updateInvestmentValueQuery =
     "UPDATE investment_values SET share_value = ? WHERE fk_account_id = ? AND fk_year_end_id = ?";
 
   // try {
@@ -238,11 +238,14 @@ const updateYearEnd = async (req, res) => {
       // Update investment_values
       for (const investment_account of investment_values) {
         // For each investment_account, update the corresponding value
-        const [updateResults] = await connection.execute(updateInvestmentValueQuery, [
-          investment_account.value,
-          investment_account.fk_account_id,
-          investment_account.fk_year_end_id,
-        ]);
+        const [updateResults] = await connection.execute(
+          updateInvestmentValueQuery,
+          [
+            investment_account.value,
+            investment_account.fk_account_id,
+            investment_account.fk_year_end_id,
+          ]
+        );
       }
 
       // All changes have been made.
