@@ -210,7 +210,8 @@ const joinClassroomByCode = async (req, res) => {
     console.log(" classroom_id: ", classroom.id);
 
     const insertedStudent = await db.execute(insertStudentQuery, [
-      [user_id, classroom.id],
+      user_id,
+      classroom.id,
     ]);
     console.log(` User {${user_id}} joined classroom {${classroom.id}}`);
     console.log(` with student_id {${insertedStudent.insertId}}`);

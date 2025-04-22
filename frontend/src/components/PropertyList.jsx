@@ -1,7 +1,7 @@
 import "./styles/CardList.css";
 
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
@@ -50,20 +50,15 @@ const PropertyList = ({ classroomId }) => {
   };
 
   const updateProperty = async (propertyId) => {
-    try{
-    const response = await api.put(`/properties/${propertyId}`);
-    setProperties((prev) => prev.filter((p) => p.id !== propertyId));
-  }catch (err) {
-    alert("Error updating property");
-  }
+    try {
+      const response = await api.put(`/properties/${propertyId}`);
+      setProperties((prev) => prev.filter((p) => p.id !== propertyId));
+    } catch (err) {
+      alert("Error updating property");
+    }
   };
 
-
-
-
-
-  const assignProperty = (propertyId) => { 
-
+  const assignProperty = (propertyId) => {
     console.log("Assign clicked for property:", propertyId);
   };
 
@@ -123,9 +118,9 @@ const PropertyList = ({ classroomId }) => {
           size={{ xs: 2, sm: 3, md: 3 }}
           display="flex"
           justifyContent="center"
-        > 
+        >
           <AddPropertyCard classroom={classroomId} onSubmit={addProperty} />
-              {!loading && (
+          {!loading && (
             <CreatePropertyDialog
               classroomId={classroomId}
               onSubmit={AddPropertyCard}
