@@ -102,28 +102,32 @@ const updateJob = async (req, res) => {
 
 // DELETE /jobs - Delete all jobs
 const deleteJob = async (req, res) => {
-  const query = "DELETE FROM job";
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error("Error deleting jobs:", err);
-      return res.status(500).send({ error: "Failed to delete jobs" });
+  const id = req.params.id;
+  const query = "DELETE FROM job WHERE id = ?";
+  try {
+    const [results] = await db.execute(query, [id]);
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "Job not found" });
     }
-    res.send({ data: "All jobs deleted successfully" });
-  });
- 
+    res.json({ data: `Job with ID ${id} deleted successfully` });
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    return res.status(500).json({ error: "Failed to delete job" });
+  }
 };
 
 const assignJob = async (req, res) => {
-  const query = "INSERT INTO student_jobs (fk_student_id, fk_property_id) VALUES (?, ?)";
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error("Error assigning jobs:", err);
-      return res.status(500).send({ error: "Failed to assign jobs" });
-    }
-    res.send({ data: "All jobs assigned successfully" });
-  });
- 
+  const { student_id, job_id } = req.body;
+  const query = "INSERT INTO student_jobs (fk_student_id, fk_job_id) VALUES (?, ?)";
+  try {
+    const result = await db.execute(query, [student_id, job_id]);
+    res.json({ data: "Job assigned successfully" });
+  } catch (err) {
+    console.error("Error assigning job:", err);
+    return res.status(500).send({ error: "Failed to assign job" });
+  }
 };
+
 
 
 // Routes definition using the functions above
@@ -132,7 +136,7 @@ router.get("/:id", getJobById); // Get a job by ID
 router.post("/", createJob); // Create a new job
 router.put("/:id", updateJob); // Update job details
 router.delete("/:id", deleteJob); //Delete a job
-router.post("/:id", assignJob); //Assign a job
+router.post("/assign-job", assignJob); //Assign a job
 
 
 

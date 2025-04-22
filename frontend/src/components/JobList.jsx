@@ -1,20 +1,23 @@
 import "./styles/CardList.css";
 
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid2";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
+import CreateJobDialog from "./CreateJobDialog";  // import CreateJobDialog instead of AddJobCard
 import JobCard from "./JobCard";
-import CreateJobDialogue from "./CreateJobDialogue";
+import UpdateJobDialog from "./UpdateJobDialog";
 import api from "../api";
 
 const JobList = ({ classroomId }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingJob, setEditingJob] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);  // state to manage dialog visibility
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -46,17 +49,19 @@ const JobList = ({ classroomId }) => {
     }
   };
 
-  const updateJob = async (jobId) => {
-    try {
-      const response = await api.put(`/jobs/${jobId}`);
-      setJobs((prev) => prev.map((job) => (job.id === jobId ? response.data.job : job)));
-    } catch (err) {
-      alert("Error updating job");
-    }
+  const handleUpdate = (updatedJob) => {
+    setJobs((prev) =>
+      prev.map((j) => (j.id === updatedJob.id ? updatedJob : j))
+    );
+    setEditingJob(null);
   };
 
-  const assignJob = (jobId) => {
-    console.log("Assign clicked for job:", jobId);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
   };
 
   return (
@@ -100,13 +105,8 @@ const JobList = ({ classroomId }) => {
               <JobCard
                 title={job.title}
                 description={job.description}
-                wage={job.wage}
-                pay_frequency={job.pay_frequency}
-                pay_day={job.pay_day}
-                icon_class={job.icon_class}
-                is_trustee={job.is_trustee}
-                onEdit={() => updateJob(job.id)}
-                onAssign={() => assignJob(job.id)}
+                pay={job.pay}
+                onEdit={() => setEditingJob(job)}
                 onDelete={() => deleteJob(job.id)}
               />
             </Grid>
@@ -115,16 +115,27 @@ const JobList = ({ classroomId }) => {
           size={{ xs: 2, sm: 3, md: 3 }}
           display="flex"
           justifyContent="center"
-          sx={{ marginTop: "1em" }} // Adds margin to move the button down
         >
-          {!loading && (
-            <CreateJobDialogue
-              classroomId={classroomId}
-              onSubmit={addJob}
-            />
-          )}
+          <button onClick={handleDialogOpen}>Add Job</button> {/* Button to open the CreateJobDialog */}
         </Grid>
       </Grid>
+
+      {/* Edit dialog */}
+      {editingJob && (
+        <UpdateJobDialog
+          open={Boolean(editingJob)}
+          onClose={() => setEditingJob(null)}
+          jobData={editingJob}
+          onUpdate={handleUpdate}
+        />
+      )}
+
+      {/* Create Job Dialog */}
+      <CreateJobDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        onCreateJob={addJob}  // Add the job when created
+      />
     </Stack>
   );
 };

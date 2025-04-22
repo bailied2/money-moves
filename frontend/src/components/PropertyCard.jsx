@@ -1,18 +1,10 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
-  Stack,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, Typography, CardActions, Button } from "@mui/material";
+import AssignPropertyDialog from "./AssignPropertyDialog";
+import api from "../api"; // axios instance
 
 const PropertyCard = ({
+  id,
   title,
   description,
   value,
@@ -21,14 +13,50 @@ const PropertyCard = ({
   pay_frequency,
   pay_day,
   onEdit,
-  onAssign,
   onDelete,
+  classroomId, 
 }) => {
+  const [students, setStudents] = useState([]);
+  const [openAssignDialog, setOpenAssignDialog] = useState(false);
+  const [assignedStudents, setAssignedStudents] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await api.get(`/students/classroom/${classroomId}`);
+        console.log("Response data:", response.data);
+        setStudents(response.data.students);
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch students");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [classroomId]);
+
+  const handleAssign = () => {
+    setOpenAssignDialog(true);
+  };
+
+  const handleCloseAssignDialog = () => {
+    setOpenAssignDialog(false);
+  };
+
+  const handleAssignStudents = (studentIds) => {
+    setAssignedStudents(studentIds);
+    console.log(`Assigned students to property ${title}:`, studentIds);
+  };
+
   return (
     <Card
       raised
       sx={{
-        bgcolor:"#FA7921",
+        bgcolor: "#FA7921",
         position: "relative",
         height: "100%",
         maxWidth: 300,
@@ -39,43 +67,32 @@ const PropertyCard = ({
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
-        
         <Typography variant="body2" color="text.secondary" gutterBottom>
           {description || "Property description goes here."}
         </Typography>
         <Typography variant="body2">Value: ${value || "0.00"}</Typography>
         <Typography variant="body2">Rent: ${rent || "0.00"}</Typography>
-        <Typography variant="body2">
-          Maintenance: ${maintenance || "0.00"}
-        </Typography>
-
-        <FormControl fullWidth size="small" sx={{ marginTop: 1 }}>
-          <InputLabel>Pay Frequency</InputLabel>
-          <Select value={pay_frequency || "Monthly"} label="Pay Frequency" disabled>
-            <MenuItem value="Daily">Daily</MenuItem>
-            <MenuItem value="Weekly">Weekly</MenuItem>
-            <MenuItem value="Monthly">Monthly</MenuItem>
-          </Select>
-        </FormControl>
-
-        {pay_day && (
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Pay Day: {pay_day}
-          </Typography>
-        )}
+        <Typography variant="body2">Maintenance: ${maintenance || "0.00"}</Typography>
       </CardContent>
 
-      <CardActions sx={{ padding :0  }}>
+      <CardActions sx={{ padding: 0 }}>
         <Button size="small" onClick={onEdit}>
           Edit
         </Button>
-        <Button size="small" onClick={onAssign}>
+        <Button size="small" onClick={handleAssign}>
           Assign
         </Button>
         <Button size="small" color="error" onClick={onDelete}>
           Delete
         </Button>
       </CardActions>
+
+      <AssignPropertyDialog
+        open={openAssignDialog}
+        onClose={handleCloseAssignDialog}
+        students={students}
+        onAssignStudents={handleAssignStudents}
+      />
     </Card>
   );
 };

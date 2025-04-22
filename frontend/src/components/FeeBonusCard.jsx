@@ -5,62 +5,71 @@ import {
   Typography,
   CardActions,
   Button,
+  Stack,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
-import { grey } from "@mui/material/colors";
-import Icon from "@mui/material/Icon";
 
 const FeeBonusCard = ({
-  id,
   title,
   description,
-  amount,
-  iconClass = "fas fa-money-bill-wave",
-  onDelete = null,
+  fee,
+  bonus,
+  pay_frequency,
+  pay_day,
+  onEdit,
+  onAssign,
+  onDelete,
 }) => {
-  const isBonus = amount >= 0;
-
   return (
     <Card
       raised
       sx={{
+        bgcolor: "#FA7921",
         position: "relative",
-        overflow: "visible",
-        minHeight: 185,
+        height: "100%",
         maxWidth: 300,
-        aspectRatio: "3/2",
         padding: 1,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
-        backgroundColor: isBonus ? grey[100] : grey[200],
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h5" component="div" gutterBottom>
-          {title}
-        </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          {description || "No description provided."}
+          {description || "Fee/Bonus description goes here."}
         </Typography>
-        <Typography
-          variant="body1"
-          color={isBonus ? "green" : "error"}
-          fontWeight="bold"
-        >
-          {isBonus ? "+" : "-"}${Math.abs(amount).toFixed(2)}
-        </Typography>
-        <Icon
-          baseClassName="fas"
-          className={iconClass}
-          sx={{ fontSize: 30, marginTop: 1 }}
-        />
-      </CardContent>
-      <CardActions sx={{ padding: 0 }}>
-        {typeof onDelete === "function" && (
-          <Button size="small" color="error" onClick={onDelete}>
-            Delete
-          </Button>
+        <Typography variant="body2">Fee: ${fee || "0.00"}</Typography>
+        <Typography variant="body2">Bonus: ${bonus || "0.00"}</Typography>
+
+        <FormControl fullWidth size="small" sx={{ marginTop: 1 }}>
+          <InputLabel>Pay Frequency</InputLabel>
+          <Select value={pay_frequency || "Monthly"} label="Pay Frequency" disabled>
+            <MenuItem value="Daily">Daily</MenuItem>
+            <MenuItem value="Weekly">Weekly</MenuItem>
+            <MenuItem value="Monthly">Monthly</MenuItem>
+          </Select>
+        </FormControl>
+
+        {pay_day && (
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Pay Day: {pay_day}
+          </Typography>
         )}
+      </CardContent>
+
+      <CardActions sx={{ padding: 0 }}>
+        <Button size="small" onClick={onEdit}>
+          Edit
+        </Button>
+        <Button size="small" onClick={onAssign}>
+          Assign
+        </Button>
+        <Button size="small" color="error" onClick={onDelete}>
+          Delete
+        </Button>
       </CardActions>
     </Card>
   );

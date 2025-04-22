@@ -7,6 +7,10 @@ import {
   Typography,
   Fab,
   TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -19,6 +23,9 @@ const AddJobCard = ({ classroom = null, onSubmit }) => {
     description: "",
     wage: "",
     pay_frequency: "Monthly",
+    pay_day: "Monday", 
+    icon_class: "",
+    is_trustee: false,
   });
 
   const handleOpen = () => setOpened(true);
@@ -33,29 +40,41 @@ const AddJobCard = ({ classroom = null, onSubmit }) => {
       alert("No classroom provided. Cannot submit.");
       return;
     }
-
+  
     try {
       const response = await api.post("/jobs", {
-        ...formData,
-        classroom_id: classroom.id,
+        formData: { 
+          title: formData.title,
+          description: formData.description,
+          wage: formData.wage,
+          pay_frequency: formData.pay_frequency,
+          pay_day: formData.pay_day,
+          icon_class: formData.icon_class,
+          is_trustee: formData.is_trustee,
+          classroom_id: classroom.id,
+        },
       });
-
+  
       if (typeof onSubmit === "function") {
         onSubmit(response.data.job);
       }
-
+  
       alert("Job added successfully!");
       setFormData({
         title: "",
         description: "",
         wage: "",
         pay_frequency: "Monthly",
+        pay_day: "Monday",
+        icon_class: "",
+        is_trustee: false,
       });
       handleClose();
     } catch (err) {
       console.error("Error adding job:", err);
     }
   };
+  
 
   if (opened)
     return (
@@ -107,16 +126,61 @@ const AddJobCard = ({ classroom = null, onSubmit }) => {
               required
               margin="dense"
             />
+            <FormControl fullWidth margin="dense" size="small">
+              <InputLabel>Pay Frequency</InputLabel>
+              <Select
+                name="pay_frequency"
+                value={formData.pay_frequency}
+                onChange={handleChange}
+                label="Pay Frequency"
+              >
+                <MenuItem value="Daily">Daily</MenuItem>
+                <MenuItem value="Weekly">Weekly</MenuItem>
+                <MenuItem value="Monthly">Monthly</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Pay Day Dropdown with Days of the Week */}
+            <FormControl fullWidth margin="dense" size="small">
+              <InputLabel>Pay Day</InputLabel>
+              <Select
+                name="pay_day"
+                value={formData.pay_day}
+                onChange={handleChange}
+                label="Pay Day"
+              >
+                <MenuItem value="Monday">Monday</MenuItem>
+                <MenuItem value="Tuesday">Tuesday</MenuItem>
+                <MenuItem value="Wednesday">Wednesday</MenuItem>
+                <MenuItem value="Thursday">Thursday</MenuItem>
+                <MenuItem value="Friday">Friday</MenuItem>
+                <MenuItem value="Saturday">Saturday</MenuItem>
+                <MenuItem value="Sunday">Sunday</MenuItem>
+              </Select>
+            </FormControl>
+
             <TextField
               size="small"
               variant="standard"
-              label="Pay Frequency"
-              name="pay_frequency"
-              value={formData.pay_frequency}
+              label="Icon Class"
+              name="icon_class"
+              value={formData.icon_class}
               onChange={handleChange}
               fullWidth
               margin="dense"
             />
+            <FormControl fullWidth margin="dense" size="small">
+              <InputLabel>Is Trustee?</InputLabel>
+              <Select
+                name="is_trustee"
+                value={formData.is_trustee}
+                onChange={handleChange}
+                label="Is Trustee?"
+              >
+                <MenuItem value={false}>No</MenuItem>
+                <MenuItem value={true}>Yes</MenuItem>
+              </Select>
+            </FormControl>
           </form>
         </CardContent>
         <CardActions>

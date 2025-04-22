@@ -171,13 +171,13 @@ const CreateJobDialog = ({ open, onClose, onSubmit, classroomId }) => {
 
 const ParentComponent = ({ onSubmit, classroomId }) => {
   const [open, setOpen] = useState(false);
-  const fabRef = useRef(null); // 🔁 Ref for focus restoration
+  const fabRef = useRef(null);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setTimeout(() => {
-      fabRef.current?.focus(); // 🔁 Restore focus after close
+      fabRef.current?.focus(); 
     }, 100);
   };
 

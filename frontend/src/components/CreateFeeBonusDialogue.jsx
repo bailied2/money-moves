@@ -1,43 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
+  TextField,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  Backdrop,
+  CircularProgress,
+  Fab,
   Card,
   CardActions,
   Typography,
-  Fab,
-  TextField,
-  MenuItem,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from "@mui/material/Backdrop";
+import api from "../api"; // Assuming api is properly set up for backend requests
 
-import api from "../api";
-
-const CreateFeeBonusDialog = ({ open, onClose, onSubmit }) => {
+const CreateFeeBonusDialog = ({ open, onClose, onSubmit, classroomId }) => {
   const [waiting, setWaiting] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
     amount: "",
+    description: "",
+    icon_class: "",
   });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setWaiting(true);
     try {
-      const response = await api.post("/fees-bonuses", formData);
-      console.log(response.data);
-      onSubmit(newFeeBonus); 
-      alert(response.data.message || "Fee/Bonus successfully created!");
-      setFormData({ 
+      const response = await api.post("/fees-bonuses", {
+        classroom_id: classroomId,
+        formData,
+      });
+      onSubmit(response.data.data, "Fee/Bonus created successfully!");
+      setFormData({
         title: "",
-        description: "", 
-        amount: "" });
+        amount: "",
+        description: "",
+        icon_class: "",
+      });
     } catch (error) {
       console.error("Error submitting fee/bonus:", error);
     } finally {
@@ -47,10 +60,13 @@ const CreateFeeBonusDialog = ({ open, onClose, onSubmit }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Create Fee or Bonus</DialogTitle>
+      <DialogTitle>Create Fee/Bonus</DialogTitle>
       <DialogContent>
         {waiting && (
-          <Backdrop sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })} open={waiting}>
+          <Backdrop
+            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+            open={waiting}
+          >
             <CircularProgress />
           </Backdrop>
         )}
@@ -60,29 +76,38 @@ const CreateFeeBonusDialog = ({ open, onClose, onSubmit }) => {
             fullWidth
             margin="normal"
             label="Title"
-            variant="standard"
+            name="title"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Description"
-            variant="standard"
-            multiline
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={handleChange}
           />
           <TextField
             required
             fullWidth
             margin="normal"
             label="Amount"
-            variant="standard"
+            name="amount"
             type="number"
-            helperText="Use a negative value for a fee, positive for a bonus"
+            inputProps={{ min: 0 }}
             value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+            onChange={handleChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Description"
+            name="description"
+            multiline
+            rows={3}
+            value={formData.description}
+            onChange={handleChange}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Icon Class (optional)"
+            name="icon_class"
+            value={formData.icon_class}
+            onChange={handleChange}
           />
         </form>
       </DialogContent>
@@ -98,13 +123,20 @@ const CreateFeeBonusDialog = ({ open, onClose, onSubmit }) => {
   );
 };
 
-const ParentComponent = ({ onSubmit }) => {
+const ParentComponent = ({ onSubmit, classroomId }) => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const fabRef = useRef(null);
 
-  const handleSubmit = (data) => {
-    if (typeof onSubmit === "function") onSubmit(data);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    setTimeout(() => {
+      fabRef.current?.focus();
+    }, 100);
+  };
+
+  const handleSubmit = (feeBonusData, message) => {
+    if (typeof onSubmit === "function") onSubmit(feeBonusData, message);
     handleClose();
   };
 
@@ -113,8 +145,7 @@ const ParentComponent = ({ onSubmit }) => {
       sx={{
         boxShadow: 0,
         position: "relative",
-        minHeight: 185,
-        maxWidth: 300,
+        minHeight: 200,
         aspectRatio: "3/2",
         padding: 1,
         border: "3px dashed lightgrey",
@@ -137,12 +168,17 @@ const ParentComponent = ({ onSubmit }) => {
         }}
       >
         <Typography variant="button" align="center">
-          Create Fee or Bonus
+          Create New Fee/Bonus
         </Typography>
-        <Fab onClick={handleOpen}>
+        <Fab ref={fabRef} onClick={handleOpen}>
           <AddIcon />
         </Fab>
-        <CreateFeeBonusDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
+        <CreateFeeBonusDialog
+          open={open}
+          onClose={handleClose}
+          onSubmit={handleSubmit}
+          classroomId={classroomId}
+        />
       </CardActions>
     </Card>
   );

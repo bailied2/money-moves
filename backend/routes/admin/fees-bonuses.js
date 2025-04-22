@@ -4,11 +4,13 @@ const db = require("../../sample_database");
 
 // GET /fees-bonuses - Get all fees and bonuses in a classroom
 const getFeesBonuses = async (req, res) => {
+  const { id } = req.params;  
   const query = "SELECT * FROM fees_bonuses WHERE fk_classroom_id = ?";
-   console.log("Request Body:", req.body);
+
+  console.log("Fetching fees and bonuses for classroom ID:", id);
 
   try {
-    const [results] = await db.execute(query);
+    const [results] = await db.execute(query, [id]);  // Pass the classroom ID
     res.json({ data: results });
   } catch (error) {
     console.error("Error fetching fees and bonuses:", error);
@@ -99,7 +101,7 @@ const deleteFeeBonus = async (req, res) => {
 };
 
 // Routes definition using the functions above
-router.get("/:id/fees-bonuses", getFeesBonuses); // Get all fees and bonuses
+router.get("/classroom/:id", getFeesBonuses); // Get all fees and bonuses
 router.get("/:id", getFeesBonusesById); // Get a fee/bonus by ID
 router.post("/", createFeesBonuses); // Create a new fee/bonus
 router.put("/", updateFeeBonus); // Update all fees/bonuses

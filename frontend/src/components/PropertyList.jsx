@@ -7,10 +7,9 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
-// import AddNewCard from "./old/AddNewCard";
 import AddPropertyCard from "./AddPropertyCard";
 import PropertyCard from "./PropertyCard";
-import CreatePropertyDialog from "./CreatePropertyDialogue";
+import UpdatePropertyDialog from "./UpdatePropertyDialog";
 import dayjs from "dayjs";
 import api from "../api";
 
@@ -18,6 +17,7 @@ const PropertyList = ({ classroomId }) => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingProperty, setEditingProperty] = useState(null); // For edit dialog
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -49,21 +49,14 @@ const PropertyList = ({ classroomId }) => {
     }
   };
 
-  const updateProperty = async (propertyId) => {
-    try{
-    const response = await api.put(`/properties/${propertyId}`);
-    setProperties((prev) => prev.filter((p) => p.id !== propertyId));
-  }catch (err) {
-    alert("Error updating property");
-  }
+  const handleUpdate = (updatedProperty) => {
+    setProperties((prev) =>
+      prev.map((p) => (p.id === updatedProperty.id ? updatedProperty : p))
+    );
+    setEditingProperty(null);
   };
 
-
-
-
-
-  const assignProperty = (propertyId) => { 
-
+  const assignProperty = (propertyId) => {
     console.log("Assign clicked for property:", propertyId);
   };
 
@@ -106,16 +99,17 @@ const PropertyList = ({ classroomId }) => {
               justifyContent="center"
             >
               <PropertyCard
-                title={property.name}
+                title={property.title}
                 description={property.description}
                 value={property.value}
                 rent={property.rent}
                 maintenance={property.maintenance}
                 pay_frequency={property.pay_frequency}
                 pay_day={property.pay_day}
-                onEdit={() => updateProperty(property.id)}
+                onEdit={() => setEditingProperty(property)}
                 onAssign={() => assignProperty(property.id)}
                 onDelete={() => deleteProperty(property.id)}
+                classroomId={classroomId} 
               />
             </Grid>
           ))}
@@ -123,16 +117,20 @@ const PropertyList = ({ classroomId }) => {
           size={{ xs: 2, sm: 3, md: 3 }}
           display="flex"
           justifyContent="center"
-        > 
+        >
           <AddPropertyCard classroom={classroomId} onSubmit={addProperty} />
-              {!loading && (
-            <CreatePropertyDialog
-              classroomId={classroomId}
-              onSubmit={AddPropertyCard}
-            />
-          )}
         </Grid>
       </Grid>
+
+      {/* Edit dialog */}
+      {editingProperty && (
+        <UpdatePropertyDialog
+          open={Boolean(editingProperty)}
+          onClose={() => setEditingProperty(null)}
+          propertyData={editingProperty}
+          onUpdate={handleUpdate}
+        />
+      )}
     </Stack>
   );
 };

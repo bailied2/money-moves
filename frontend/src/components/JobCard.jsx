@@ -28,16 +28,15 @@ const JobCard = ({
     <Card
       raised
       sx={{
-        bgcolor: "#FA7921", // Adjusted background color for consistency
+        bgcolor: "#FA7921", 
         position: "relative",
-        height: "auto", // Set to 'auto' so the card can adjust based on content
+        height: "250px", 
         maxWidth: 300,
         padding: 1,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
-        overflow: "auto", // Enable scrolling if content overflows
-        marginBottom: "16px", // Add space between cards
+        overflow: "hidden", 
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
