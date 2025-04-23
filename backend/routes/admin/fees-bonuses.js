@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
+const authenticateToken = require("../../authMiddleware");
+
 // GET /fees-bonuses/:id - Get all fees and bonuses in a classroom
 const getFeesBonuses = async (req, res) => {
   const { id } = req.params;

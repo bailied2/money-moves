@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require("../../sample_database");
 const { assign } = require("nodemailer/lib/shared");
 
+const authenticateToken = require("../../authMiddleware");
+
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = async (req, res) => {
   const { id } = req.params;

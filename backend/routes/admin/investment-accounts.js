@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
+const authenticateToken = require("../../authMiddleware");
+
 // GET /investment-accounts - Get all investment accounts
 const getInvestmentAccounts = async (req, res) => {
   const query = "SELECT * FROM investment_account";
@@ -28,17 +30,17 @@ const getInvestmentAccounts = async (req, res) => {
 // GET /investment-accounts/classroom/:id - Get all investment accounts for a particular classroom
 const getInvestmentAccountsByClass = async (req, res) => {
   const classroom_id = req.params.id; // Get classroom_id from params
-  
+
   // Debug logs
   console.log("\n*** getInvestmentAccountsByClass ***");
 
   console.log("  classroom_id: ", classroom_id);
 
   // Prepared statement
-  const selectInvestmentAccountsQuery = "SELECT * FROM investment_account WHERE fk_classroom_id = ?";
+  const selectInvestmentAccountsQuery =
+    "SELECT * FROM investment_account WHERE fk_classroom_id = ?";
 
-  const selectYearlyValuesQuery = 
-    `SELECT investment_values.fk_account_id AS fk_investment_account_id, year_end.end_date as end_date, investment_values.share_value AS value 
+  const selectYearlyValuesQuery = `SELECT investment_values.fk_account_id AS fk_investment_account_id, year_end.end_date as end_date, investment_values.share_value AS value 
     FROM investment_values
     RIGHT JOIN year_end
     ON investment_values.fk_year_end_id = year_end.id
@@ -46,14 +48,21 @@ const getInvestmentAccountsByClass = async (req, res) => {
 
   try {
     // Get all investment accounts for classroom
-    const [investment_accounts] = await db.execute(selectInvestmentAccountsQuery, [classroom_id]);
+    const [investment_accounts] = await db.execute(
+      selectInvestmentAccountsQuery,
+      [classroom_id]
+    );
     // Get yearly values for classroom
-    const [yearly_values] = await db.execute(selectYearlyValuesQuery, [classroom_id]);
+    const [yearly_values] = await db.execute(selectYearlyValuesQuery, [
+      classroom_id,
+    ]);
 
     // For each investment account
     for (const investment_account of investment_accounts) {
       // Add yearly values for the account to the object
-      investment_account.yearly_values = yearly_values.filter((row) => row.fk_investment_account_id == investment_account.id);
+      investment_account.yearly_values = yearly_values.filter(
+        (row) => row.fk_investment_account_id == investment_account.id
+      );
     }
     // Send response with investment_accounts
     res.json({ investment_accounts });
@@ -70,7 +79,7 @@ const createInvestmentAccount = async (req, res) => {
   const { title, description, initial_value, classroom_id } = req.body; // Extracting data from request body
 
   // Debug logs
-  console.log("\n*** createInvestmentAccount ***")
+  console.log("\n*** createInvestmentAccount ***");
   console.log(`  received data:
     title:${title}
     description:${description}
@@ -80,13 +89,11 @@ const createInvestmentAccount = async (req, res) => {
   // Prepared Statements
   const insertInvestmentAccountQuery =
     "INSERT INTO investment_account (fk_classroom_id, title, description) VALUES (?, ?, ?)";
-  const getYearEndsQuery = 
-    "SELECT * FROM year_end WHERE fk_classroom_id = ?";
+  const getYearEndsQuery = "SELECT * FROM year_end WHERE fk_classroom_id = ?";
   const insertValueQuery =
     "INSERT INTO investment_values (fk_account_id, fk_year_end_id, share_value) VALUES (?, ?, ?)";
-  const getStudentsQuery =
-    "SELECT * FROM student WHERE fk_classroom_id = ?";
-  const insertAccountQuery = 
+  const getStudentsQuery = "SELECT * FROM student WHERE fk_classroom_id = ?";
+  const insertAccountQuery =
     "INSERT INTO account (fk_student_id, fk_investment_account_id, account_type) VALUES (?, ?, 3)";
 
   try {
@@ -95,11 +102,10 @@ const createInvestmentAccount = async (req, res) => {
     await connection.beginTransaction();
     try {
       // Insert new investment account
-      const [insertedInvestmentAccount] = await connection.execute(insertInvestmentAccountQuery, [
-        classroom_id,
-        title,
-        description,
-      ]);
+      const [insertedInvestmentAccount] = await connection.execute(
+        insertInvestmentAccountQuery,
+        [classroom_id, title, description]
+      );
 
       // Initialize investment_account object to return to frontend
       const investment_account = {
@@ -108,18 +114,19 @@ const createInvestmentAccount = async (req, res) => {
         title,
         description,
         yearly_values: [],
-      }
+      };
 
       // Get classroom year ends
-      const [year_ends] = await connection.execute(getYearEndsQuery, [classroom_id]);
-      
+      const [year_ends] = await connection.execute(getYearEndsQuery, [
+        classroom_id,
+      ]);
+
       for (const year_end of year_ends) {
         // For each year end, insert a corresponding investment value for the new account
-        const [insertedInvestmentValue] = await connection.execute(insertValueQuery, [
-          investment_account.id,
-          year_end.id,
-          initial_value
-        ]);
+        const [insertedInvestmentValue] = await connection.execute(
+          insertValueQuery,
+          [investment_account.id, year_end.id, initial_value]
+        );
         // And a corresponding entry in the investment_account.yearly_values array
         investment_account.yearly_values.push({
           end_date: year_end.end_date,
@@ -128,12 +135,14 @@ const createInvestmentAccount = async (req, res) => {
       }
 
       // Get classroom students
-      const [students] = await connection.execute(getStudentsQuery, [classroom_id]);
+      const [students] = await connection.execute(getStudentsQuery, [
+        classroom_id,
+      ]);
       for (const student of students) {
         // For each student, insert a corresponding account for the new investment account
         const [insertedAccount] = await connection.execute(insertAccountQuery, [
           student.id,
-          investment_account.id
+          investment_account.id,
         ]);
       }
 
@@ -146,7 +155,6 @@ const createInvestmentAccount = async (req, res) => {
         message: `Investment account created successfully with ID ${investment_account.id}`,
         investment_account,
       });
-
     } catch (error) {
       console.error("Error creating investment account:", error);
       // Rollback changes since start of transaction

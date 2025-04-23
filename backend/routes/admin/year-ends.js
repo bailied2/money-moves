@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
+const authenticateToken = require("../../authMiddleware");
+
 // GET /year-ends - Get all year-end records
 const getYearEnds = async (req, res) => {
   const query = "SELECT * FROM year_end";
