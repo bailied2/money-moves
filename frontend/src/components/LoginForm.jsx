@@ -45,7 +45,7 @@ const LoginForm = () => {
       // alert("User logged in successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
-      setError("Error submitting login form");
+      setError(error?.response.data.error);
     } finally {
       setWorking(false);
     }
