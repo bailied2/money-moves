@@ -1,13 +1,13 @@
 import "./styles/CardList.css";
 
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
-import CreateJobDialog from "./CreateJobDialog";  // import CreateJobDialog instead of AddJobCard
+import CreateJobDialog from "./CreateJobDialog"; // import CreateJobDialog instead of AddJobCard
 import JobCard from "./JobCard";
 import UpdateJobDialog from "./UpdateJobDialog";
 import api from "../api";
@@ -17,7 +17,7 @@ const JobList = ({ classroomId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingJob, setEditingJob] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);  // state to manage dialog visibility
+  const [dialogOpen, setDialogOpen] = useState(false); // state to manage dialog visibility
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -116,7 +116,8 @@ const JobList = ({ classroomId }) => {
           display="flex"
           justifyContent="center"
         >
-          <button onClick={handleDialogOpen}>Add Job</button> {/* Button to open the CreateJobDialog */}
+          <button onClick={handleDialogOpen}>Add Job</button>{" "}
+          {/* Button to open the CreateJobDialog */}
         </Grid>
       </Grid>
 
@@ -134,7 +135,7 @@ const JobList = ({ classroomId }) => {
       <CreateJobDialog
         open={dialogOpen}
         onClose={handleDialogClose}
-        onCreateJob={addJob}  // Add the job when created
+        onCreateJob={addJob} // Add the job when created
       />
     </Stack>
   );
