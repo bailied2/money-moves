@@ -15,7 +15,7 @@ import api from "../api";
 
 import { AuthContext } from "../AuthContext";
 
-const LoginForm = () => { 
+const LoginForm = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
@@ -45,7 +45,7 @@ const LoginForm = () => {
       // alert("User logged in successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
-      setError(error?.response.data.error);
+      setError("Error submitting login form");
     } finally {
       setWorking(false);
     }

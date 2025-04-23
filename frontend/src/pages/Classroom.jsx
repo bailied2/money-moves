@@ -48,7 +48,7 @@ const Classroom = () => {
         </Grid>
       </Grid>
       <Grid size="auto"></Grid>
-      <ClassroomFooter class_code={classroom.class_code || "XXXXXXX"} />
+      <ClassroomFooter class_code={classroom.class_code || "Not Found"} />
     </Box>
   );
 };

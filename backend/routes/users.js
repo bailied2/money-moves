@@ -245,7 +245,7 @@ const handleLogin = async (req, res) => {
     }
   } catch (error) {
     // If error, return error message
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error fetching user" });
   }
 };
 
