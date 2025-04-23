@@ -1,9 +1,12 @@
+import "./styles/ClassroomFooter.css";
+
 import React from "react";
 
 import { Link as RouterLink } from "react-router";
 
 import { Stack, Typography, Button, Paper } from "@mui/material";
-import "./styles/ClassroomFooter.css";
+
+import IconShapes from "./IconShapes";
 
 const ClassroomFooter = ({ class_code }) => {
   return (
@@ -20,7 +23,14 @@ const ClassroomFooter = ({ class_code }) => {
         // flexBasis: "",
       }}
     >
-      <Button component={RouterLink} to="/" sx={{ textTransform: "none" }}>
+      <Button
+        component={RouterLink}
+        startIcon={
+          <IconShapes style={{ width: 48, height: 48, marginRight: 8 }} />
+        }
+        to="/"
+        sx={{ textTransform: "none" }}
+      >
         <Typography variant="h6">Money Moves Academy</Typography>
       </Button>
       <Typography variant="h6">
