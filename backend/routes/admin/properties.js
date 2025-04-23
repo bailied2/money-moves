@@ -3,9 +3,6 @@ const router = express.Router();
 const db = require("../../sample_database");
 const { assign } = require("nodemailer/lib/shared");
 
-
-
-
 // GET /properties/:id - Get a specific property by ID
 const getPropertyById = async (req, res) => {
   const { id } = req.params;
@@ -25,14 +22,22 @@ const getPropertyById = async (req, res) => {
 
 // POST /properties - Create a new property
 const createProperty = async (req, res) => {
-  
-  const { title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class } = req.body.formData;
-  const {classroom_id}= req.body;
+  const {
+    title,
+    description,
+    value,
+    rent,
+    maintenance,
+    pay_frequency,
+    pay_day,
+    icon_class,
+  } = req.body.formData;
+  const { classroom_id } = req.body;
   console.log("Request Body:", req.body);
   // getting data from request body
   const query =
     "INSERT INTO property ( fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  
+
   try {
     const results = await db.execute(query, [
       classroom_id,
@@ -40,11 +45,10 @@ const createProperty = async (req, res) => {
       description,
       value,
       rent,
-      maintenance, 
+      maintenance,
       pay_frequency,
       pay_day,
       icon_class,
-
     ]);
     res.json({
       data: `New property created successfully `,
@@ -57,23 +61,32 @@ const createProperty = async (req, res) => {
 
 // PUT /properties/:id - Update a specific property by ID
 const updateProperty = async (req, res) => {
-  const { title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class } = req.body.formData; // Extracting updated data from request body
+  const {
+    title,
+    description,
+    value,
+    rent,
+    maintenance,
+    pay_frequency,
+    pay_day,
+    icon_class,
+  } = req.body.formData; // Extracting updated data from request body
   const { id } = req.params;
   console.log("Request Body:", req.body);
   const query =
     "UPDATE property SET title = ?, description = ?, value = ?, rent = ?, maintenance = ?, pay_frequency = ?, pay_day = ?, icon_class = ? WHERE id = ?";
-    
-console.log([
-  title,
-  description,
-  value,
-  rent,
-  maintenance,
-  pay_frequency,
-  pay_day,
-  icon_class,
-  id,
-]);
+
+  console.log([
+    title,
+    description,
+    value,
+    rent,
+    maintenance,
+    pay_frequency,
+    pay_day,
+    icon_class,
+    id,
+  ]);
 
   try {
     const [results] = await db.execute(query, [
@@ -97,7 +110,40 @@ console.log([
   }
 };
 
+// GET /properties/classroom/:id - Get all properties in a particular classroom
+router.get("/classroom/:id", authenticateToken, async (req, res) => {
+  // const user_id = req.user.id;
+  const classroom_id = req.params.id;
 
+  // Debug logs
+  console.log("\n*** GET /properties/classroom/:id ***");
+
+  console.log("  classroom_id: ", classroom_id);
+
+  const selectPropertiesQuery =
+    "SELECT * FROM property WHERE fk_classroom_id = ?";
+
+  const selectStudentsQuery = `SELECT * FROM student_profile 
+    RIGHT JOIN student_properties
+    ON student_profile.student_id = student_properties.fk_student_id
+    WHERE student_properties.fk_property_id = ?`;
+
+  try {
+    const [properties] = await db.execute(selectPropertiesQuery, [
+      classroom_id,
+    ]);
+    for (const property of properties) {
+      const [assigned_students] = await db.execute(selectStudentsQuery, [
+        property.id,
+      ]);
+      property.assigned_students = assigned_students;
+    }
+    res.json({ properties });
+  } catch (error) {
+    console.error("Error fetching properties: ", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 //get all the properties in a specific classroom
 const getProperties = async (req, res) => {
@@ -121,17 +167,12 @@ const getProperties = async (req, res) => {
   }
 };
 
-
-
-
-
-
 // DELETE /properties/:id - Delete a specific property by ID
 const deleteProperty = async (req, res) => {
   const { id } = req.params;
   console.log("Request Body:", req.body);
   const query = "DELETE FROM property WHERE id = ?";
-  
+
   try {
     const [results] = await db.execute(query, [id]);
     if (results.affectedRows === 0) {
@@ -145,12 +186,13 @@ const deleteProperty = async (req, res) => {
 };
 
 const assignProperty = async (req, res) => {
-  const query = "INSERT INTO student_properties (fk_student_id, fk_property_id, is_owner) VALUES (?, ?, ?)";
-  
+  const query =
+    "INSERT INTO student_properties (fk_student_id, fk_property_id, is_owner) VALUES (?, ?, ?)";
+
   try {
     const result = await db.execute(query, [
-      fk_student_id, 
-      fk_property_id, 
+      fk_student_id,
+      fk_property_id,
       is_owner,
     ]);
     res.json({
@@ -163,13 +205,11 @@ const assignProperty = async (req, res) => {
 };
 
 // Routes definition using the functions above
-router.get("/classroom/:id", getProperties); // Get all properties in a classroom
+// router.get("/classroom/:id", getProperties); // Get all properties in a classroom
 router.get("/:id", getPropertyById); // Get a property by ID
 router.post("/", createProperty); // Create a new property
 router.put("/:id", updateProperty); // Update a property by ID
 router.delete("/:id", deleteProperty); // Delete a property by ID
 router.post("/:id", assignProperty); // assign a property to a student
-
-
 
 module.exports = router;

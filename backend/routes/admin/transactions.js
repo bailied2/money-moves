@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
+const authenticateToken = require("../../authMiddleware");
+
 // GET /transactions - Get all transactions
 const getTransactions = async (req, res) => {
   const query = "SELECT * FROM transactions";
@@ -21,31 +23,55 @@ const getTransactions = async (req, res) => {
   }
 };
 
-// GET /transactions/:id - Get a specific transaction by ID
-const getTransactionById = async (req, res) => {
-  const { id } = req.params;
-  const query = "SELECT * FROM transactions WHERE id = ?";
-  // db.query(query, [id], (err, results) => {
-  //   if (err) {
-  //     console.error("Error fetching transaction by ID:", err);
-  //     return res.status(500).send({ error: "Failed to fetch transaction" });
-  //   }
-  //   if (results.length === 0) {
-  //     return res.status(404).send({ error: "Transaction not found" });
-  //   }
-  //   res.send({ data: results[0] });
-  // });
+// GET /transactions/:id - Get all transactions for a particular account
+router.get("/:id", authenticateToken, async (req, res) => {
+  // const user_id = req.user.id;
+  const account_id = req.params.id;
+
+  // Debug logs
+  console.log("\n*** GET /transactions/:id ***");
+
+  console.log("  account_id: ", account_id);
+
+  const selectTransactionsQuery =
+    "SELECT * FROM transaction WHERE fk_account_id = ?";
+
   try {
-    const [results] = await db.execute(query, [id]);
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Transaction not found" });
-    }
-    res.json({ data: results[0] });
+    const [transactions] = await db.execute(selectTransactionsQuery, [
+      account_id,
+    ]);
+    res.json({ transactions });
   } catch (error) {
-    console.error("Error fetching transaction by ID:", error);
-    return res.status(500).json({ error: "Failed to fetch transaction" });
+    console.error("Error fetching jobs: ", error);
+    res.status(500).json({ error: error.message });
   }
-};
+});
+
+// // GET /transactions/:id - Get a specific transaction by ID
+// const getTransactionById = async (req, res) => {
+//   const { id } = req.params;
+//   const query = "SELECT * FROM transactions WHERE id = ?";
+//   // db.query(query, [id], (err, results) => {
+//   //   if (err) {
+//   //     console.error("Error fetching transaction by ID:", err);
+//   //     return res.status(500).send({ error: "Failed to fetch transaction" });
+//   //   }
+//   //   if (results.length === 0) {
+//   //     return res.status(404).send({ error: "Transaction not found" });
+//   //   }
+//   //   res.send({ data: results[0] });
+//   // });
+//   try {
+//     const [results] = await db.execute(query, [id]);
+//     if (results.length === 0) {
+//       return res.status(404).json({ error: "Transaction not found" });
+//     }
+//     res.json({ data: results[0] });
+//   } catch (error) {
+//     console.error("Error fetching transaction by ID:", error);
+//     return res.status(500).json({ error: "Failed to fetch transaction" });
+//   }
+// };
 
 // POST /transactions - Create a new transaction
 const createTransaction = async (req, res) => {
@@ -144,7 +170,7 @@ const deleteTransaction = async (req, res) => {
 
 // Routes definition using the functions above
 router.get("/transactions", getTransactions); // Get all transactions
-router.get("/transactions/:id", getTransactionById); // Get a transaction by ID
+// router.get("/transactions/:id", getTransactionById); // Get a transaction by ID
 router.post("/transactions", createTransaction); // Create a new transaction
 router.put("/transactions/:id", updateTransaction); // Update a transaction by ID
 router.delete("/transactions/:id", deleteTransaction); // Delete a transaction by ID

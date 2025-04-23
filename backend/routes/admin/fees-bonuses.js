@@ -2,22 +2,22 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../sample_database");
 
-// GET /fees-bonuses - Get all fees and bonuses in a classroom
+// GET /fees-bonuses/:id - Get all fees and bonuses in a classroom
 const getFeesBonuses = async (req, res) => {
-  const { id } = req.params;  
+  const { id } = req.params;
   const query = "SELECT * FROM fees_bonuses WHERE fk_classroom_id = ?";
 
   console.log("Fetching fees and bonuses for classroom ID:", id);
 
   try {
-    const [results] = await db.execute(query, [id]);  // Pass the classroom ID
+    const [results] = await db.execute(query, [id]); // Pass the classroom ID
     res.json({ data: results });
   } catch (error) {
     console.error("Error fetching fees and bonuses:", error);
     return res.status(500).json({ error: "Failed to fetch fees and bonuses" });
   }
 };
-const getFeesBonusesById = async (req,res) => {
+const getFeesBonusesById = async (req, res) => {
   const { id } = req.params;
   const query = "SELECT * FROM fees_bonuses WHERE id = ?";
   console.log("Request Body:", req.body);
@@ -31,17 +31,16 @@ const getFeesBonusesById = async (req,res) => {
     console.error("Error fetching job by ID:", error);
     return res.status(500).json({ error: "Failed to fetch fee/bonus" });
   }
-
 };
 
 // POST /fees-bonuses - Create a new fee/bonus
 const createFeesBonuses = async (req, res) => {
-  const { title, description, amount, icon_class } = req.body.formData; 
-  const {classroom_id}= req.body;
+  const { title, description, amount, icon_class } = req.body.formData;
+  const { classroom_id } = req.body;
   console.log("Request Body:", req.body.formData);
   const query =
     "INSERT INTO fees_bonuses ( title, description, amount, icon_class, fk_classroom_id) VALUES (?, ?, ?, ?, ?)";
- 
+
   try {
     const result = await db.execute(query, [
       title,
@@ -61,19 +60,19 @@ const createFeesBonuses = async (req, res) => {
 
 // PUT /fees-bonuses - Update all fees and bonuses
 const updateFeeBonus = async (req, res) => {
-  const {  title, amount, description, icon_class } = req.body.formData; 
+  const { title, amount, description, icon_class } = req.body.formData;
   const id = req.params.id;
   const query =
     "UPDATE fees_bonuses SET title = ?, description = ?, amount = ?, icon_class = ? WHERE id = ?";
-    console.log("Request Body:", req.body);
+  console.log("Request Body:", req.body);
 
-    try {
+  try {
     const [results] = await db.execute(query, [
       title,
       description,
       amount,
       icon_class,
-      id
+      id,
     ]);
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: "Fee/bonus not found" });
@@ -97,7 +96,6 @@ const deleteFeeBonus = async (req, res) => {
     }
     res.send({ data: " fees/bonuses deleted successfully" });
   });
-  
 };
 
 // Routes definition using the functions above
@@ -107,6 +105,5 @@ router.post("/", createFeesBonuses); // Create a new fee/bonus
 router.put("/", updateFeeBonus); // Update all fees/bonuses
 router.delete("/", deleteFeeBonus); // Delete  fees/bonuses from a class
 // router.post("/:id", assignFee); //Assign a fee/bonus
-
 
 module.exports = router;

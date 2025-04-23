@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
@@ -17,9 +17,9 @@ import { AuthContext } from "../AuthContext";
 
 import api from "../api";
 
-const ControlsGrid = ({ title, columns, rows, apiRef }) => {
+const ClassControlsGrid = ({ title, fetchFunc, columns, rows, apiRef }) => {
   return (
-    <Box sx={{ width: "80%", margin: "auto" }}>
+    <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
       <Typography variant="h6" gutterBottom>
         {title}
       </Typography>
@@ -178,6 +178,57 @@ const Test = () => {
     },
   ];
 
+  const fetchClassroomDetails = useCallback(async () => {
+    // If no selected classroom, return null. (No classroom details)
+    if (!selectedClassroom) return null;
+
+    // Otherwise, a classroom is selected and we can fetch the details from the database.
+    try {
+      // Object that maps backend route names as properties to their
+      // corresponding state setter functions for use by the data grids
+      const classroomSetters = {
+        // Students
+        students: setStudents,
+        // Fees / Bonuses
+        "fees-bonuses": setFeesBonuses,
+        // Jobs
+        jobs: setJobs,
+        // Properties
+        properties: setProperties,
+        // Investment Accounts
+        "investment-accounts": setInvestmentAccounts,
+        // Year Ends
+        "year-ends": setYearEnds,
+      };
+
+      // Loop through classroomSetters keys
+      for (const key of Object.keys(classroomSetters)) {
+        // Call api route
+        const response = await api.get(
+          // Use key string to get backend route
+          `/${key}/classroom/${selectedClassroom.id}`
+        );
+
+        console.log(`Fetched ${key}, got response:`);
+        console.log(response);
+
+        // Use key to access setter function
+        classroomSetters[key](
+          // Here, we use the String replace() function to change any dash
+          // characters from the route names with underscores to get the
+          // correct property name of the json response data we want, and pass
+          // that value to the state setting function we're calling.
+          response.data[key.replace("-", "_")]
+        );
+      }
+      setError(null);
+    } catch (err) {
+      setError("Failed to fetch classroom data");
+    } finally {
+      setClassroomLoading(false);
+    }
+  }, [selectedClassroom]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -203,12 +254,39 @@ const Test = () => {
   useEffect(() => {
     const fetchClassroomData = async () => {
       if (!selectedClassroom) return;
+      const fetches_list = [{}];
       try {
+        // Students
         const students_response = await api.get(
           `/students/classroom/${selectedClassroom.id}`
         );
         console.log(students_response);
         setStudents(students_response.data.students);
+
+        // Accounts
+        // const accounts_response = await api.get(
+        //   `/accounts/classroom/${selectedClassroom.id}`
+        // );
+        // console.log(accounts_response);
+        // setStudents(accounts_response.data.accounts);
+
+        // Transactions
+
+        // Fees / Bonuses
+
+        // Jobs
+
+        // Properties
+
+        // Investment Accounts
+
+        // Year Ends
+
+        // Investment Values
+
+        // Student Jobs
+
+        // Student Properties
 
         setError(null);
       } catch (err) {
@@ -239,7 +317,7 @@ const Test = () => {
           <Typography color="error">{error}</Typography>
         ) : (
           <>
-            <Box sx={{ width: "80%", margin: "auto" }}>
+            <Box sx={{ width: "60%", margin: "auto", boxShadow: 3 }}>
               <DataGrid
                 columns={user_columns}
                 rows={users}
@@ -262,7 +340,7 @@ const Test = () => {
               />
             </Box>
 
-            <Box sx={{ width: "80%", margin: "auto" }}>
+            <Box sx={{ width: "70%", margin: "auto", boxShadow: 3 }}>
               <DataGrid
                 columns={class_columns}
                 rows={classrooms}
@@ -303,7 +381,208 @@ const Test = () => {
                 <CircularProgress sx={{ margin: "auto" }} />
               ) : (
                 <>
-                  <Box sx={{ width: "80%", margin: "auto" }}>
+                  {/* Students */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Accounts */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Transactions */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Fees / Bonuses */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Jobs */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Properties */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Investment Accounts */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Year Ends */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Investment Values */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Student Jobs */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
+                    <DataGrid
+                      columns={student_columns}
+                      rows={students}
+                      label={`Students - ${selectedClassroom.class_name}`}
+                      showToolbar
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      onRowSelectionModelChange={(rowSelectionModel) => {
+                        selectStudents(
+                          students.filter((s) =>
+                            rowSelectionModel.ids.has(s.id)
+                          )
+                        );
+                      }}
+                      sx={{ mt: 3 }}
+                    />
+                  </Box>
+
+                  {/* Student Properties */}
+                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
                       columns={student_columns}
                       rows={students}

@@ -35,13 +35,16 @@ const getStudentsByClassroom = async (req, res) => {
 
   console.log("  classroom_id: ", classroom_id);
 
-  const selectStudentsQuery = `SELECT student.id AS id, 
-  user.first_name AS first_name, 
-  user.last_name AS last_name
-  FROM student
-  LEFT JOIN user
-  ON user.id = student.fk_user_id
-  WHERE student.fk_classroom_id = ?;`;
+  // const selectStudentsQuery = `SELECT student.id,
+  // user.first_name,
+  // user.last_name
+  // FROM student
+  // LEFT JOIN user
+  // ON user.id = student.fk_user_id
+  // WHERE student.fk_classroom_id = ?`;
+
+  const selectStudentsQuery =
+    "SELECT * FROM student_profile WHERE student_profile.classroom_id = ?";
 
   const selectAccountsQuery =
     "SELECT account.*, SUM(transaction.amount) AS balance FROM account LEFT JOIN transaction ON transaction.fk_account_id = account.id WHERE fk_student_id = ? GROUP BY account.id";
@@ -49,9 +52,16 @@ const getStudentsByClassroom = async (req, res) => {
   const selectInvestmentAccountQuery =
     "SELECT * FROM investment_account WHERE id = ?";
 
+  const selectJobsQuery =
+    "SELECT job.* FROM job RIGHT JOIN student_jobs ON student_jobs.fk_job_id = job.id WHERE student_jobs.fk_student_id = ?";
+
+  const selectPropertiesQuery =
+    "SELECT property.*, student_properties.is_owner FROM property RIGHT JOIN student_properties ON student_properties.fk_property_id = property.id WHERE student_properties.fk_student_id = ?";
+
   try {
     const [students] = await db.execute(selectStudentsQuery, [classroom_id]);
     for (const student of students) {
+      // Get student accounts
       const [accounts] = await db.execute(selectAccountsQuery, [student.id]);
       student.investment_accounts = [];
       for (const account of accounts) {
@@ -74,6 +84,16 @@ const getStudentsByClassroom = async (req, res) => {
           student.investment_accounts.push(investmentAccountResult[0]);
         }
       }
+
+      // Get student jobs
+      const [jobs] = await db.execute(selectJobsQuery, [student.id]);
+      student.jobs = jobs;
+
+      // Get student properties
+      const [properties] = await db.execute(selectPropertiesQuery, [
+        student.id,
+      ]);
+      student.properties = properties;
     }
     res.json({ students });
   } catch (error) {

@@ -37,10 +37,10 @@ const getYearEndsByClass = async (req, res) => {
     "SELECT * FROM year_end WHERE fk_classroom_id = ?";
 
   const selectInvestmentValuesQuery = `SELECT 
-    investment_values.fk_year_end_id AS fk_year_end_id, 
-    investment_values.fk_account_id AS fk_account_id,
-    investment_account.title as title, 
+    investment_values.fk_year_end_id, 
+    investment_values.fk_account_id,
     investment_values.share_value AS value
+    investment_account.title, 
     FROM investment_values
     RIGHT JOIN investment_account
     ON investment_values.fk_account_id = investment_account.id
