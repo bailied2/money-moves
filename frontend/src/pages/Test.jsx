@@ -59,7 +59,7 @@ const Test = () => {
   const [selectedClassroom, selectClassroom] = useState(null);
   const [selectedStudents, selectStudents] = useState([]);
   const [selectedFeesBonuses, selectFeesBonuses] = useState([]);
-  const [selectedJobs, selectJosb] = useState([]);
+  const [selectedJobs, selectJobs] = useState([]);
   const [selectedProperties, selectProperties] = useState([]);
   const [selectedAccounts, selectAccounts] = useState([]);
   const [selectedYearEnds, selectYearEnds] = useState([]);
@@ -123,14 +123,20 @@ const Test = () => {
       headerName: "Start Date",
       type: "date",
       width: 150,
-      valueGetter: (value) => new Date(value),
+      valueFormatter: (value) => {
+        const date = new Date(value);
+        return date.toString().slice(4, 15);
+      }
     },
     {
       field: "end_date",
       headerName: "End Date",
       type: "date",
       width: 150,
-      valueGetter: (value) => new Date(value),
+      valueFormatter: (value) => {
+        const date = new Date(value);
+        return date.toString().slice(4, 15);
+      }
     },
     {
       field: "num_students",
@@ -146,6 +152,7 @@ const Test = () => {
     },
   ];
 
+  // STUDENT COLUMNS
   const student_columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
@@ -169,14 +176,170 @@ const Test = () => {
       headerName: "Checking Balance",
       type: "number",
       width: 160,
+      valueFormatter: (value) => `$${value}`,
     },
     {
       field: "savings_balance",
       headerName: "Savings Balance",
       type: "number",
       width: 160,
+      valueFormatter: (value) => `$${value}`,
     },
   ];
+
+  // FEES/BONUSES COLUMNS
+  const fees_bonuses_columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 150,
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      type: "number",
+      width: 150,
+      valueFormatter: (value) => `$${value}`,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 400,
+    },
+  ];
+
+  // JOB COLUMNS
+  const job_columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 150,
+    },
+    {
+      field: "wage",
+      headerName: "Amount",
+      type: "number",
+      width: 150,
+      valueFormatter: (value) => `$${value}`,
+    },
+    {
+      field: "pay_frequency",
+      headerName: "Pay Frequency",
+      width: 150,
+    },
+    {
+      field: "pay_day",
+      headerName: "Pay Day",
+      width: 150,
+    },
+    {
+      field: "is_trustee",
+      headerName: "Trustee",
+      type: "boolean",
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 400,
+    },
+  ];
+
+  // PROPERTY COLUMNS
+  const property_columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 150,
+    },
+    {
+      field: "value",
+      headerName: "Value",
+      type: "number",
+      width: 150,
+      valueFormatter: (value) => `$${value}`,
+    },
+    {
+      field: "rent",
+      headerName: "Rent",
+      type: "number",
+      width: 150,
+      valueFormatter: (value) => `$${value}`,
+    },
+    {
+      field: "maintenance",
+      headerName: "Maintenance",
+      type: "number",
+      width: 150,
+      valueFormatter: (value) => `$${value}`,
+    },
+    {
+      field: "pay_frequency",
+      headerName: "Pay Frequency",
+      width: 150,
+    },
+    {
+      field: "pay_day",
+      headerName: "Pay Day",
+      width: 150,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 400,
+    },
+  ];
+
+  // INVESTMENT ACCOUNT COLUMNS
+  const investment_account_columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 150,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 400,
+    },
+  ];
+
+  // YEAR END COLUMNS
+  const year_end_columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 150,
+    },
+    {
+      field: "end_date",
+      headerName: "End Date",
+      type: "date",
+      width: 150,
+      valueFormatter: (value) => `${value}%`,
+    },
+    {
+      field: "savings_apr",
+      headerName: "Savings APR",
+      type: "number",
+      width: 150,
+      valueFormatter: (value) => {
+        const date = new Date(value);
+        return date.toString().slice(4, 15);
+      }
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 400,
+    },
+  ];
+
+
 
   const fetchClassroomDetails = useCallback(async () => {
     // If no selected classroom, return null. (No classroom details)
@@ -203,6 +366,7 @@ const Test = () => {
 
       // Loop through classroomSetters keys
       for (const key of Object.keys(classroomSetters)) {
+        console.log("Fetching ", key);
         // Call api route
         const response = await api.get(
           // Use key string to get backend route
@@ -252,42 +416,50 @@ const Test = () => {
   }, []);
 
   useEffect(() => {
-    const fetchClassroomData = async () => {
-      if (!selectedClassroom) return;
-      const fetches_list = [{}];
+    const fetchClassroomData = async () => {    
+      // If no selected classroom, return null. (No classroom details)
+      if (!selectedClassroom) return null;
+  
+      // Otherwise, a classroom is selected and we can fetch the details from the database.
       try {
-        // Students
-        const students_response = await api.get(
-          `/students/classroom/${selectedClassroom.id}`
-        );
-        console.log(students_response);
-        setStudents(students_response.data.students);
-
-        // Accounts
-        // const accounts_response = await api.get(
-        //   `/accounts/classroom/${selectedClassroom.id}`
-        // );
-        // console.log(accounts_response);
-        // setStudents(accounts_response.data.accounts);
-
-        // Transactions
-
-        // Fees / Bonuses
-
-        // Jobs
-
-        // Properties
-
-        // Investment Accounts
-
-        // Year Ends
-
-        // Investment Values
-
-        // Student Jobs
-
-        // Student Properties
-
+        // Object that maps backend route names as properties to their
+        // corresponding state setter functions for use by the data grids
+        const classroomSetters = {
+          // Students
+          students: setStudents,
+          // Fees / Bonuses
+          "fees-bonuses": setFeesBonuses,
+          // Jobs
+          jobs: setJobs,
+          // Properties
+          properties: setProperties,
+          // Investment Accounts
+          "investment-accounts": setInvestmentAccounts,
+          // Year Ends
+          "year-ends": setYearEnds,
+        };
+  
+        // Loop through classroomSetters keys
+        for (const key of Object.keys(classroomSetters)) {
+          console.log("Fetching ", key);
+          // Call api route
+          const response = await api.get(
+            // Use key string to get backend route
+            `/${key}/classroom/${selectedClassroom.id}`
+          );
+  
+          console.log(`Fetched ${key}, got response:`);
+          console.log(response);
+  
+          // Use key to access setter function
+          classroomSetters[key](
+            // Here, we use the String replace() function to change any dash
+            // characters from the route names with underscores to get the
+            // correct property name of the json response data we want, and pass
+            // that value to the state setting function we're calling.
+            response.data[key.replace("-", "_")]
+          );
+        }
         setError(null);
       } catch (err) {
         setError("Failed to fetch classroom data");
@@ -353,6 +525,7 @@ const Test = () => {
                   selectClassroom(
                     classrooms.find((c) => rowSelectionModel.ids.has(c.id))
                   );
+                  fetchClassroomDetails();
                 }}
                 sx={{ mt: 3 }}
                 slots={{
@@ -401,58 +574,30 @@ const Test = () => {
                     />
                   </Box>
 
-                  {/* Accounts */}
-                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
-                    <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
-                      showToolbar
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
-                            rowSelectionModel.ids.has(s.id)
-                          )
-                        );
-                      }}
-                      sx={{ mt: 3 }}
-                    />
-                  </Box>
-
-                  {/* Transactions */}
-                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
-                    <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
-                      showToolbar
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
-                            rowSelectionModel.ids.has(s.id)
-                          )
-                        );
-                      }}
-                      sx={{ mt: 3 }}
-                    />
-                  </Box>
+                    // Students
+                    students: setStudents,
+                    // Fees / Bonuses
+                    "fees-bonuses": setFeesBonuses,
+                    // Jobs
+                    jobs: setJobs,
+                    // Properties
+                    properties: setProperties,
+                    // Investment Accounts
+                    "investment-accounts": setInvestmentAccounts,
+                    // Year Ends
 
                   {/* Fees / Bonuses */}
                   <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
+                      columns={fees_bonuses_columns}
+                      rows={fees_bonuses}
+                      label={`Fees/Bonuses - ${selectedClassroom.class_name}`}
                       showToolbar
                       checkboxSelection
                       disableRowSelectionOnClick
                       onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
+                        selectFeesBonuses(
+                          fees_bonuses.filter((s) =>
                             rowSelectionModel.ids.has(s.id)
                           )
                         );
@@ -464,15 +609,15 @@ const Test = () => {
                   {/* Jobs */}
                   <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
+                      columns={job_columns}
+                      rows={jobs}
+                      label={`Jobs - ${selectedClassroom.class_name}`}
                       showToolbar
                       checkboxSelection
                       disableRowSelectionOnClick
                       onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
+                        selectJobs(
+                          jobs.filter((s) =>
                             rowSelectionModel.ids.has(s.id)
                           )
                         );
@@ -484,15 +629,15 @@ const Test = () => {
                   {/* Properties */}
                   <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
+                      columns={property_columns}
+                      rows={properties}
+                      label={`Properties - ${selectedClassroom.class_name}`}
                       showToolbar
                       checkboxSelection
                       disableRowSelectionOnClick
                       onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
+                        selectProperties(
+                          properties.filter((s) =>
                             rowSelectionModel.ids.has(s.id)
                           )
                         );
@@ -504,15 +649,15 @@ const Test = () => {
                   {/* Investment Accounts */}
                   <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
+                      columns={investment_account_columns}
+                      rows={investment_accounts}
+                      label={`Investment Accounts - ${selectedClassroom.class_name}`}
                       showToolbar
                       checkboxSelection
                       disableRowSelectionOnClick
                       onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
+                        selectInvestmentAccounts(
+                          investment_accounts.filter((s) =>
                             rowSelectionModel.ids.has(s.id)
                           )
                         );
@@ -524,15 +669,15 @@ const Test = () => {
                   {/* Year Ends */}
                   <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
+                      columns={year_end_columns}
+                      rows={year_ends}
+                      label={`Year Ends - ${selectedClassroom.class_name}`}
                       showToolbar
                       checkboxSelection
                       disableRowSelectionOnClick
                       onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
+                        selectYearEnds(
+                          year_ends.filter((s) =>
                             rowSelectionModel.ids.has(s.id)
                           )
                         );

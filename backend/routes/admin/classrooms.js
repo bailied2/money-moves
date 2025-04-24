@@ -278,6 +278,154 @@ const deleteClassroom = async (req, res) => {
   }
 };
 
+// GET /classrooms/validate-db - Ensures all classrooms have all necessary database entries
+router.get("/validate-db", authenticateToken, async (req, res) => {
+
+  console.log("\n*** GET /classrooms/validate-db ***")
+  
+  try {
+    const connection = await db.getConnection();
+    // Begin the database transaction (so changes are only saved if all are successful)
+    await connection.beginTransaction();
+    try {
+      // Get all classrooms
+      const [classrooms] = await connection.query("SELECT * FROM classroom");
+
+      // Loop through classrooms
+      for (const classroom of classrooms) {
+        // Get classroom data
+        const query = "SELECT * FROM ? WHERE fk_classroom_id = ?";
+        const [students] = await connection.execute(query, ["student", classroom.id]);
+        const [investment_accounts] = await connection.execute(query, ["investment_account", classroom.id]);
+        const [year_ends] = await connection.execute(query, ["year_end", classroom.id]);
+
+        // Ensure default year_end is in place
+        if (year_ends.length === 0) {
+          const insertYearEndQuery = `INSERT INTO year_end (fk_classroom_id, end_date, savings_apr) 
+            VALUES (?, TIMESTAMP'1970-01-01', 0)`;
+          const [insertedYearEnd] = await connection.execute(insertYearEndQuery, [classroom.id]);
+          // If there are already investment accounts somehow,
+          if (investment_accounts.length > 0) {
+            // Loop through them
+            for (const investment_account of investment_accounts) {
+              const insertValueQuery = `INSERT INTO investment_values 
+                (fk_year_end_id, fk_account_id, share_value)
+                VALUES (?, ?, 0)`;
+              // And insert a corresponding value
+              await connection.execute(insertValueQuery, [insertedYearEnd.insertId, investment_account.id]);
+            }
+          }
+        }
+        
+        // Loop through students
+        for (const student of students) {
+          const selectAccountsQuery = "SELECT * FROM account WHERE fk_student_id = ?";
+          // Get the current student's accounts
+          const [accounts] = await connection.execute(selectAccountsQuery);
+
+          // Ensure student has checking account
+          if (!accounts.any((acc) => acc.account_type === 1)) {
+            const insertCheckingAccountQuery = "INSERT INTO account (fk_student_id, account_type) VALUES (?, 1)";
+            await connection.execute(insertCheckingAccountQuery, [student.id]);
+          }
+          // Ensure student has checking account
+          if (!accounts.any((acc) => acc.account_type === 2)) {
+            const insertSavingsAccountQuery = "INSERT INTO account (fk_student_id, account_type) VALUES (?, 2)";
+            await connection.execute(insertSavingsAccountQuery, [student.id]);
+          }
+          // For each investment account in the classroom,
+          for (const investment_account of investment_accounts) {
+            const insertAccountQuery = "INSERT INTO account (fk_student_id, account_type, "
+            // Ensure student has a corresponding account
+            
+          }
+        }
+      }
+
+      // All changes complete, commit transaction.
+
+      await connection.commit(); // Commit database transaction
+      connection.release(); // Release the connection back to the pool
+      res.json({
+        message: `Classrooms validated successfully!`,
+      });
+    } catch (error) {
+      console.error("Error validating classrooms:", error);
+      // Rollback changes since start of transaction
+      await connection.rollback();
+      connection.release(); // Release the connection back to the pool
+      return res.status(500).json({ error: "Failed to validate classrooms" });
+    }
+  } catch (error) {
+    console.error("Error validating classrooms:", error);
+    return res.status(500).json({ error: "Failed to validate classrooms" });
+  }
+});
+
+// GET /classrooms/add-defaults - Add some default fees/bonuses, properties, jobs to each classroom
+router.get("/add-defaults", authenticateToken, async (req, res) => {
+
+  console.log("\n*** GET /classrooms/add-defaults ***")
+  
+  try {
+    const connection = await db.getConnection();
+    // Begin the database transaction (so changes are only saved if all are successful)
+    await connection.beginTransaction();
+    try {
+      // Get all classrooms
+      const [classrooms] = await connection.query("SELECT * FROM classroom");
+
+      // Loop through classrooms
+      for (const classroom of classrooms) {
+        // Get classroom data
+        const query = "SELECT * FROM ? WHERE fk_classroom_id = ?";
+        const [fees_bonuses] = await connection.execute(query, ["fees_bonuses", classroom.id]);
+        const [jobs] = await connection.execute(query, ["job", classroom.id]);
+        const [properties] = await connection.execute(query, ["property", classroom.id]);
+
+        // check for default fees/bonuses, jobs, and property
+        if (fees_bonuses.length === 0) {
+          const query = `INSERT INTO fees_bonuses
+          (fk_classroom_id, title, description, amount, icon_class)
+          VALUES (?, "Performance Bonus", "Bonus for good performance", 20, ""),
+          (?, "Late Fee", "Fee for arriving late", -10, "")`;
+          await connection.query(query, [classroom.id, classroom.id]);
+        }
+        if (jobs.length === 0) {
+          const query = `INSERT INTO job
+          (fk_classroom_id, title, description, wage, pay_frequency, pay_day, icon_class, is_trustee)
+          VALUES (?, "Hall Monitor", "Patrol the hallways and keep the peace", 100, "Weekly", "Friday", "", 0)
+          (?, "Loan Officer", "Assist the teacher with applying fees/bonuses", 150, "Weekly", "Friday", "", 1)`;
+          await connection.query(query, [classroom.id, classroom.id]);
+        }
+        if (properties.length === 0) {
+          const query = `INSERT INTO property
+          (fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, icon_class)
+          VALUES (?, "Desk", "A simple desk", 100, 20, 5, "Monthly", "")`;
+          await connection.query(query, [classroom.id]);
+        }
+      }
+
+      // All changes complete, commit transaction.
+
+      await connection.commit(); // Commit database transaction
+      connection.release(); // Release the connection back to the pool
+      res.json({
+        message: `Default fee, bonus, jobs, and property added successfully!`,
+      });
+    } catch (error) {
+      console.error("Error adding defaults:", error);
+      // Rollback changes since start of transaction
+      await connection.rollback();
+      connection.release(); // Release the connection back to the pool
+      return res.status(500).json({ error: "Failed to add defaults" });
+    }
+  } catch (error) {
+    console.error("Error adding defaults:", error);
+    return res.status(500).json({ error: "Failed to add defaults" });
+  }
+});
+
 // Routes definition using the functions above
 router.get("/", getClassrooms); // Get all classrooms
 router.get("/teacher", authenticateToken, getClassroomsByTeacher); // Get all classrooms tied to a particular teacher's user ID.
