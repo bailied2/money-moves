@@ -80,6 +80,19 @@ const theme = createTheme({
       defaultProps: {
         color: "secondary",
       },
+      styleOverrides: {
+        root: {
+          variants: [
+            {
+              props: { variant: "outlined" },
+              style: {
+                borderColor: "#121212",
+               
+              }
+            }
+          ]
+        },
+      },
     },
   },
 });

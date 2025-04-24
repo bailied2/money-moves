@@ -86,28 +86,21 @@ const PropertyCard = ({
     flexDirection: "column", // stack vertically
     alignItems: "stretch",   // make buttons full width
     gap: 1,                  // spacing between buttons
-    padding: 0,
+    
     mt: 2,                   // spacing above the buttons
   }}
 >
   <Button
     size="small"
     onClick={onEdit}
-    sx={{
-     
-      borderRadius: 1,
-      
-    }}
+    variant="outlined"
   >
     Edit
   </Button>
   <Button
     size="small"
     onClick={handleAssign}
-    sx={{
-     
-      borderRadius: 1,
-    }}
+    variant="outlined"
   >
     Assign
   </Button>
@@ -115,10 +108,8 @@ const PropertyCard = ({
     size="small"
     color="error"
     onClick={onDelete}
-    sx={{
-     
-      borderRadius: 1,
-    }}
+    variant="outlined"
+    fullWidth
   >
     Delete
   </Button>
