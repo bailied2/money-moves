@@ -102,7 +102,7 @@ const PropertyCard = ({
     sx={{
        borderColor:"black",
         borderStyle:"solid",
-        borderWidth:"2px",
+        borderWidth:"1px",
     }}
    
   >
@@ -116,7 +116,7 @@ const PropertyCard = ({
     sx={{
       borderColor:"black",
        borderStyle:"solid",
-       borderWidth:"2px",
+       borderWidth:"1px",
    }}
   >
     Assign
@@ -130,7 +130,7 @@ const PropertyCard = ({
     sx={{
       borderColor:"black",
        borderStyle:"solid",
-       borderWidth:"2px",
+       borderWidth:"1px",
    }}
     
   >

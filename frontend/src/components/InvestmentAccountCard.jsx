@@ -159,7 +159,7 @@ const InvestmentAccountCard = ({ title, description, yearly_values }) => {
   sx={{
     borderColor: "black",
     borderStyle: "solid",
-    borderWidth: "2px",
+    borderWidth: "1px",
   }}
 >
   Edit
@@ -173,7 +173,7 @@ const InvestmentAccountCard = ({ title, description, yearly_values }) => {
   sx={{
     borderColor: "black",
     borderStyle: "solid",
-    borderWidth: "2px",
+    borderWidth: "1px",
   }}
 >
   Delete
