@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
@@ -339,60 +339,6 @@ const Test = () => {
     },
   ];
 
-
-
-  const fetchClassroomDetails = useCallback(async () => {
-    // If no selected classroom, return null. (No classroom details)
-    if (!selectedClassroom) return null;
-
-    // Otherwise, a classroom is selected and we can fetch the details from the database.
-    try {
-      // Object that maps backend route names as properties to their
-      // corresponding state setter functions for use by the data grids
-      const classroomSetters = {
-        // Students
-        students: setStudents,
-        // Fees / Bonuses
-        "fees-bonuses": setFeesBonuses,
-        // Jobs
-        jobs: setJobs,
-        // Properties
-        properties: setProperties,
-        // Investment Accounts
-        "investment-accounts": setInvestmentAccounts,
-        // Year Ends
-        "year-ends": setYearEnds,
-      };
-
-      // Loop through classroomSetters keys
-      for (const key of Object.keys(classroomSetters)) {
-        console.log("Fetching ", key);
-        // Call api route
-        const response = await api.get(
-          // Use key string to get backend route
-          `/${key}/classroom/${selectedClassroom.id}`
-        );
-
-        console.log(`Fetched ${key}, got response:`);
-        console.log(response);
-
-        // Use key to access setter function
-        classroomSetters[key](
-          // Here, we use the String replace() function to change any dash
-          // characters from the route names with underscores to get the
-          // correct property name of the json response data we want, and pass
-          // that value to the state setting function we're calling.
-          response.data[key.replace("-", "_")]
-        );
-      }
-      setError(null);
-    } catch (err) {
-      setError("Failed to fetch classroom data");
-    } finally {
-      setClassroomLoading(false);
-    }
-  }, [selectedClassroom]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -471,6 +417,16 @@ const Test = () => {
     fetchClassroomData();
   }, [selectedClassroom]);
 
+  const validateClassrooms = async () => {
+    const response = await api.post("/classrooms/validate-db");
+    alert(response);
+  }
+
+  const addDefaults = async () => {
+    const response = await api.post("/classrooms/add-defaults");
+    alert(response);
+  }
+
   return (
     <Box sx={{ padding: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -489,6 +445,10 @@ const Test = () => {
           <Typography color="error">{error}</Typography>
         ) : (
           <>
+            <Stack direction="row" gap={1} sx={{padding: 1}}>
+              <Button variant="contained" onClick={validateClassrooms}>Validate Classrooms</Button>
+              <Button variant="contained" onClick={addDefaults}>Add Defaults</Button>
+            </Stack>
             <Box sx={{ width: "60%", margin: "auto", boxShadow: 3 }}>
               <DataGrid
                 columns={user_columns}
@@ -525,7 +485,6 @@ const Test = () => {
                   selectClassroom(
                     classrooms.find((c) => rowSelectionModel.ids.has(c.id))
                   );
-                  fetchClassroomDetails();
                 }}
                 sx={{ mt: 3 }}
                 slots={{

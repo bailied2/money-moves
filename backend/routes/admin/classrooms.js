@@ -279,7 +279,7 @@ const deleteClassroom = async (req, res) => {
 };
 
 // GET /classrooms/validate-db - Ensures all classrooms have all necessary database entries
-router.get("/validate-db", authenticateToken, async (req, res) => {
+router.post("/validate-db", authenticateToken, async (req, res) => {
 
   console.log("\n*** GET /classrooms/validate-db ***")
   
@@ -355,7 +355,9 @@ router.get("/validate-db", authenticateToken, async (req, res) => {
           for (const [year_end] of year_ends) {
             // Check for corresponding value
             if (!investment_values.any((val) => val.fk_year_end_id === year_end.id)) {
-              const last_value = investment_values.findLast((val) => val.value)
+              const placeholder_value = investment_values.at(-1).value || 0;
+              const insertValueQuery = "INSERT INTO investment_values (fk_year_end_id, fk_account_id, share_value) VALUES (?, ?, ?)";
+              await connection.execute(insertValueQuery, [year_end.id, investment_account.id, placeholder_value]);
             }
           }
         }
@@ -366,7 +368,7 @@ router.get("/validate-db", authenticateToken, async (req, res) => {
       await connection.commit(); // Commit database transaction
       connection.release(); // Release the connection back to the pool
       res.json({
-        message: `Classrooms validated successfully!`,
+        message: "Classrooms validated successfully!",
       });
     } catch (error) {
       console.error("Error validating classrooms:", error);
@@ -382,7 +384,7 @@ router.get("/validate-db", authenticateToken, async (req, res) => {
 });
 
 // GET /classrooms/add-defaults - Add some default fees/bonuses, properties, jobs to each classroom
-router.get("/add-defaults", authenticateToken, async (req, res) => {
+router.post("/add-defaults", authenticateToken, async (req, res) => {
 
   console.log("\n*** GET /classrooms/add-defaults ***")
   
