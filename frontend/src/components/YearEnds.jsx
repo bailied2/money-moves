@@ -18,6 +18,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import Tooltip from "@mui/material/Tooltip";
+
 import YearEndAccordion from "./YearEndAccordion";
 
 import CircularProgress from "@mui/material/CircularProgress";
@@ -122,9 +124,11 @@ const YearEnds = ({ classroom_id }) => {
         ))
       )}
       <Divider sx={{ mt: 2 }}>
-        <Fab onClick={addYearEnd}>
-          <AddIcon />
-        </Fab>
+        <Tooltip title="Add Year End">
+          <Fab onClick={addYearEnd}>
+            <AddIcon />
+          </Fab>
+        </Tooltip>
       </Divider>
     </Stack>
   );

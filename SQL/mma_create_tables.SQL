@@ -66,7 +66,7 @@ CREATE TABLE property (
   FOREIGN KEY (fk_classroom_id) REFERENCES classroom(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- EXPENSES_BONUSES
+-- FEES_BONUSES
 -- Tracks classroom fees, fines, and rewards.
 CREATE TABLE fees_bonuses (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
