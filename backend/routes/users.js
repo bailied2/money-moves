@@ -199,7 +199,7 @@ const handleLogin = async (req, res) => {
   console.log("  email:", email, "\n  password:", password);
 
   const sql =
-    "SELECT id, first_name, last_name, hash FROM user WHERE email = ?;"; // Prepared statement for finding user by email
+    "SELECT id, first_name, last_name, hash FROM user WHERE email = ?"; // Prepared statement for finding user by email
 
   try {
     const [results] = await db.execute(sql, [email]);
