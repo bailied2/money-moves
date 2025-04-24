@@ -77,7 +77,8 @@ const TeacherView = ({ classroom }) => {
 
       {/* Fees/Bonuses Tab */}
       <CustomTabPanel id="feesbonuses_tab_panel" value={value} index={1}>
-      <FeeBonusList classroomId={classroom.id} />
+        {/* <FeeBonusList classroomId={classroom.id} /> */}
+        Fees / Bonuses
       </CustomTabPanel>
 
       {/* Jobs Tab */}
