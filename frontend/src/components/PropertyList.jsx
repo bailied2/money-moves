@@ -66,7 +66,6 @@ const PropertyList = ({ classroomId }) => {
       sx={{
         borderRadius: 5,
         boxShadow: 1,
-        maxWidth: "80%",
         margin: "0 auto",
         padding: 2,
       }}
@@ -118,7 +117,7 @@ const PropertyList = ({ classroomId }) => {
           display="flex"
           justifyContent="center"
         >
-          <AddPropertyCard classroom={classroomId} onSubmit={addProperty} />
+          <AddPropertyCard classroom_id={classroomId} onSubmit={addProperty} />
         </Grid>
       </Grid>
 

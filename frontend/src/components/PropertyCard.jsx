@@ -67,6 +67,9 @@ const PropertyCard = ({
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h5" component="div">
+          {title}
+        </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
           {description || "Property description goes here."}
         </Typography>
