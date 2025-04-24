@@ -84,6 +84,7 @@ const PropertyCard = ({
       </CardContent>
 
 <CardActions
+  disableSpacing
   sx={{
     display: "flex",
     flexDirection: "column", // stack vertically
@@ -96,14 +97,27 @@ const PropertyCard = ({
   <Button
     size="small"
     onClick={onEdit}
-    variant="outlined"
+    variant="contained"
+    color="primary"
+    sx={{
+       borderColor:"black",
+        borderStyle:"solid",
+        borderWidth:"2px",
+    }}
+   
   >
     Edit
   </Button>
   <Button
     size="small"
     onClick={handleAssign}
-    variant="outlined"
+    variant="contained"
+    color="primary"
+    sx={{
+      borderColor:"black",
+       borderStyle:"solid",
+       borderWidth:"2px",
+   }}
   >
     Assign
   </Button>
@@ -111,8 +125,14 @@ const PropertyCard = ({
     size="small"
     color="error"
     onClick={onDelete}
-    variant="outlined"
+    variant="contained"
     fullWidth
+    sx={{
+      borderColor:"black",
+       borderStyle:"solid",
+       borderWidth:"2px",
+   }}
+    
   >
     Delete
   </Button>
