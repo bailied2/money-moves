@@ -32,13 +32,13 @@ const createProperty = async (req, res) => {
     maintenance,
     pay_frequency,
     pay_day,
-    icon_class,
     classroom_id,
   } = req.body;
+  console.log("\n*** createProperty ***");
   console.log("Request Body:", req.body);
   // getting data from request body
   const query =
-    "INSERT INTO property ( fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO property ( fk_classroom_id, title, description, value, rent, maintenance, pay_frequency, pay_day, icon_class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '')";
 
   try {
     const results = await db.execute(query, [
@@ -50,7 +50,6 @@ const createProperty = async (req, res) => {
       maintenance,
       pay_frequency,
       pay_day,
-      icon_class,
     ]);
     res.json({
       data: `New property created successfully `,

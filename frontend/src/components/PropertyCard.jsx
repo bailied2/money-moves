@@ -71,14 +71,17 @@ const PropertyCard = ({
         borderWidth:"2px",
       }}
     >
-<CardContent sx={{ flexGrow: 1 }}>
-  <Typography variant="body1" color="text.primary" gutterBottom>
-    {description || "Property description goes here."}
-  </Typography>
-  <Typography variant="body2">Value: ${value || "0.00"}</Typography>
-  <Typography variant="body2">Rent: ${rent || "0.00"}</Typography>
-  <Typography variant="body2">Maintenance: ${maintenance || "0.00"}</Typography>
-</CardContent>
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h5" component="div">
+          {title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          {description || "Property description goes here."}
+        </Typography>
+        <Typography variant="body2">Value: ${value || "0.00"}</Typography>
+        <Typography variant="body2">Rent: ${rent || "0.00"}</Typography>
+        <Typography variant="body2">Maintenance: ${maintenance || "0.00"}</Typography>
+      </CardContent>
 
 <CardActions
   sx={{

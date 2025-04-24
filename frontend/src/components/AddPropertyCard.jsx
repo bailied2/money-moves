@@ -16,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import api from "../api";
 
-const AddPropertyCard = ({ classroom = null, onSubmit }) => {
+const AddPropertyCard = ({ classroom_id, onSubmit }) => {
   const [opened, setOpened] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -34,17 +34,20 @@ const AddPropertyCard = ({ classroom = null, onSubmit }) => {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const handleDecimalChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: parseFloat(e.target.value)});
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!classroom) {
-      alert("No classroom provided. Cannot submit.");
+    if (!classroom_id) {
+      alert("No classroom id provided. Cannot submit.");
       return;
     }
 
     try {
       const response = await api.post("/properties", {
         ...formData,
-        classroom_id: classroom.id,
+        classroom_id,
       });
 
       if (typeof onSubmit === "function") {
@@ -112,7 +115,7 @@ const AddPropertyCard = ({ classroom = null, onSubmit }) => {
               name="value"
               type="number"
               value={formData.value}
-              onChange={handleChange}
+              onChange={handleDecimalChange}
               fullWidth
               required
               margin="dense"
@@ -124,7 +127,7 @@ const AddPropertyCard = ({ classroom = null, onSubmit }) => {
               name="rent"
               type="number"
               value={formData.rent}
-              onChange={handleChange}
+              onChange={handleDecimalChange}
               fullWidth
               required
               margin="dense"
@@ -136,7 +139,7 @@ const AddPropertyCard = ({ classroom = null, onSubmit }) => {
               name="maintenance"
               type="number"
               value={formData.maintenance}
-              onChange={handleChange}
+              onChange={handleDecimalChange}
               fullWidth
               required
               margin="dense"
