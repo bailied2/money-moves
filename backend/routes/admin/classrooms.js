@@ -333,11 +333,30 @@ router.get("/validate-db", authenticateToken, async (req, res) => {
             const insertSavingsAccountQuery = "INSERT INTO account (fk_student_id, account_type) VALUES (?, 2)";
             await connection.execute(insertSavingsAccountQuery, [student.id]);
           }
+
           // For each investment account in the classroom,
           for (const investment_account of investment_accounts) {
-            const insertAccountQuery = "INSERT INTO account (fk_student_id, account_type, "
             // Ensure student has a corresponding account
-            
+            if (!accounts.any((acc) => acc.fk_investment_account_id === investment_account.id)) {
+              const insertAccountQuery = `INSERT INTO account 
+              (fk_student_id, account_type, fk_investment_account_id) 
+              VALUES (?, 3, ?)`;
+              await connection.execute(insertAccountQuery, [student.id, investment_account.id]);
+            }
+          }
+        }
+        
+        // Ensure each investment account has a corresponding value for each year_end
+        for (const investment_account of investment_accounts) {
+          const selectValuesQuery = "SELECT * FROM investment_values WHERE fk_account_id = ?";
+          // Get yearly values for the current investment account
+          const [investment_values] = await connection.execute(selectValuesQuery, [investment_account.id]);
+          // Loop through year_ends
+          for (const [year_end] of year_ends) {
+            // Check for corresponding value
+            if (!investment_values.any((val) => val.fk_year_end_id === year_end.id)) {
+              const last_value = investment_values.findLast((val) => val.value)
+            }
           }
         }
       }

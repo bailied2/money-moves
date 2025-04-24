@@ -33,8 +33,8 @@ const createProperty = async (req, res) => {
     pay_frequency,
     pay_day,
     icon_class,
-  } = req.body.formData;
-  const { classroom_id } = req.body;
+    classroom_id,
+  } = req.body;
   console.log("Request Body:", req.body);
   // getting data from request body
   const query =
