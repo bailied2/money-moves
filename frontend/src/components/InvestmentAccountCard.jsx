@@ -150,10 +150,34 @@ const InvestmentAccountCard = ({ title, description, yearly_values }) => {
         </Accordion>
       </CardContent>
       <CardActions>
-        <Button size="small">Edit</Button>
-        <Button size="small" color="error">
-          Delete
-        </Button>
+
+      <Button
+  size="small"
+  
+  variant="contained"
+  color="primary"
+  sx={{
+    borderColor: "black",
+    borderStyle: "solid",
+    borderWidth: "2px",
+  }}
+>
+  Edit
+</Button>
+
+<Button
+  size="small"
+ 
+  variant="contained"
+  color="error"
+  sx={{
+    borderColor: "black",
+    borderStyle: "solid",
+    borderWidth: "2px",
+  }}
+>
+  Delete
+</Button>
       </CardActions>
     </Card>
   );

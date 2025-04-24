@@ -54,10 +54,33 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
         ))}
       </CardContent>
       <CardActions sx={{ padding: 0 }}>
-        <Button size="small">Open</Button>
-        <Button size="small" color="error">
-          Delete
-        </Button>{" "}
+      <Button 
+  size="small" 
+  variant="contained" 
+  fullWidth 
+  color="primary"
+  sx={{ 
+    borderColor: "black", 
+    borderStyle: "solid", 
+    borderWidth: "1px" 
+  }}
+>
+  Open
+</Button>
+
+<Button 
+  size="small" 
+  color="error" 
+  variant="contained" 
+  fullWidth 
+  sx={{ 
+    borderColor: "black", 
+    borderStyle: "solid", 
+    borderWidth: "1px" 
+  }}
+>
+  Delete
+</Button>
       </CardActions>
     </Card>
   );
