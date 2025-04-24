@@ -35,13 +35,8 @@ const getStudentsByClassroom = async (req, res) => {
 
   console.log("  classroom_id: ", classroom_id);
 
-  const selectStudentsQuery = `SELECT student.id,
-  user.first_name,
-  user.last_name
-  FROM student
-  LEFT JOIN user
-  ON user.id = student.fk_user_id
-  WHERE student.fk_classroom_id = ?`;
+  const selectStudentsQuery =
+    "SELECT student.id, user.first_name, user.last_name FROM student LEFT JOIN user ON user.id = student.fk_user_id WHERE student.fk_classroom_id = ?";
 
   // const selectStudentsQuery =
   //   "SELECT * FROM student_profile WHERE student_profile.classroom_id = ?";
