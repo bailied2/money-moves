@@ -31,6 +31,11 @@ const ClassCard = ({ classroom, onDelete }) => {
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
+        height:"auto",
+       
+        borderColor:"black",
+        borderStyle:"solid",
+        borderWidth:"2px",
       }}
     >
       <CardContent sx={{ flexGrow: 1 }}>

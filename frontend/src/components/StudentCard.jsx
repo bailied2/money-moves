@@ -19,11 +19,16 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
         position: "relative",
         minHeight: 185,
         maxWidth: 300,
-        aspectRatio: "3/2",
-        padding: 1,
+       
+        padding: 3,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
+        height:"auto",
+       
+        borderColor:"black",
+        borderStyle:"solid",
+        borderWidth:"2px",
         
       }}
     >

@@ -60,39 +60,76 @@ const PropertyCard = ({
         position: "relative",
         height: "100%",
         maxWidth: 300,
-        padding: 1,
+        padding: 3,
         borderRadius: 2,
         display: "flex",
         flexDirection: "column",
+        height:"auto",
+       
+        borderColor:"black",
+        borderStyle:"solid",
+        borderWidth:"2px",
       }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
-          {description || "Property description goes here."}
-        </Typography>
-        <Typography variant="body2">Value: ${value || "0.00"}</Typography>
-        <Typography variant="body2">Rent: ${rent || "0.00"}</Typography>
-        <Typography variant="body2">Maintenance: ${maintenance || "0.00"}</Typography>
-      </CardContent>
+<CardContent sx={{ flexGrow: 1 }}>
+  <Typography variant="body1" color="text.primary" gutterBottom>
+    {description || "Property description goes here."}
+  </Typography>
+  <Typography variant="body2">Value: ${value || "0.00"}</Typography>
+  <Typography variant="body2">Rent: ${rent || "0.00"}</Typography>
+  <Typography variant="body2">Maintenance: ${maintenance || "0.00"}</Typography>
+</CardContent>
 
-      <CardActions sx={{ padding: 0 }}>
-        <Button size="small" onClick={onEdit}>
-          Edit
-        </Button>
-        <Button size="small" onClick={handleAssign}>
-          Assign
-        </Button>
-        <Button size="small" color="error" onClick={onDelete}>
-          Delete
-        </Button>
-      </CardActions>
+<CardActions
+  sx={{
+    display: "flex",
+    flexDirection: "column", // stack vertically
+    alignItems: "stretch",   // make buttons full width
+    gap: 1,                  // spacing between buttons
+    padding: 0,
+    mt: 2,                   // spacing above the buttons
+  }}
+>
+  <Button
+    size="small"
+    onClick={onEdit}
+    sx={{
+     
+      borderRadius: 1,
+      
+    }}
+  >
+    Edit
+  </Button>
+  <Button
+    size="small"
+    onClick={handleAssign}
+    sx={{
+     
+      borderRadius: 1,
+    }}
+  >
+    Assign
+  </Button>
+  <Button
+    size="small"
+    color="error"
+    onClick={onDelete}
+    sx={{
+     
+      borderRadius: 1,
+    }}
+  >
+    Delete
+  </Button>
+</CardActions>
 
-      <AssignPropertyDialog
-        open={openAssignDialog}
-        onClose={handleCloseAssignDialog}
-        students={students}
-        onAssignStudents={handleAssignStudents}
-      />
+<AssignPropertyDialog
+  open={openAssignDialog}
+  onClose={handleCloseAssignDialog}
+  students={students}
+  onAssignStudents={handleAssignStudents}
+/>
     </Card>
   );
 };
