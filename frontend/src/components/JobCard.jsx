@@ -19,7 +19,7 @@ const JobCard = ({
   pay_frequency,
   pay_day,
   icon_class,
-  is_trustee,
+  is_trustee, // Added this prop
   onEdit,
   onAssign,
   onDelete,
@@ -28,22 +28,29 @@ const JobCard = ({
     <Card
       raised
       sx={{
-        bgcolor: "#FA7921", 
+        bgcolor: "#FA7921",
         position: "relative",
-        height: "250px", 
+     
+        height: "auto", // Adjust as needed
         maxWidth: 300,
-        padding: 1,
+        width:"100%",
+        padding: 3,
+        margin:2,
         borderRadius: 2,
-        display: "flex",
+        
         flexDirection: "column",
-        overflow: "hidden", 
+    
+        
+        borderColor:"black",
+        borderStyle:"solid",
+        borderWidth:"2px",
       }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
+      <CardContent sx={{ flexGrow: 1, overflow: "auto" }}>
         <Typography variant="h6" color="text.primary" gutterBottom>
           {title}
         </Typography>
-        
+
         <Typography variant="body2" color="text.secondary" gutterBottom>
           {description || "Job description goes here."}
         </Typography>
@@ -63,21 +70,51 @@ const JobCard = ({
             Pay Day: {pay_day}
           </Typography>
         )}
+
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          Trustee Status: {is_trustee ? "Yes" : "No"}
+        </Typography> {/* Display trustee status */}
       </CardContent>
 
-      <CardActions sx={{ padding: 0 }}>
+      <CardActions 
+       disableSpacing
+      sx={{ padding: 0,
+        display: "flex",
+        flexDirection: "column", // stack vertically
+        alignItems: "stretch",   // make buttons full width
+        gap: 1,                  // spacing between buttons
+        
+        mt: 2,                   // spacing above the buttons
+      }}>
+
+
         <Button
-          size="small"
+          size="small" 
+          variant="contained" 
+          fullWidth 
+          color="primary"
           onClick={onEdit}
-          sx={{ marginRight: 1 }}
+          sx={{ marginRight: 1 ,
+          borderColor: "black", 
+     borderStyle: "solid", 
+    borderWidth: "1px" 
+  }}
         >
           Edit
         </Button>
 
         <Button
-          size="small"
+          size="small" 
+          variant="contained" 
+          fullWidth 
+          color="primary"
           onClick={onAssign}
-          sx={{ marginRight: 1 }}
+          sx={{ marginRight: 1 ,
+            borderColor: "black", 
+            borderStyle: "solid", 
+           borderWidth: "1px" 
+
+          }}
         >
           Assign
         </Button>
@@ -85,7 +122,14 @@ const JobCard = ({
         <Button
           size="small"
           color="error"
+          variant="contained"
+          fullWidth 
           onClick={onDelete}
+          sx={{ 
+            borderColor: "black", 
+            borderStyle: "solid", 
+            borderWidth: "1px" 
+          }}
         >
           Delete
         </Button>

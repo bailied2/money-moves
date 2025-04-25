@@ -86,13 +86,14 @@ const PropertyCard = ({
 <CardActions
   disableSpacing
   sx={{
-    display: "flex",
+    
+   display: "flex",
     flexDirection: "column", // stack vertically
     alignItems: "stretch",   // make buttons full width
     gap: 1,                  // spacing between buttons
     
     mt: 2,                   // spacing above the buttons
-  }}
+  }} 
 >
   <Button
     size="small"
@@ -141,7 +142,8 @@ const PropertyCard = ({
 <AssignPropertyDialog
   open={openAssignDialog}
   onClose={handleCloseAssignDialog}
-  students={students}
+  classroomId={classroomId} 
+  propertyId={id}
   onAssignStudents={handleAssignStudents}
 />
     </Card>

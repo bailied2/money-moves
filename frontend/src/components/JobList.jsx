@@ -1,5 +1,3 @@
-import "./styles/CardList.css";
-
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -7,9 +5,10 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
-import CreateJobDialog from "./CreateJobDialog"; // import CreateJobDialog instead of AddJobCard
+import AddJobCard from "./AddJobCard";
 import JobCard from "./JobCard";
 import UpdateJobDialog from "./UpdateJobDialog";
+import AssignJobDialog from "./AssignJobDialog";
 import api from "../api";
 
 const JobList = ({ classroomId }) => {
@@ -17,7 +16,8 @@ const JobList = ({ classroomId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingJob, setEditingJob] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false); // state to manage dialog visibility
+  const [openAssignDialog, setOpenAssignDialog] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -33,7 +33,9 @@ const JobList = ({ classroomId }) => {
       }
     };
 
-    fetchJobs();
+    if (classroomId) {
+      fetchJobs();
+    }
   }, [classroomId]);
 
   const addJob = (job) => {
@@ -56,12 +58,9 @@ const JobList = ({ classroomId }) => {
     setEditingJob(null);
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
+  const handleAssignJob = (jobId) => {
+    setSelectedJobId(jobId);
+    setOpenAssignDialog(true);
   };
 
   return (
@@ -87,7 +86,7 @@ const JobList = ({ classroomId }) => {
         }}
       >
         {loading && (
-          <Grid size={12} display="flex" justifyContent="center">
+          <Grid xs={12} display="flex" justifyContent="center">
             <CircularProgress sx={{ margin: "auto" }} />
           </Grid>
         )}
@@ -97,30 +96,34 @@ const JobList = ({ classroomId }) => {
           jobs.map((job) => (
             <Grid
               key={job.id}
-              size={{ xs: 2, sm: 3, md: 3 }}
+              xs={2}
+              sm={3}
+              md={3}
               display="flex"
               justifyContent="center"
             >
               <JobCard
                 title={job.title}
                 description={job.description}
-                pay={job.pay}
+                wage={job.wage}
+                pay_frequency={job.pay_frequency}
+                pay_day={job.pay_day}
+                icon_class={job.icon_class}
+                is_trustee={job.is_trustee}
+                classroomId={classroomId}
                 onEdit={() => setEditingJob(job)}
                 onDelete={() => deleteJob(job.id)}
+                onAssign={() => handleAssignJob(job.id)}
               />
             </Grid>
           ))}
-        <Grid
-          size={{ xs: 2, sm: 3, md: 3 }}
-          display="flex"
-          justifyContent="center"
-        >
-          <button onClick={handleDialogOpen}>Add Job</button>{" "}
-          {/* Button to open the CreateJobDialog */}
+        {/* Add Job Card at the end */}
+        <Grid xs={2} sm={3} md={3} display="flex" justifyContent="center">
+          <AddJobCard classroom_id={classroomId} onSubmit={addJob} />
         </Grid>
       </Grid>
 
-      {/* Edit dialog */}
+      {/* Edit Job Dialog */}
       {editingJob && (
         <UpdateJobDialog
           open={Boolean(editingJob)}
@@ -130,11 +133,16 @@ const JobList = ({ classroomId }) => {
         />
       )}
 
-      {/* Create Job Dialog */}
-      <CreateJobDialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
-        onCreateJob={addJob} // Add the job when created
+      {/* Assign Job Dialog */}
+      <AssignJobDialog
+        open={openAssignDialog}
+        onClose={() => setOpenAssignDialog(false)}
+        classroomId={classroomId}
+        jobId={selectedJobId}
+        onAssignStudents={(studentIds, jobId) => {
+          console.log(`Assigned students [${studentIds.join(", ")}] to job ID: ${jobId}`);
+          setOpenAssignDialog(false); // Close the dialog
+        }}
       />
     </Stack>
   );

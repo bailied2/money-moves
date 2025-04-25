@@ -6,15 +6,15 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import api from "../api";  // Ensure the API instance is imported
+import api from "../api";  
 
-const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssignStudents }) => {
+const AssignJobDialog = ({ open, onClose, classroomId, jobId, onAssignStudents }) => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
 
-  // Debugging: Log the received propertyId to check if it is passed correctly
-  console.log("Received propertyId in dialog:", propertyId);
+
+  console.log("Received jobId in dialog:", jobId);
 
   useEffect(() => {
     if (!classroomId) {
@@ -49,20 +49,18 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
   };
 
   const handleAssign = async () => {
-    // Log the data being sent to the backend for debugging purposes
     console.log("Assigning students with the following data:");
-    console.log("Property ID:", propertyId);  // Log propertyId here
-    console.log("Selected Students:", selectedStudents);  // Log selected students
+    console.log("Job ID:", jobId);  
+    console.log("Selected Students:", selectedStudents);  
 
     try {
-      // Send the data to the backend
-      const response = await api.post("/properties/assign-property", {
-        property_id: propertyId, 
+      const response = await api.post("/jobs/assign-job", {
+        job_id: jobId, 
         student_ids: selectedStudents, 
       });
 
-      console.log("Response from backend:", response);  // Log backend response
-      onAssignStudents(selectedStudents, propertyId);
+      console.log("Response from backend:", response);  
+      onAssignStudents(selectedStudents, jobId);
       onClose();
     } catch (err) {
       console.error("Error in assignment:", err);
@@ -72,7 +70,7 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Assign Students to Property</DialogTitle>
+      <DialogTitle>Assign Students to Job</DialogTitle>
       <DialogContent>
         {error && <p style={{ color: "red" }}>{error}</p>}
         {students.length > 0 ? (
@@ -85,7 +83,7 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
                   onChange={(e) => handleCheckboxChange(e, student.id)}
                 />
               }
-              label={`${student.first_name} ${student.last_name}`} // Use both first_name and last_name for full name
+              label={`${student.first_name} ${student.last_name}`} 
             />
           ))
         ) : (
@@ -100,4 +98,4 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
   );
 };
 
-export default AssignPropertyDialog;
+export default AssignJobDialog;

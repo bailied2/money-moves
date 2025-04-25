@@ -164,12 +164,21 @@ const deleteJob = async (req, res) => {
 };
 
 const assignJob = async (req, res) => {
-  const { student_id, job_id } = req.body;
+  const { student_ids, job_id } = req.body;
+
+  if (!student_ids || !Array.isArray(student_ids)) {
+    return res.status(400).json({ error: "student_ids must be an array" });
+  }
+
   const query =
     "INSERT INTO student_jobs (fk_student_id, fk_job_id) VALUES (?, ?)";
+
   try {
-    const result = await db.execute(query, [student_id, job_id]);
-    res.json({ data: "Job assigned successfully" });
+    for (const studentId of student_ids) {
+      await db.execute(query, [studentId, job_id]);
+    }
+
+    res.json({ data: "Job assigned successfully to all students" });
   } catch (err) {
     console.error("Error assigning job:", err);
     return res.status(500).send({ error: "Failed to assign job" });
