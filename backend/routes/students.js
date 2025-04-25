@@ -179,7 +179,7 @@ const addStudentsToClassroom = async (req, res) => {
   const insertAccountQuery =
     "INSERT INTO account (fk_student_id, account_type) VALUES (:student_id, 1), (:student_id, 2)";
   const insertInvestmentAccountQuery =
-    "INSERT INTO account (fk_student_id, fk_investment_account_id account_type) VALUES (?, ?, 3)";
+    "INSERT INTO account (fk_student_id, fk_investment_account_id, account_type) VALUES (?, ?, 3)";
 
   // Get database connection before starting transaction
   try {
@@ -240,7 +240,7 @@ const addStudentsToClassroom = async (req, res) => {
         // Student has been added to classroom
         student.id = insertedStudent.insertId;
         // Now add checkings and savings account
-        const insertAccountsResults = await connection.query(
+        const insertAccountsResults = await connection.execute(
           insertAccountQuery,
           { student_id: student.id }
         );
@@ -248,7 +248,7 @@ const addStudentsToClassroom = async (req, res) => {
           // If classroom has investment accounts, we must generate a corresponding
           // account for the student.
           for (const investment_account of classroom.investment_accounts) {
-            await connection.query(insertInvestmentAccountQuery, [
+            await connection.execute(insertInvestmentAccountQuery, [
               student.id,
               investment_account.id,
             ]);
@@ -258,9 +258,9 @@ const addStudentsToClassroom = async (req, res) => {
         console.log(
           `  Student ${student.id} (${student.first_name} ${student.last_name}) added successfully to Classroom ${classroom.id} (${classroom.class_name})`
         );
-        await connection.commit(); // Commit database transaction
-        connection.release(); // Release the connection back to the pool
       }
+      await connection.commit(); // Commit database transaction
+      connection.release(); // Release the connection back to the pool
       res.json({ message: `Students added successfully` });
     } catch (error) {
       console.error("Error adding students to classroom:", error);
@@ -279,6 +279,85 @@ const addStudentsToClassroom = async (req, res) => {
       .json({ error: "Failed to add students to classroom" });
   }
 };
+
+// POST /students/join - Join a classroom by code
+router.post("/join", authenticateToken, async (req, res) => {
+  const { class_code } = req.body;
+  
+  console.log("\n*** POST /students/join ***");
+  console.log(`  class_code: ${class_code}`);
+  
+  const getClassroomQuery = "SELECT * FROM classroom WHERE class_code = ?";
+
+  const insertStudentQuery = "INSERT INTO student (fk_classroom_id, fk_user_id) VALUES (?, ?)";
+  const insertAccountQuery =
+    "INSERT INTO account (fk_student_id, account_type) VALUES (:student_id, 1), (:student_id, 2)";
+  const insertInvestmentAccountQuery =
+    "INSERT INTO account (fk_student_id, fk_investment_account_id, account_type) VALUES (?, ?, 3)";
+
+  // Get database connection before starting transaction
+  try {
+    const connection = await db.getConnection();
+    // Begin the database transaction (so changes are only saved if all are successful)
+    await connection.beginTransaction();
+    try {
+      // Get classroom
+      const [classroomResults] = await connection.execute(getClassroomQuery, [class_code]);
+      if (classroomResults.length === 0) {
+        // No classroom found.
+        res.status(404).json({ message: "No classroom found" });
+      }
+      // Classroom found:
+      const classroom = classroomResults[0];
+
+      // Insert student record
+      const [insertedStudent] = await connection.execute(insertStudentQuery, [
+        classroom.id,
+        req.user.id,
+      ]);
+      // Student has been added to classroom
+      const student_id = insertedStudent.insertId;
+
+      // Now add checkings and savings account
+      const insertAccountsResults = await connection.execute(
+        insertAccountQuery,
+        { student_id: student_id }
+      );
+
+      if (Array.isArray(classroom.investment_accounts)) {
+        // If classroom has investment accounts, we must generate a corresponding
+        // account for the student.
+        for (const investment_account of classroom.investment_accounts) {
+          await connection.execute(insertInvestmentAccountQuery, [
+            student.id,
+            investment_account.id,
+          ]);
+        }
+      }
+      // If no error so far, the student joined successfully
+      console.log(
+        `  User ${req.user.id} successfully joined Classroom ${classroom.id}`
+      );
+      await connection.commit(); // Commit database transaction
+      connection.release(); // Release the connection back to the pool
+      res.json({ message: `Joined classroom successfully`, classroom });
+    } catch (error) {
+      console.error("Error joining classroom:", error);
+      // Rollback changes since start of transaction
+      await connection.rollback();
+      connection.release(); // Release the connection back to the pool
+      return res.status(500).json({
+        error: "Failed to join classroom",
+      });
+    }
+  } catch (error) {
+    console.error("Error getting database connection:", error);
+    // Rollback changes since start of transaction
+    return res
+      .status(500)
+      .json({ error: "Failed to join classroom" });
+  }
+});
 
 // PUT /students/:id - Update a specific student record by ID
 const updateStudent = async (req, res) => {

@@ -69,7 +69,6 @@ const JobList = ({ classroomId }) => {
       sx={{
         borderRadius: 5,
         boxShadow: 1,
-        maxWidth: "80%",
         margin: "0 auto",
         padding: 2,
       }}

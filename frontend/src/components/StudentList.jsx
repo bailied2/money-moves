@@ -84,8 +84,8 @@ const StudentList = ({ classroom }) => {
                 id={student.id}
                 first_name={student.first_name}
                 last_name={student.last_name}
-                checking_balance={student.checking_account.balance}
-                savings_balance={student.savings_account.balance}
+                checking_balance={student.checking_account?.balance || 0}
+                savings_balance={student.saving_account?.balance || 0}
               ></StudentCard>
               
             </Grid>)

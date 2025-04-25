@@ -281,7 +281,7 @@ const deleteClassroom = async (req, res) => {
 // GET /classrooms/validate-db - Ensures all classrooms have all necessary database entries
 router.post("/validate-db", authenticateToken, async (req, res) => {
 
-  console.log("\n*** GET /classrooms/validate-db ***")
+  console.log("\n*** POST /classrooms/validate-db ***")
   
   try {
     const connection = await db.getConnection();
@@ -294,15 +294,17 @@ router.post("/validate-db", authenticateToken, async (req, res) => {
       // Loop through classrooms
       for (const classroom of classrooms) {
         // Get classroom data
-        const query = "SELECT * FROM ? WHERE fk_classroom_id = ?";
-        const [students] = await connection.execute(query, ["student", classroom.id]);
-        const [investment_accounts] = await connection.execute(query, ["investment_account", classroom.id]);
-        const [year_ends] = await connection.execute(query, ["year_end", classroom.id]);
+        const selectStudentsQuery = "SELECT * FROM student WHERE fk_classroom_id = ?";
+        const selectInvestmentAccountsQuery = "SELECT * FROM investment_account WHERE fk_classroom_id = ?";
+        const selectYearEndsQuery = "SELECT * FROM year_end WHERE fk_classroom_id = ?";
+        const [students] = await connection.execute(selectStudentsQuery, [classroom.id]);
+        const [investment_accounts] = await connection.execute(selectInvestmentAccountsQuery, [classroom.id]);
+        const [year_ends] = await connection.execute(selectYearEndsQuery, [classroom.id]);
 
         // Ensure default year_end is in place
         if (year_ends.length === 0) {
           const insertYearEndQuery = `INSERT INTO year_end (fk_classroom_id, end_date, savings_apr) 
-            VALUES (?, TIMESTAMP'1970-01-01', 0)`;
+            VALUES (?, TIMESTAMP'1970-01-01 00:00:00', 0)`;
           const [insertedYearEnd] = await connection.execute(insertYearEndQuery, [classroom.id]);
           // If there are already investment accounts somehow,
           if (investment_accounts.length > 0) {
@@ -321,15 +323,15 @@ router.post("/validate-db", authenticateToken, async (req, res) => {
         for (const student of students) {
           const selectAccountsQuery = "SELECT * FROM account WHERE fk_student_id = ?";
           // Get the current student's accounts
-          const [accounts] = await connection.execute(selectAccountsQuery);
+          const [accounts] = await connection.execute(selectAccountsQuery, [student.id]);
 
           // Ensure student has checking account
-          if (!accounts.any((acc) => acc.account_type === 1)) {
+          if (!accounts.some((acc) => acc.account_type === 1)) {
             const insertCheckingAccountQuery = "INSERT INTO account (fk_student_id, account_type) VALUES (?, 1)";
             await connection.execute(insertCheckingAccountQuery, [student.id]);
           }
           // Ensure student has checking account
-          if (!accounts.any((acc) => acc.account_type === 2)) {
+          if (!accounts.some((acc) => acc.account_type === 2)) {
             const insertSavingsAccountQuery = "INSERT INTO account (fk_student_id, account_type) VALUES (?, 2)";
             await connection.execute(insertSavingsAccountQuery, [student.id]);
           }
@@ -337,7 +339,7 @@ router.post("/validate-db", authenticateToken, async (req, res) => {
           // For each investment account in the classroom,
           for (const investment_account of investment_accounts) {
             // Ensure student has a corresponding account
-            if (!accounts.any((acc) => acc.fk_investment_account_id === investment_account.id)) {
+            if (!accounts.some((acc) => acc.fk_investment_account_id === investment_account.id)) {
               const insertAccountQuery = `INSERT INTO account 
               (fk_student_id, account_type, fk_investment_account_id) 
               VALUES (?, 3, ?)`;
@@ -352,10 +354,10 @@ router.post("/validate-db", authenticateToken, async (req, res) => {
           // Get yearly values for the current investment account
           const [investment_values] = await connection.execute(selectValuesQuery, [investment_account.id]);
           // Loop through year_ends
-          for (const [year_end] of year_ends) {
+          for (const year_end of year_ends) {
             // Check for corresponding value
-            if (!investment_values.any((val) => val.fk_year_end_id === year_end.id)) {
-              const placeholder_value = investment_values.at(-1).value || 0;
+            if (!investment_values.some((val) => val.fk_year_end_id === year_end.id)) {
+              const placeholder_value = investment_values.at(-1)?.share_value || 0;
               const insertValueQuery = "INSERT INTO investment_values (fk_year_end_id, fk_account_id, share_value) VALUES (?, ?, ?)";
               await connection.execute(insertValueQuery, [year_end.id, investment_account.id, placeholder_value]);
             }
@@ -400,9 +402,12 @@ router.post("/add-defaults", authenticateToken, async (req, res) => {
       for (const classroom of classrooms) {
         // Get classroom data
         const query = "SELECT * FROM ? WHERE fk_classroom_id = ?";
-        const [fees_bonuses] = await connection.execute(query, ["fees_bonuses", classroom.id]);
-        const [jobs] = await connection.execute(query, ["job", classroom.id]);
-        const [properties] = await connection.execute(query, ["property", classroom.id]);
+        const selectFeesBonusesQuery = "SELECT * FROM fees_bonuses WHERE fk_classroom_id = ?";
+        const selectJobsQuery = "SELECT * FROM job WHERE fk_classroom_id = ?";
+        const selectPropertiesQuery = "SELECT * FROM property WHERE fk_classroom_id = ?";
+        const [fees_bonuses] = await connection.execute(selectFeesBonusesQuery, [classroom.id]);
+        const [jobs] = await connection.execute(selectJobsQuery, [classroom.id]);
+        const [properties] = await connection.execute(selectPropertiesQuery, [classroom.id]);
 
         // check for default fees/bonuses, jobs, and property
         if (fees_bonuses.length === 0) {
@@ -413,9 +418,9 @@ router.post("/add-defaults", authenticateToken, async (req, res) => {
           await connection.query(query, [classroom.id, classroom.id]);
         }
         if (jobs.length === 0) {
-          const query = `INSERT INTO job
-          (fk_classroom_id, title, description, wage, pay_frequency, pay_day, icon_class, is_trustee)
-          VALUES (?, "Hall Monitor", "Patrol the hallways and keep the peace", 100, "Weekly", "Friday", "", 0)
+          const query = `INSERT INTO job 
+          (fk_classroom_id, title, description, wage, pay_frequency, pay_day, icon_class, is_trustee) 
+          VALUES (?, "Hall Monitor", "Patrol the hallways and keep the peace", 100, "Weekly", "Friday", "", 0),
           (?, "Loan Officer", "Assist the teacher with applying fees/bonuses", 150, "Weekly", "Friday", "", 1)`;
           await connection.query(query, [classroom.id, classroom.id]);
         }
