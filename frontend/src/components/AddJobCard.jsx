@@ -1,228 +1,235 @@
 import React, { useState } from "react";
+import dayjs from "dayjs";
 import {
-  Button,
-  Card,
-  CardContent,
-  CardActions,
+  Container,
+  Box,
   Typography,
-  Fab,
   TextField,
+  Button,
   MenuItem,
   Select,
   InputLabel,
   FormControl,
+  Card,
+  CardContent,
+  CardActions,
+  Fab,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-
 import api from "../api";
 
-const AddJobCard = ({ classroom = null, onSubmit }) => {
-  const [opened, setOpened] = useState(false);
+const AddJobCard = ({ classroom_id }) => {
+  const current_date = dayjs().startOf("day");
+
+  console.log("Creating job form.");
+
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
+    title: "", // Changed from job_title
+    description: "", // Changed from job_description
     wage: "",
-    pay_frequency: "Monthly",
-    pay_day: "Monday", 
+    pay_frequency: "Weekly",
+    pay_day: "", // Added pay_day
     icon_class: "",
     is_trustee: false,
   });
 
+  const [opened, setOpened] = useState(false);
+
   const handleOpen = () => setOpened(true);
   const handleClose = () => setOpened(false);
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
   const handleSubmit = async (e) => {
+    console.log("Attempting form submit");
     e.preventDefault();
-    if (!classroom) {
-      alert("No classroom provided. Cannot submit.");
-      return;
-    }
-  
     try {
-      const response = await api.post("/jobs", {
-        formData: { 
-          title: formData.title,
-          description: formData.description,
-          wage: formData.wage,
-          pay_frequency: formData.pay_frequency,
-          pay_day: formData.pay_day,
-          icon_class: formData.icon_class,
-          is_trustee: formData.is_trustee,
-          classroom_id: classroom.id,
-        },
-      });
-  
-      if (typeof onSubmit === "function") {
-        onSubmit(response.data.job);
-      }
-  
+      //debug
+      console.log("Form data before submitting", formData);
+      const response = await api.post("/jobs", { formData, classroom_id: classroom_id });
+      console.log(response.data);
       alert("Job added successfully!");
       setFormData({
-        title: "",
-        description: "",
+        title: "", // Reset field names to match backend
+        description: "", // Reset field names to match backend
         wage: "",
-        pay_frequency: "Monthly",
-        pay_day: "Monday",
+        pay_frequency: "Weekly",
+        pay_day: "", // Reset pay_day
         icon_class: "",
         is_trustee: false,
-      });
+      }); // Reset form data
       handleClose();
-    } catch (err) {
-      console.error("Error adding job:", err);
+    } catch (error) {
+      console.error("Error creating job:", error);
     }
   };
-  
-
-  if (opened)
-    return (
-      <Card
-        raised
-        sx={{
-          bgcolor: "#FA7921",
-          maxWidth: 600,
-          paddingLeft: 1,
-          paddingRight: 1,
-          borderRadius: 2,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <CardContent>
-          <form onSubmit={handleSubmit} id="add_job_form">
-            <Typography variant="h5">Add Job</Typography>
-            <TextField
-              size="small"
-              variant="standard"
-              label="Title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              fullWidth
-              required
-              margin="dense"
-            />
-            <TextField
-              size="small"
-              variant="standard"
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              fullWidth
-              margin="dense"
-            />
-            <TextField
-              size="small"
-              variant="standard"
-              label="Wage"
-              name="wage"
-              type="number"
-              value={formData.wage}
-              onChange={handleChange}
-              fullWidth
-              required
-              margin="dense"
-            />
-            <FormControl fullWidth margin="dense" size="small">
-              <InputLabel>Pay Frequency</InputLabel>
-              <Select
-                name="pay_frequency"
-                value={formData.pay_frequency}
-                onChange={handleChange}
-                label="Pay Frequency"
-              >
-                <MenuItem value="Daily">Daily</MenuItem>
-                <MenuItem value="Weekly">Weekly</MenuItem>
-                <MenuItem value="Monthly">Monthly</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* Pay Day Dropdown with Days of the Week */}
-            <FormControl fullWidth margin="dense" size="small">
-              <InputLabel>Pay Day</InputLabel>
-              <Select
-                name="pay_day"
-                value={formData.pay_day}
-                onChange={handleChange}
-                label="Pay Day"
-              >
-                <MenuItem value="Monday">Monday</MenuItem>
-                <MenuItem value="Tuesday">Tuesday</MenuItem>
-                <MenuItem value="Wednesday">Wednesday</MenuItem>
-                <MenuItem value="Thursday">Thursday</MenuItem>
-                <MenuItem value="Friday">Friday</MenuItem>
-                <MenuItem value="Saturday">Saturday</MenuItem>
-                <MenuItem value="Sunday">Sunday</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              size="small"
-              variant="standard"
-              label="Icon Class"
-              name="icon_class"
-              value={formData.icon_class}
-              onChange={handleChange}
-              fullWidth
-              margin="dense"
-            />
-            <FormControl fullWidth margin="dense" size="small">
-              <InputLabel>Is Trustee?</InputLabel>
-              <Select
-                name="is_trustee"
-                value={formData.is_trustee}
-                onChange={handleChange}
-                label="Is Trustee?"
-              >
-                <MenuItem value={false}>No</MenuItem>
-                <MenuItem value={true}>Yes</MenuItem>
-              </Select>
-            </FormControl>
-          </form>
-        </CardContent>
-        <CardActions>
-          <Button size="small" type="submit" form="add_job_form">
-            Submit
-          </Button>
-          <Button size="small" onClick={handleClose} color="error">
-            Cancel
-          </Button>
-        </CardActions>
-      </Card>
-    );
 
   return (
     <Card
+      raised
       sx={{
-        boxShadow: 0,
-        minHeight: 185,
         maxWidth: 600,
-        padding: 1,
-        border: "3px dashed lightgrey",
+        padding: 2,
         borderRadius: 2,
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
+        bgcolor: "transparent",
+        boxShadow: 3,
+        marginTop: 2,
       }}
     >
-      <CardActions
-        sx={{
-          flexDirection: "column",
-          justifyContent: "center",
-          gap: 2,
-          padding: 3,
-        }}
-      >
-        <Typography variant="button" align="center">
-          Add Job
-        </Typography>
-        <Fab onClick={handleOpen}>
-          <AddIcon />
-        </Fab>
-      </CardActions>
+      {opened ? (
+        <>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Create Job
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                required
+                margin="normal"
+                id="title"
+                name="title"
+                value={formData.title}
+                label="Job Title"
+                variant="standard"
+                onChange={(e) => {
+                  setFormData({ ...formData, title: e.target.value });
+                }}
+                fullWidth
+              />
+              <br />
+              <TextField
+                required
+                margin="normal"
+                id="description"
+                name="description"
+                value={formData.description}
+                label="Job Description"
+                variant="standard"
+                onChange={(e) => {
+                  setFormData({ ...formData, description: e.target.value });
+                }}
+                fullWidth
+              />
+              <br />
+              <TextField
+                required
+                margin="normal"
+                id="wage"
+                name="wage"
+                value={formData.wage}
+                label="Wage"
+                variant="standard"
+                type="number"
+                onChange={(e) => {
+                  setFormData({ ...formData, wage: e.target.value });
+                }}
+                fullWidth
+              />
+              <br />
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Pay Frequency</InputLabel>
+                <Select
+                  required
+                  id="pay_frequency"
+                  value={formData.pay_frequency}
+                  onChange={(e) => {
+                    setFormData({ ...formData, pay_frequency: e.target.value });
+                  }}
+                  label="Pay Frequency"
+                >
+                  <MenuItem value="Daily">Daily</MenuItem>
+                  <MenuItem value="Weekly">Weekly</MenuItem>
+                  <MenuItem value="Monthly">Monthly</MenuItem>
+                </Select>
+              </FormControl>
+              <br />
+              {formData.pay_frequency !== "Daily" && (
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Pay Day</InputLabel>
+                  <Select
+                    id="pay_day"
+                    value={formData.pay_day}
+                    onChange={(e) => {
+                      setFormData({ ...formData, pay_day: e.target.value });
+                    }}
+                    label="Pay Day"
+                  >
+                    <MenuItem value="Monday">Monday</MenuItem>
+                    <MenuItem value="Tuesday">Tuesday</MenuItem>
+                    <MenuItem value="Wednesday">Wednesday</MenuItem>
+                    <MenuItem value="Thursday">Thursday</MenuItem>
+                    <MenuItem value="Friday">Friday</MenuItem>
+                    <MenuItem value="Saturday">Saturday</MenuItem>
+                    <MenuItem value="Sunday">Sunday</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+              <br />
+              <TextField
+                required
+                margin="normal"
+                id="icon_class"
+                name="icon_class"
+                value={formData.icon_class}
+                label="Icon Class"
+                variant="standard"
+                onChange={(e) => {
+                  setFormData({ ...formData, icon_class: e.target.value });
+                }}
+                fullWidth
+              />
+              <br />
+              <FormControl margin="normal">
+                <InputLabel>Is Trustee</InputLabel>
+                <Select
+                  id="is_trustee"
+                  value={formData.is_trustee}
+                  onChange={(e) => {
+                    setFormData({ ...formData, is_trustee: e.target.value });
+                  }}
+                  label="Is Trustee"
+                >
+                  <MenuItem value={false}>No</MenuItem>
+                  <MenuItem value={true}>Yes</MenuItem>
+                </Select>
+              </FormControl>
+              <br />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+              >
+                Submit
+              </Button>
+            </form>
+          </CardContent>
+          <CardActions>
+            <Button onClick={handleClose} color="error">
+              Cancel
+            </Button>
+          </CardActions>
+        </>
+      ) : (
+        <CardActions
+          sx={{
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 2,
+            padding: 3,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="button" align="center">
+            Add Job
+          </Typography>
+          <Fab color="primary" onClick={handleOpen}>
+            <AddIcon />
+          </Fab>
+        </CardActions>
+      )}
     </Card>
   );
 };

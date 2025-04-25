@@ -141,7 +141,8 @@ const PropertyCard = ({
 <AssignPropertyDialog
   open={openAssignDialog}
   onClose={handleCloseAssignDialog}
-  students={students}
+  classroomId={classroomId} 
+  propertyId={id}
   onAssignStudents={handleAssignStudents}
 />
     </Card>

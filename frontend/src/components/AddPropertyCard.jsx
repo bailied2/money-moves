@@ -25,7 +25,7 @@ const AddPropertyCard = ({ classroom_id, onSubmit }) => {
     rent: "",
     maintenance: "",
     pay_frequency: "Monthly",
-    pay_day: "",
+    pay_day: "Monday", // Default value for pay day
   });
 
   const handleOpen = () => setOpened(true);
@@ -62,7 +62,7 @@ const AddPropertyCard = ({ classroom_id, onSubmit }) => {
         rent: "",
         maintenance: "",
         pay_frequency: "Monthly",
-        pay_day: "",
+        pay_day: "Monday", // Reset the pay day after submission
       });
       handleClose();
     } catch (err) {
@@ -157,16 +157,24 @@ const AddPropertyCard = ({ classroom_id, onSubmit }) => {
                 <MenuItem value="Monthly">Monthly</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              size="small"
-              variant="standard"
-              label="Pay Day"
-              name="pay_day"
-              value={formData.pay_day}
-              onChange={handleChange}
-              fullWidth
-              margin="dense"
-            />
+            {/* Pay Day Dropdown (Days of the Week) */}
+            <FormControl fullWidth margin="dense" size="small">
+              <InputLabel>Pay Day</InputLabel>
+              <Select
+                name="pay_day"
+                value={formData.pay_day}
+                onChange={handleChange}
+                label="Pay Day"
+              >
+                <MenuItem value="Monday">Monday</MenuItem>
+                <MenuItem value="Tuesday">Tuesday</MenuItem>
+                <MenuItem value="Wednesday">Wednesday</MenuItem>
+                <MenuItem value="Thursday">Thursday</MenuItem>
+                <MenuItem value="Friday">Friday</MenuItem>
+                <MenuItem value="Saturday">Saturday</MenuItem>
+                <MenuItem value="Sunday">Sunday</MenuItem>
+              </Select>
+            </FormControl>
           </form>
         </CardContent>
         <CardActions>
