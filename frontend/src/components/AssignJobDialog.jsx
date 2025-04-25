@@ -6,14 +6,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import api from "../api";  // Ensure the API instance is imported
+import api from "../api";  
 
 const AssignJobDialog = ({ open, onClose, classroomId, jobId, onAssignStudents }) => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
 
-  // Debugging: Log the received jobId to check if it is passed correctly
+
   console.log("Received jobId in dialog:", jobId);
 
   useEffect(() => {
@@ -49,19 +49,17 @@ const AssignJobDialog = ({ open, onClose, classroomId, jobId, onAssignStudents }
   };
 
   const handleAssign = async () => {
-    // Log the data being sent to the backend for debugging purposes
     console.log("Assigning students with the following data:");
-    console.log("Job ID:", jobId);  // Log jobId here
-    console.log("Selected Students:", selectedStudents);  // Log selected students
+    console.log("Job ID:", jobId);  
+    console.log("Selected Students:", selectedStudents);  
 
     try {
-      // Send the data to the backend
       const response = await api.post("/jobs/assign-job", {
         job_id: jobId, 
         student_ids: selectedStudents, 
       });
 
-      console.log("Response from backend:", response);  // Log backend response
+      console.log("Response from backend:", response);  
       onAssignStudents(selectedStudents, jobId);
       onClose();
     } catch (err) {
@@ -85,7 +83,7 @@ const AssignJobDialog = ({ open, onClose, classroomId, jobId, onAssignStudents }
                   onChange={(e) => handleCheckboxChange(e, student.id)}
                 />
               }
-              label={`${student.first_name} ${student.last_name}`} // Use both first_name and last_name for full name
+              label={`${student.first_name} ${student.last_name}`} 
             />
           ))
         ) : (
