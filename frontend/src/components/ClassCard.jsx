@@ -54,28 +54,64 @@ const ClassCard = ({ classroom, onDelete }) => {
           End Date: {dayjs(classroom.end_date).format("M/D/YYYY")}
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions
+       disableSpacing
+       sx={{
+         
+        display: "flex",
+         flexDirection: "column", // stack vertically
+         alignItems: "stretch",   // make buttons full width
+         gap: 1,                  // spacing between buttons
+         
+         mt: 2,                   // spacing above the buttons
+       }} 
+      >
         <Button
           size="small"
+          variant="contained" 
+          fullWidth 
+          color="primary"
           component={RouterLink}
           to={`/classroom/${classroom.id}`}
           state={{ classroom }}
+          sx={{
+    
+            borderColor: "black",
+            borderStyle: "solid",
+            borderWidth: "1px",  // Match the border width of the card
+            borderRadius: 2,     // Match the card's border radius
+            padding: 1,          // Adjust padding if needed for button size consistency
+            textTransform: "none", // Optional: Keep text lowercase/normal
+           
+            
+           
+            }
+          }
         >
           Open
         </Button>
-        {typeof onDelete === "function" && (
-          <ConfirmDelete
-            onSubmit={onDelete}
-            deleteTarget={{
-              type: "classroom",
-              name: classroom.class_name,
-              id: classroom.id,
-              path: "classrooms",
-              key: classroom.class_code,
-              keyName: "Class Code",
-            }}
-          />
-        )}
+
+        <Button
+  size="small"
+  color="error"
+  variant="contained"
+  fullWidth
+  sx={{
+    
+    borderColor: "black",
+    borderStyle: "solid",
+    borderWidth: "1px",  // Match the border width of the card
+    borderRadius: 2,     // Match the card's border radius
+    padding: 1,          // Adjust padding if needed for button size consistency
+    textTransform: "none", // Optional: Keep text lowercase/normal
+   
+    
+   
+    }
+  }
+>
+  Delete
+</Button>
       </CardActions>
     </Card>
   );
