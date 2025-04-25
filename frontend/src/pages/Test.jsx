@@ -69,6 +69,13 @@ const Test = () => {
   const [user_loading, setUserLoading] = useState(true);
   const [classroom_loading, setClassroomLoading] = useState(true);
 
+  const formatDate = (value) => {
+    const date = new Date(value);
+    return date.toString().slice(4, 15);
+  }
+  const formatCurrency = (value) => value ? `$${value}` : "$0";
+  const formatPercent = (value) => value ? `${value}%` : "0%";
+
   // USER COLUMNS
   const user_columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -123,20 +130,14 @@ const Test = () => {
       headerName: "Start Date",
       type: "date",
       width: 150,
-      valueFormatter: (value) => {
-        const date = new Date(value);
-        return date.toString().slice(4, 15);
-      }
+      valueFormatter: formatDate,
     },
     {
       field: "end_date",
       headerName: "End Date",
       type: "date",
       width: 150,
-      valueFormatter: (value) => {
-        const date = new Date(value);
-        return date.toString().slice(4, 15);
-      }
+      valueFormatter: formatDate,
     },
     {
       field: "num_students",
@@ -176,14 +177,14 @@ const Test = () => {
       headerName: "Checking Balance",
       type: "number",
       width: 160,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
     {
       field: "savings_balance",
       headerName: "Savings Balance",
       type: "number",
       width: 160,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
   ];
 
@@ -200,7 +201,7 @@ const Test = () => {
       headerName: "Amount",
       type: "number",
       width: 150,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
     {
       field: "description",
@@ -222,7 +223,7 @@ const Test = () => {
       headerName: "Amount",
       type: "number",
       width: 150,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
     {
       field: "pay_frequency",
@@ -259,21 +260,21 @@ const Test = () => {
       headerName: "Value",
       type: "number",
       width: 150,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
     {
       field: "rent",
       headerName: "Rent",
       type: "number",
       width: 150,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
     {
       field: "maintenance",
       headerName: "Maintenance",
       type: "number",
       width: 150,
-      valueFormatter: (value) => `$${value}`,
+      valueFormatter: formatCurrency,
     },
     {
       field: "pay_frequency",
@@ -320,17 +321,14 @@ const Test = () => {
       headerName: "End Date",
       type: "date",
       width: 150,
-      valueFormatter: (value) => `${value}%`,
+      valueFormatter: formatDate,
     },
     {
       field: "savings_apr",
       headerName: "Savings APR",
       type: "number",
       width: 150,
-      valueFormatter: (value) => {
-        const date = new Date(value);
-        return date.toString().slice(4, 15);
-      }
+      valueFormatter: formatPercent,
     },
     {
       field: "description",
@@ -403,7 +401,7 @@ const Test = () => {
             // characters from the route names with underscores to get the
             // correct property name of the json response data we want, and pass
             // that value to the state setting function we're calling.
-            response.data[key.replace("-", "_")]
+            response.data[key.replaceAll("-", "_")]
           );
         }
         setError(null);
@@ -419,12 +417,12 @@ const Test = () => {
 
   const validateClassrooms = async () => {
     const response = await api.post("/classrooms/validate-db");
-    alert(response);
+    alert(response.data.toString());
   }
 
   const addDefaults = async () => {
     const response = await api.post("/classrooms/add-defaults");
-    alert(response);
+    alert(response.data.toString());
   }
 
   return (
@@ -533,18 +531,6 @@ const Test = () => {
                     />
                   </Box>
 
-                    // Students
-                    students: setStudents,
-                    // Fees / Bonuses
-                    "fees-bonuses": setFeesBonuses,
-                    // Jobs
-                    jobs: setJobs,
-                    // Properties
-                    properties: setProperties,
-                    // Investment Accounts
-                    "investment-accounts": setInvestmentAccounts,
-                    // Year Ends
-
                   {/* Fees / Bonuses */}
                   <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
                     <DataGrid
@@ -637,66 +623,6 @@ const Test = () => {
                       onRowSelectionModelChange={(rowSelectionModel) => {
                         selectYearEnds(
                           year_ends.filter((s) =>
-                            rowSelectionModel.ids.has(s.id)
-                          )
-                        );
-                      }}
-                      sx={{ mt: 3 }}
-                    />
-                  </Box>
-
-                  {/* Investment Values */}
-                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
-                    <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
-                      showToolbar
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
-                            rowSelectionModel.ids.has(s.id)
-                          )
-                        );
-                      }}
-                      sx={{ mt: 3 }}
-                    />
-                  </Box>
-
-                  {/* Student Jobs */}
-                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
-                    <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
-                      showToolbar
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
-                            rowSelectionModel.ids.has(s.id)
-                          )
-                        );
-                      }}
-                      sx={{ mt: 3 }}
-                    />
-                  </Box>
-
-                  {/* Student Properties */}
-                  <Box sx={{ width: "80%", margin: "auto", boxShadow: 3 }}>
-                    <DataGrid
-                      columns={student_columns}
-                      rows={students}
-                      label={`Students - ${selectedClassroom.class_name}`}
-                      showToolbar
-                      checkboxSelection
-                      disableRowSelectionOnClick
-                      onRowSelectionModelChange={(rowSelectionModel) => {
-                        selectStudents(
-                          students.filter((s) =>
                             rowSelectionModel.ids.has(s.id)
                           )
                         );

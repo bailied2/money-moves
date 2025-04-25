@@ -23,11 +23,11 @@ const JoinClassroomDialog = ({ open, onClose, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post(`/classrooms/join/${classCode}`);
+      const response = await api.post("/students/join", {class_code: classCode});
       console.log(response.data);
       onSubmit(response.data.classroom);
       alert("Classroom joined successfully!");
-      navigate("/classroom/");
+      navigate(`/classroom/${response.data.classroom.id}`, {state: {classroom: response.data.classroom}});
     } catch (error) {
       console.error("Error submitting form:", error);
     }
