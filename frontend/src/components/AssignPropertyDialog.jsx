@@ -13,7 +13,6 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
 
-  // Debugging: Log the received propertyId to check if it is passed correctly
   console.log("Received propertyId in dialog:", propertyId);
 
   useEffect(() => {
@@ -49,7 +48,6 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
   };
 
   const handleAssign = async () => {
-    // Log the data being sent to the backend for debugging purposes
     console.log("Assigning students with the following data:");
     console.log("Property ID:", propertyId);  // Log propertyId here
     console.log("Selected Students:", selectedStudents);  // Log selected students

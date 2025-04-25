@@ -7,13 +7,14 @@ import Box from "@mui/material/Box";
 // import Stack from "@mui/material/Stack";
 // import Button from "@mui/material/Button";
 
-import PropertyList from "./PropertyList";
+// import PropertyList from "./PropertyList";
+import StudentPropertyList from "./StudentPropertyList.jsx";
 
 import JobList from "./JobList.jsx";
 import Tabs from "@mui/material/Tabs";
 
 import StudentAccounts from "./StudentAccounts";
-import StudentJobList from "./StudentJobList.jsx";
+// import StudentJobList from "./StudentJobList.jsx";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -52,7 +53,7 @@ const StudentView = ({ classroom, is_trustee, }) => {
           <Tab label="Jobs" {...a11yProps(1)} />
           <Tab label="Properties" {...a11yProps(2)} />
           {is_trustee && <Tab label="Properties" {...a11yProps(3)} />}
-        </Tabs>
+        </Tabs> 
       </Box>
 
       {/* Accounts Tab */}
@@ -64,7 +65,7 @@ const StudentView = ({ classroom, is_trustee, }) => {
       <CustomTabPanel id="jobs_tab_panel" value={value} index={1}>
         {/* Jobs tab- Display Create Jobs Form*/}
         {/* <CreateJobForm classroom_id={classroom.id} /> */}
-        {/* <JobList classroomId={classroom.id} /> */}
+        <JobList classroomId={classroom.id} />
         {/* <StudentJobList studentId= {student.id} ></StudentJobList> */}
         </CustomTabPanel>
 
@@ -73,7 +74,7 @@ const StudentView = ({ classroom, is_trustee, }) => {
         {/* <PropertyList classroom={classroom} />  */}
         {/* <CreatePropertyForm classroom_id={classroom.id} />
         <UpdatePropertyForm property_id={2} /> */}
-        <PropertyList classroomId={classroom.id} />
+        <StudentPropertyList classroomId={classroom.id} />
 
         {/* Buttons to Switch View Modes */}
       </CustomTabPanel>
