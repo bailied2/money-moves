@@ -53,7 +53,7 @@ const StudentCard = ({ first_name, last_name, checking_balance, savings_balance,
           </Typography>
         ))}
       </CardContent>
-      <CardActions sx={{ padding: 0 }}>
+      <CardActions sx={{ padding: 0,}}>
       <Button 
   size="small" 
   variant="contained" 
