@@ -56,16 +56,17 @@ const getAccountsByStudent = async (req, res) => {
     console.log(" student id:", student_id);
 
     const [accounts] = await db.execute(selectAccountQuery, [student_id]);
-    const investment_accounts = accounts.filter((a) => {
-      a.account_type === 3;
-    });
-    for (const account of investment_accounts) {
-      const [investmentAccountResults] = await db.execute(
-        selectInvestmentAccountQuery,
-        [account.fk_investment_account_id]
-      );
-      account.investment_account = investmentAccountResults[0];
-    }
+    
+    for (const i in accounts) {
+      if(accounts[i].account_type === 3)
+      {
+        const [investmentAccountResults] = await db.execute(
+          selectInvestmentAccountQuery,
+          [accounts[i].fk_investment_account_id]
+        );
+          accounts[i].title = investmentAccountResults[0].title;
+      }
+   }
     res.json({ accounts });
   } catch (error) {
     console.error("Error fetching accounts by student:", error);

@@ -35,7 +35,7 @@ const AccountCard = ({
         <Typography variant="h5" gutterBottom component="div">
           {account_type === 1 && "Checking Account"}
           {account_type === 2 && "Savings Account"}
-          {account_type === 3 && investment_account.title}
+          {account_type === 3 && investment_account}
         </Typography>
         <Typography noWrap variant="body2" color="text.secondary">
           Account ID: {id}

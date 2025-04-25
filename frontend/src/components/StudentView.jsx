@@ -13,6 +13,7 @@ import JobList from "./JobList.jsx";
 import Tabs from "@mui/material/Tabs";
 
 import StudentAccounts from "./StudentAccounts";
+import StudentJobList from "./StudentJobList.jsx";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
   return (
@@ -35,7 +36,7 @@ function a11yProps(index) {
   };
 }
 
-const StudentView = ({ classroom, is_trustee }) => {
+const StudentView = ({ classroom, is_trustee, }) => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -63,11 +64,9 @@ const StudentView = ({ classroom, is_trustee }) => {
       <CustomTabPanel id="jobs_tab_panel" value={value} index={1}>
         {/* Jobs tab- Display Create Jobs Form*/}
         {/* <CreateJobForm classroom_id={classroom.id} /> */}
-        <JobList classroomId={classroom.id} />
-
-        {/* Jobs tab- Display Update Jobs Form*/}
-        {/* <UpdateJobForm job_id={2} /> */}
-      </CustomTabPanel>
+        {/* <JobList classroomId={classroom.id} /> */}
+        {/* <StudentJobList studentId= {student.id} ></StudentJobList> */}
+        </CustomTabPanel>
 
       {/* Properties Tab */}
       <CustomTabPanel id="properties_tab_panel" value={value} index={2}>

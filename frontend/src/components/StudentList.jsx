@@ -17,10 +17,12 @@ const StudentList = ({ classroom }) => {
     const fetchStudents = async () => {
       try {
         const response = await api.get(`/students/classroom/${classroom.id}`);
-        console.log(response);
+        // console.log ( response.data.students);
+        
         setStudents(response.data.students);
         setError(null);
       } catch (err) {
+        console.log(err);
         setError("Failed to fetch students");
       } finally {
         setLoading(false);
@@ -69,7 +71,9 @@ const StudentList = ({ classroom }) => {
       >
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!error &&
-          students.map((student, index) => (
+          students.map((student, index) => {
+            console.log(student);
+            return(
             <Grid
               key={index}
               size={{ xs: 2, sm: 4, md: 4 }}
@@ -83,8 +87,10 @@ const StudentList = ({ classroom }) => {
                 checking_balance={student.checking_account.balance}
                 savings_balance={student.savings_account.balance}
               ></StudentCard>
-            </Grid>
-          ))}
+              
+            </Grid>)
+          }
+          )}
         <Grid
           size={{ xs: 2, sm: 4, md: 4 }}
           display="flex"

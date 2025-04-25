@@ -57,9 +57,10 @@ const AssignPropertyDialog = ({ open, onClose, classroomId, propertyId, onAssign
     try {
       // Send the data to the backend
       const response = await api.post("/properties/assign-property", {
-        property_id: propertyId, 
-        student_ids: selectedStudents, 
+        property_id: propertyId,
+        student_ids: selectedStudents,
       });
+      
 
       console.log("Response from backend:", response);  // Log backend response
       onAssignStudents(selectedStudents, propertyId);

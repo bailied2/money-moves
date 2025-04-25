@@ -98,18 +98,19 @@ const PropertyList = ({ classroomId }) => {
               justifyContent="center"
             >
               <PropertyCard
-                title={property.title}
-                description={property.description}
-                value={property.value}
-                rent={property.rent}
-                maintenance={property.maintenance}
-                pay_frequency={property.pay_frequency}
-                pay_day={property.pay_day}
-                onEdit={() => setEditingProperty(property)}
-                onAssign={() => assignProperty(property.id)}
-                onDelete={() => deleteProperty(property.id)}
-                classroomId={classroomId} 
-              />
+  id={property.id} // 👈 This is the missing piece
+  title={property.title}
+  description={property.description}
+  value={property.value}
+  rent={property.rent}
+  maintenance={property.maintenance}
+  pay_frequency={property.pay_frequency}
+  pay_day={property.pay_day}
+  onEdit={() => setEditingProperty(property)}
+  onAssign={() => assignProperty(property.id)}
+  onDelete={() => deleteProperty(property.id)}
+  classroomId={classroomId}
+/>
             </Grid>
           ))}
         <Grid

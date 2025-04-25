@@ -187,23 +187,27 @@ const deleteProperty = async (req, res) => {
 };
 
 const assignProperty = async (req, res) => {
+  const { student_ids, property_id } = req.body;
+
+  if (!Array.isArray(student_ids) || !property_id) {
+    return res.status(400).send({ error: "Missing property_id or student_ids" });
+  }
+
   const query =
-    "INSERT INTO student_properties (fk_student_id, fk_property_id, is_owner) VALUES (?, ?, ?)";
+    "INSERT INTO student_properties (fk_student_id, fk_property_id) VALUES (?, ?)";
 
   try {
-    const result = await db.execute(query, [
-      fk_student_id,
-      fk_property_id,
-      is_owner,
-    ]);
-    res.json({
-      data: `New job assigned successfully `,
-    });
-  } catch (error) {
-    console.error("Error assigning job:", error);
-    return res.status(500).json({ error: "Failed to assign job" });
+    for (const student_id of student_ids) {
+      await db.execute(query, [student_id, property_id]);
+    }
+
+    res.json({ data: "Property assigned successfully" });
+  } catch (err) {
+    console.error("Error assigning property:", err);
+    return res.status(500).send({ error: "Failed to assign property" });
   }
 };
+
 
 // Routes definition using the functions above
 // router.get("/classroom/:id", getProperties); // Get all properties in a classroom

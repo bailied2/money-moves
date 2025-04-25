@@ -76,8 +76,9 @@ const AccountList = ({ classroom_id, header = true }) => {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!loading &&
           !error &&
-          accounts.map((account, index) => (
-            <Grid
+          accounts.map((account, index) => {
+            console.log(account);
+            return (<Grid
               key={index}
               size={{ xs: 2, sm: 4, md: 4 }}
               display="flex"
@@ -87,10 +88,10 @@ const AccountList = ({ classroom_id, header = true }) => {
                 id={account.id}
                 account_type={account.account_type}
                 balance={account.balance}
-                investment_account={account.investment_account}
+                investment_account={account.title}
               ></AccountCard>
-            </Grid>
-          ))}
+            </Grid>)
+          })}
         <Grid
           size={{ xs: 2, sm: 4, md: 4 }}
           display="flex"

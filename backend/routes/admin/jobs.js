@@ -185,6 +185,26 @@ const assignJob = async (req, res) => {
   }
 };
 
+// GET /jobs/student-jobs/:studentId - Get all jobs assigned to a specific student
+router.get("/student-jobs/:studentId", authenticateToken, async (req, res) => {
+  const studentId = req.params.studentId;
+
+  const query = `
+    SELECT * FROM job
+    INNER JOIN student_jobs ON job.id = student_jobs.fk_job_id
+    WHERE student_jobs.fk_student_id = ?
+  `;
+
+  try {
+    const [jobs] = await db.execute(query, [studentId]);
+    res.json({ jobs });
+  } catch (error) {
+    console.error("Error fetching student jobs:", error);
+    res.status(500).json({ error: "Failed to fetch student jobs" });
+  }
+});
+
+
 // Routes definition using the functions above
 router.get("/:id", getJobById); // Get a job by ID
 router.post("/", createJob); // Create a new job
